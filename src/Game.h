@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <string>
+#include <random>
+#include <climits>
 #include <SDL2/SDL.h>
 #include "Player.h"
 #include "NotificationBox.h"
@@ -11,16 +13,21 @@ using namespace std;
 
 class Game {
 private:
+    random_device rd;
+    mt19937 mt;
     float time;
     bool state;
+    bool fullscreen;
 
 public:
-    vector<vector<int>> world_map;
+    vector<vector<char>> world_map;
     vector<Player*> player_vector;
     vector<NotificationBox*> notification_vector;
     int players_count;
+    int win_width = 800;
+    int win_heigth = 600;
 
-    Game() { cout << "Game created!" << endl; };
+    Game() { mt.seed(rd()); cout << "Game created!" << endl; };
     void saveGame(string file_name);
     void loadGame(string file_name);
     void returnToMenu();
@@ -31,6 +38,7 @@ public:
     void gameplay();
     void pause();
     float getTime();
+    int getRandomIntBetween(int min, int max);
 
 };
 
