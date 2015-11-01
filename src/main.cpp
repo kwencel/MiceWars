@@ -9,12 +9,14 @@ int main (int argc, char** argv) {
 
     Game Game;
 
+    Game.generateTerrain();
+
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         cout << "SDL_Init Error: " << SDL_GetError() << endl;
         return -1;
     }
 
-    SDL_Window* window = SDL_CreateWindow("Mice Wars", 100, 100, Game.win_width, Game.win_heigth, SDL_WINDOW_SHOWN);
+    SDL_Window* window = SDL_CreateWindow("Mice Wars", 100, 100, Game.win_width, Game.win_height, SDL_WINDOW_SHOWN);
     if (window == nullptr) {
         cout << "SDL_CreateWindow Error: " << SDL_GetError() << endl;
         SDL_Quit();
@@ -46,4 +48,5 @@ int main (int argc, char** argv) {
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+
 }

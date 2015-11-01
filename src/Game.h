@@ -19,13 +19,15 @@ private:
     bool state;
     bool fullscreen;
 
+    vector<int> findNext(int x, int y, int max_height, int distance);
+
 public:
     vector<vector<char>> world_map;
     vector<Player*> player_vector;
     vector<NotificationBox*> notification_vector;
     int players_count;
     int win_width = 800;
-    int win_heigth = 600;
+    int win_height = 600;
 
     Game() { mt.seed(rd()); cout << "Game created!" << endl; };
     void saveGame(string file_name);
