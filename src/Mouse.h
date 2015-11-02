@@ -8,11 +8,11 @@ using namespace std;
 
 class Mouse: public Object {
 public:
-    int hp;
-    bool can_move;
-    int movepoints;
-    Weapon* last_weapon;
-    NotificationBox* notification_hp;
+    int hp = 100;
+    bool can_move = false;
+    int movepoints = 0;
+    Weapon* last_weapon = nullptr;
+    NotificationBox* notification_hp = nullptr;
     bool facing_direction;
 
     Mouse(int x, int y, int width, int height)

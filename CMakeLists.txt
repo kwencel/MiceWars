@@ -33,7 +33,7 @@ set(SOURCE_FILES
         src/Weapon.h
         src/Weapon.cpp
         src/main.cpp
-        src/global_vars.h)
+        src/global_vars.h src/Engine.cpp src/Engine.h)
 
 add_executable(MiceWars ${SOURCE_FILES})
 

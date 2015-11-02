@@ -30,6 +30,7 @@ public:
     int win_height = 600;
 
     Game() { mt.seed(rd()); cout << "Game created!" << endl; };
+    void readConfigFile();
     void saveGame(string file_name);
     void loadGame(string file_name);
     void returnToMenu();
@@ -37,11 +38,13 @@ public:
     void redraw();
     void generateTerrain();
     void placeMice();
+    void createPlayer(string name, bool is_human, int mouse_amount, int colour);
     void gameplay();
     void pause();
-    float getTime();
+    float getTime()         { return time; };
+    int getWindowWidth()    { return win_width; };
+    int getWindowHeigth()   { return win_height; };
     int getRandomIntBetween(int min, int max);
-
 };
 
 

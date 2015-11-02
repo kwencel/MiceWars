@@ -18,8 +18,8 @@ private:
     void fire();
 
 public:
-    AI(int colour, int mouse_amount, bool is_human, string name)
-            : Player(colour, mouse_amount, is_human, name) { cout << "AI created!" << endl; }
+    AI(string name, bool is_human, int mouse_amount, int colour)
+            : Player(name, is_human, mouse_amount, colour) { cout << "AI created!" << endl; }
     void makeTurn() override;
 };
 

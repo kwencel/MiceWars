@@ -19,7 +19,8 @@ public:
     int mouse_amount;
     bool is_human;
 
-    Player(int colour, int mouse_amount, bool is_human, string name) { cout << "Player created!" << endl; };
+    Player(string name, bool is_human, int mouse_amount, int colour)
+            : name(name), is_human(is_human), mouse_amount(mouse_amount), colour(colour) { cout << "Player created!" << endl; };
     virtual void makeTurn();
     string getName();
     int getColour();

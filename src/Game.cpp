@@ -1,4 +1,6 @@
 #include "Game.h"
+#include "Engine.h"
+#include "global_vars.h"
 
 void Game::saveGame(string fileName) {
 
@@ -17,7 +19,13 @@ void Game::exit() {
 }
 
 void Game::redraw() {
-
+    Engine::Instance()->clearRenderer();
+    for (auto player : player_vector) {
+        for (auto mouse : player->mice_vector) {
+            mouse->display();
+        }
+    }
+    SDL_RenderPresent(Engine::Instance()->renderer);
 }
 
 vector<int> Game::findNext(int x, int y, int max_height, int distance) {
@@ -72,10 +80,22 @@ void Game::generateTerrain() {
 }
 
 void Game::placeMice() {
+    for (auto player : player_vector) { // For each player
+        for (int i = 0; i < player->mouse_amount; ++i) {    // Place their mice
+            Mouse *mouse = new Mouse(getRandomIntBetween(0, win_width), getRandomIntBetween(0, win_height), 50, 50);
+            mouse->texture = Engine::Instance()->makeTexture(mouse1_img);
+            player->mice_vector.push_back(mouse);
+        }
+    }
+}
 
+void Game::createPlayer(string name, bool is_human, int mouse_amount, int colour) {
+    Player* player = new Player(name, is_human, mouse_amount, colour);
+    player_vector.push_back(player);
 }
 
 void Game::gameplay() {
+
 
 }
 
@@ -83,12 +103,12 @@ void Game::pause() {
 
 }
 
-float Game::getTime() {
-    return time;
-}
-
 int Game::getRandomIntBetween(int min, int max) {
-    //mt19937 mt(rd());
     uniform_int_distribution<int> distribution(min, nextafter(max, INT_MAX));
     return distribution(mt);
+}
+
+//TODO
+void Game::readConfigFile() {
+
 }

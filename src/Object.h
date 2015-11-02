@@ -9,14 +9,15 @@ using namespace std;
 
 class Object {
 protected:
-    vector<SDL_Surface*> bitmap_vector;
-    int current_bitmap;
+//    vector<SDL_Surface*> bitmap_vector;
+//    int current_bitmap;
 
 public:
     int pos_x;
     int pos_y;
     int obj_width;
     int obj_height;
+    SDL_Texture* texture;
 
     Object() { cout << "Created temp object!" << endl; };
     Object(int x, int y, int width, int height)
