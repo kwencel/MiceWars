@@ -95,12 +95,11 @@ void Game::generateTerrain() {
 
         // columns for points between P1 and P2
         for (int x = x1; x < x2; x++) {
-            int y = a*x + b;
-            if (x == x1) {
+            if (x == x1) {      // for the first point P1
                 y = y1;
             }
-            int i;
-            for (i = 0; i <= win_height; i++) {
+            int y = a*x + b;
+            for (int i = 0; i <= win_height; i++) {
                 if (i < y) {
                     world_map[x].push_back(0);
                 }
@@ -115,14 +114,14 @@ void Game::generateTerrain() {
     }
     // column for last point
     cout << endl;
-    for (int y = 0; y <= win_height; y++) {
-        if (y < y2) {
+    for (int i = 0; i <= win_height; i++) {
+        if (i < y2) {
             world_map[x2].push_back(0);
         }
-        else if (y < win_height - river_height) {
+        else if (i < win_height - river_height) {
             world_map[x2].push_back(1);
         }
-        else if (y < win_height) {
+        else if (i < win_height) {
             world_map[x2].push_back(2);
         }
     }
