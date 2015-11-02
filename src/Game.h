@@ -25,9 +25,10 @@ public:
     vector<vector<char>> world_map;
     vector<Player*> player_vector;
     vector<NotificationBox*> notification_vector;
-    int players_count;
-    int win_width = 400;
-    int win_height = 200;
+    int players_count = 1;
+    int win_width = 800;
+    int win_height = 600;
+    float FPS = 60;
 
     Game() { mt.seed(rd()); cout << "Game created!" << endl; };
     void readConfigFile();
@@ -45,6 +46,7 @@ public:
     int getWindowWidth()    { return win_width; };
     int getWindowHeigth()   { return win_height; };
     int getRandomIntBetween(int min, int max);
+    void drawBackground();
 };
 
 

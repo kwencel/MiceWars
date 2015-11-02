@@ -2,6 +2,12 @@
 #include "Engine.h"
 #include "global_vars.h"
 
+//#define colorPixel(background, x, y, color)                         \
+//do {                                                                \
+//  pixel += (y * background->pitch) + (x * sizeof(Uint32));          \
+//  *((Uint32*)pixel) = color;                                        \
+//} while(0)
+
 void Game::saveGame(string fileName) {
 
 }
@@ -18,8 +24,33 @@ void Game::exit() {
 
 }
 
+void Game::drawBackground() {
+    if (Engine::Instance()->background_texture != nullptr) {
+        SDL_DestroyTexture(Engine::Instance()->background_texture);
+    }
+    SDL_LockSurface(Engine::Instance()->background);
+    for (int x = 0; x < win_width; ++x) {
+        for (int y = 0; y < win_height; ++y) {
+            switch(world_map[x][y]) {
+                case 1:
+                    Engine::Instance()->colorPixel(Engine::Instance()->background, x, y, GREEN);
+                    break;
+                case 2:
+                    Engine::Instance()->colorPixel(Engine::Instance()->background, x, y, BLUE);
+                    break;
+                default:break;
+            }
+        }
+    }
+
+    SDL_UnlockSurface(Engine::Instance()->background);
+    Engine::Instance()->background_texture = SDL_CreateTextureFromSurface(Engine::Instance()->renderer, Engine::Instance()->background);
+    SDL_RenderCopy(Engine::Instance()->renderer, Engine::Instance()->background_texture, NULL, NULL);
+}
+
 void Game::redraw() {
     Engine::Instance()->clearRenderer();
+    drawBackground();
     for (auto player : player_vector) {
         for (auto mouse : player->mice_vector) {
             mouse->display();
@@ -103,10 +134,10 @@ void Game::generateTerrain() {
 
         // columns for points between P1 and P2
         for (int x = x1; x < x2; x++) {
+            int y = a*x + b;
             if (x == x1) {      // for the first point P1
                 y = y1;
             }
-            int y = a*x + b;
             for (int i = 0; i <= win_height; i++) {
                 if (i < y) {
                     world_map[x].push_back(0);
@@ -134,20 +165,20 @@ void Game::generateTerrain() {
         }
     }
     // displaying content of vector
-    cout << endl << "CONTENT OF VECTOR" << endl;
-    for (int j = win_width; j >= 0; j-- ) {
-        for (int i = 0; i < win_height; i++ ) {
-            cout << world_map[j][i] + '0' - 48;
-        }
-        cout << endl;
-    }
+//    cout << endl << "CONTENT OF VECTOR" << endl;
+//    for (int j = win_width; j >= 0; j-- ) {
+//        for (int i = 0; i < win_height; i++ ) {
+//            cout << world_map[j][i] + '0' - 48;
+//        }
+//        cout << endl;
+//    }
 }
 
 void Game::placeMice() {
     for (auto player : player_vector) { // For each player
         for (int i = 0; i < player->mouse_amount; ++i) {    // Place their mice
             Mouse *mouse = new Mouse(getRandomIntBetween(0, win_width), getRandomIntBetween(0, win_height), 50, 50);
-            mouse->texture = Engine::Instance()->makeTexture(mouse1_img);
+            mouse->texture = Engine::Instance()->makeTexture(MOUSE1_IMG);
             player->mice_vector.push_back(mouse);
         }
     }

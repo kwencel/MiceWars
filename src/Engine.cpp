@@ -13,13 +13,25 @@ int Engine::createWindow(int win_width, int win_height) {
 }
 
 int Engine::createRenderer() {
-    renderer = SDL_CreateRenderer(window, -1, 0);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (renderer == nullptr) {
         cout << "SDL_CreateRenderer Error: " << SDL_GetError() << endl;
         return 1;
     }
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     return 0;
+}
+
+int Engine::createBackground() {
+    background = SDL_CreateRGBSurface(0, win_width, win_height, 32, 0, 0, 0, 0);
+    return 0;
+}
+
+
+void Engine::colorPixel(SDL_Surface* surface, int x, int y, Uint32 color) {
+    Uint8* pixel = (Uint8*)surface->pixels;
+    pixel += (y * surface->pitch) + (x * sizeof(Uint32));
+    *((Uint32*)pixel) = color;
 }
 
 int Engine::init() {
@@ -31,11 +43,11 @@ int Engine::init() {
 }
 
 int Engine::initializeImageSystem() {
-    if (IMG_Init(IMG_INIT_JPG) != IMG_INIT_JPG) {
-        cout << "IMG_Init Error: " << IMG_GetError() << endl;
-        return 1;
-    }
-    else if (IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG) {
+//    if (IMG_Init(IMG_INIT_JPG) != IMG_INIT_JPG) {
+//        cout << "IMG_Init Error: " << IMG_GetError() << endl;
+//        return 1;
+//    }
+    if (IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG) {
         cout << "IMG_Init Error: " << IMG_GetError() << endl;
         return 1;
     }
@@ -47,9 +59,12 @@ int Engine::initializeAudioSystem() {
 }
 
 int Engine::getReady(int win_width, int win_height) {
+    this->win_width = win_width;
+    this->win_height = win_height;
     if ((init()) or
         (createWindow(win_width, win_height)) or
         (createRenderer()) or
+        (createBackground()) or
         (initializeImageSystem()) or
         (initializeAudioSystem())) {
         cout << "Something went wrong! I'm afraid we're going to crash, soldier!" << endl;
@@ -70,6 +85,8 @@ SDL_Texture* Engine::makeTexture(const char* img_path) {
     SDL_Texture* texture = IMG_LoadTexture(renderer, img_path);
     return texture;
 }
+
+
 
 Engine* Engine::Instance() {
     if (!m_pInstance) {
