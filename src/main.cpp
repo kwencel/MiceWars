@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include "Game.h"
 #include "Engine.h"
 #include "Timer.h"
@@ -24,7 +25,12 @@ int main(int argc, char **argv) {
             else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
                 quit = true;
         }
-        cout << "Frametime: " << Timer.getDelta() << endl;
+        stringstream title_frametime;
+        title_frametime << "Frametime: " << Timer.getDelta();
+        title_frametime.str().c_str();
+        SDL_SetWindowTitle(Engine::Instance()->window, title_frametime.str().c_str());
+        //cout << "Frametime: " << Timer.getDelta() << endl;
+        Game.applyGravity();
         Game.redraw();
     }
 

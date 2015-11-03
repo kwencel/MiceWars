@@ -2,12 +2,6 @@
 #include "Engine.h"
 #include "global_vars.h"
 
-//#define colorPixel(background, x, y, color)                         \
-//do {                                                                \
-//  pixel += (y * background->pitch) + (x * sizeof(Uint32));          \
-//  *((Uint32*)pixel) = color;                                        \
-//} while(0)
-
 void Game::saveGame(string fileName) {
 
 }
@@ -42,7 +36,6 @@ void Game::drawBackground() {
             }
         }
     }
-
     SDL_UnlockSurface(Engine::Instance()->background);
     Engine::Instance()->background_texture = SDL_CreateTextureFromSurface(Engine::Instance()->renderer, Engine::Instance()->background);
     SDL_RenderCopy(Engine::Instance()->renderer, Engine::Instance()->background_texture, NULL, NULL);
@@ -173,11 +166,43 @@ void Game::generateTerrain() {
 //        cout << endl;
 //    }
 }
+inline bool Game::checkCollision(int x, int y) {
+    return (world_map[x][y] > 0);
+}
+
+bool Game::doesCollide(Object* object) {
+    int x = object->pos_x;
+    int y = object->pos_y;
+    // Upper object rectangle edge check
+    for (; x <= object->pos_x + object->obj_width; ++x)
+        if (checkCollision(x,y)) { return true; }
+    // Right object rectangle edge check
+    for (--x; y <= object->pos_y + object->obj_height; ++y)
+        if (checkCollision(x,y)) { return true; }
+    // Lower object rectangle edge check
+    for (--y; x >= object->pos_x; --x)
+        if (checkCollision(x,y)) { return true; }
+    // Left object rectangle edge chceck
+    for (++x; y >= object->pos_x; --y)
+        if (checkCollision(x,y)) { return true; }
+    return false;
+}
+
+void Game::applyGravity() {
+    for (auto player : player_vector) {
+        for (auto mouse: player->mice_vector) {
+            if (not doesCollide(mouse)) {
+                mouse->pos_y++;
+            }
+        }
+    }
+}
 
 void Game::placeMice() {
     for (auto player : player_vector) { // For each player
         for (int i = 0; i < player->mouse_amount; ++i) {    // Place their mice
-            Mouse *mouse = new Mouse(getRandomIntBetween(0, win_width), getRandomIntBetween(0, win_height), 50, 50);
+            //Mouse *mouse = new Mouse(getRandomIntBetween(0, win_width - MICE_WIDTH), getRandomIntBetween(0, win_height/3), 25, 25);
+            Mouse *mouse = new Mouse(getRandomIntBetween(0, win_width - MICE_WIDTH), getRandomIntBetween(0, win_height/3), MICE_WIDTH, MICE_HEIGHT);
             mouse->texture = Engine::Instance()->makeTexture(MOUSE1_IMG);
             player->mice_vector.push_back(mouse);
         }

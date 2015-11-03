@@ -18,8 +18,8 @@ private:
     float time;
     bool state;
     bool fullscreen;
-
     pair<int,int> findNext(int x, int y, int max_height, int distance, int river_height);
+    bool checkCollision(int x, int y);
 
 public:
     vector<vector<char>> world_map;
@@ -47,6 +47,8 @@ public:
     int getWindowHeigth()   { return win_height; };
     int getRandomIntBetween(int min, int max);
     void drawBackground();
+    bool doesCollide(Object*);
+    void applyGravity();
 };
 
 
