@@ -2,12 +2,13 @@
 
 Timer* Timer::m_pInstance = nullptr;
 
-Timer* Timer::Instance() {
-    if (!m_pInstance) {
-        m_pInstance = new Timer;
-    } // Only allow one instance at time
-}
 
+Timer* Timer::Instance() {
+    if (m_pInstance == nullptr) {
+        m_pInstance = new Timer;
+    }
+    return m_pInstance;
+}
 
 double Timer::getNewDelta() {
     // 1. Get current time as a std::chrono::time_point

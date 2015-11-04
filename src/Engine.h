@@ -17,10 +17,8 @@ private:
     int createRenderer();
     int initializeImageSystem();
     int initializeAudioSystem();
-    Engine() { };
-    Engine(Engine const&) { };
-    Engine& operator=(Engine const&) { };
     static Engine* m_pInstance;
+    Engine() { };
 
 public:
     SDL_Window* window = nullptr;

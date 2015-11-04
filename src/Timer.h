@@ -12,10 +12,8 @@ private:
     // because we want the highest possible accuracy
     time_point< high_resolution_clock > time_prev;
     double current_delta;
-    Timer() { };
-    Timer(Timer const&) { };
-    Timer& operator=(Timer const&) { };
     static Timer* m_pInstance;
+    Timer() { };
 
 public:
     // Returns time since last time this function was called
@@ -25,7 +23,6 @@ public:
     void start() { time_prev = high_resolution_clock::now(); }
 //    void restart();
     static Timer* Instance();
-
 };
 
 
