@@ -13,8 +13,7 @@ int main(int argc, char **argv) {
     Game.generateTerrain();
     Game.createPlayer("Joe", true, 3, 0);
     Game.placeMice();
-    Timer Timer;
-    Timer.start();
+    Timer::Instance()->start();
 
     bool quit = false;
     while (!quit) {
@@ -25,8 +24,9 @@ int main(int argc, char **argv) {
             else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
                 quit = true;
         }
+        Timer::Instance()->getNewDelta();
         stringstream title_frametime;
-        title_frametime << "Frametime: " << Timer.getDelta();
+        title_frametime << "Frametime: " << Timer::Instance()->getDelta();
         title_frametime.str().c_str();
         SDL_SetWindowTitle(Engine::Instance()->window, title_frametime.str().c_str());
         //cout << "Frametime: " << Timer.getDelta() << endl;
