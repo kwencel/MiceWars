@@ -20,13 +20,16 @@ private:
     bool fullscreen;
 
     pair<int,int> findNext(int x, int y, int max_height, int distance, int river_height);
+    void connectingPoints(vector<pair<int,int>> points_vector, int river_height);
+    void displayArrayOfValues();
+    void createHoles(int x0, int y0, int radius);
 
 public:
     vector<vector<char>> world_map;
     vector<Player*> player_vector;
     vector<NotificationBox*> notification_vector;
     int players_count;
-    int win_width = 400;
+    int win_width = 300;
     int win_height = 200;
 
     Game() { mt.seed(rd()); cout << "Game created!" << endl; };

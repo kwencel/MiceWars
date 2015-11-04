@@ -31,11 +31,11 @@ int Engine::init() {
 }
 
 int Engine::initializeImageSystem() {
-    if (IMG_Init(IMG_INIT_JPG) != IMG_INIT_JPG) {
-        cout << "IMG_Init Error: " << IMG_GetError() << endl;
-        return 1;
-    }
-    else if (IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG) {
+//    if (IMG_Init(IMG_INIT_JPG) != IMG_INIT_JPG) {
+//        cout << "IMG_Init Error: " << IMG_GetError() << endl;
+//        return 1;
+//    }
+    if (IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG) {
         cout << "IMG_Init Error: " << IMG_GetError() << endl;
         return 1;
     }

@@ -28,6 +28,17 @@ void Game::redraw() {
     SDL_RenderPresent(Engine::Instance()->renderer);
 }
 
+void Game::displayArrayOfValues() {
+    // displaying content of vector
+    cout << endl << "CONTENT OF VECTOR" << endl;
+    for (int j = win_width; j >= 0; j-- ) {
+        for (int i = 0; i < win_height; i++ ) {
+            cout << world_map[j][i] + '0' - 48;
+        }
+        cout << endl;
+    }
+}
+
 pair<int,int> Game::findNext(int x, int y, int max_height, int distance, int river_height) {
     pair<int,int> point_coordinates;
     int x_2, y_2;
@@ -54,44 +65,11 @@ pair<int,int> Game::findNext(int x, int y, int max_height, int distance, int riv
     return point_coordinates;
 }
 
-void Game::generateTerrain() {
-    world_map.resize(win_width + 1);
-    vector<pair<int,int>> points_vector;
-    pair<int,int> point_coordinates;            // respectively x and y
-    int distance;                               // distance between points
-    int river_height;
-    if (win_width < 50){
-        distance = win_width / 10;
-        river_height = distance;
-    } else {
-        distance = win_width / 50;
-        river_height = 3* distance;
-    }
-    int max_height = win_height / 2;
-    int cur_x = 0;
-    int cur_y = max_height + distance;
-
-    // CREATING POINTS
-    // adding first const. point to vector
-    point_coordinates.first =cur_x;
-    point_coordinates.second =cur_y;
-    cout << "x = " << point_coordinates.first << ", y = " << point_coordinates.second << endl;
-    points_vector.push_back(point_coordinates);
-
-    // creating and adding the rest of points
-    while (cur_x != (win_width)) {
-        point_coordinates = findNext(cur_x, cur_y, max_height, distance, river_height);
-        cout << "x = " << point_coordinates.first << ", y = " << point_coordinates.second << endl;
-        cur_x = point_coordinates.first;
-        cur_y = point_coordinates.second;
-        points_vector.push_back(point_coordinates);
-    }
-
+void Game::connectingPoints(vector<pair<int,int>> points_vector, int river_height) {
     // CONNECTING POINTS
     vector<pair<int,int>>::iterator current;
     int x1,y1,x2,y2,a, b;
     current = points_vector.begin();            // iterator at the beginning
-
     while (*current != points_vector.back()) {
         x1 = current->first;
         y1 = current->second;
@@ -103,10 +81,10 @@ void Game::generateTerrain() {
 
         // columns for points between P1 and P2
         for (int x = x1; x < x2; x++) {
+            int y = a*x + b;
             if (x == x1) {      // for the first point P1
                 y = y1;
             }
-            int y = a*x + b;
             for (int i = 0; i <= win_height; i++) {
                 if (i < y) {
                     world_map[x].push_back(0);
@@ -120,6 +98,7 @@ void Game::generateTerrain() {
             }
         }
     }
+
     // column for last point
     cout << endl;
     for (int i = 0; i <= win_height; i++) {
@@ -133,14 +112,92 @@ void Game::generateTerrain() {
             world_map[x2].push_back(2);
         }
     }
-    // displaying content of vector
-    cout << endl << "CONTENT OF VECTOR" << endl;
-    for (int j = win_width; j >= 0; j-- ) {
-        for (int i = 0; i < win_height; i++ ) {
-            cout << world_map[j][i] + '0' - 48;
+}
+
+void Game::createHoles(int x0, int y0, int radius) {
+    for (int i = radius; i >= 1; i--) {
+        int x = i;
+        int y = 0;
+        int decisionOver2 = 1 - x;   // Decision criterion divided by 2 evaluated at x=radius, y=0
+        // drawing and colouring cicle
+        while (y <= x) {
+            for (int l = x + x0; l >= x0; l--){
+                if ( l >= 0 && l <= win_width && (y + y0) >= 0 && (y + y0) <= win_height)
+                    world_map[l][y + y0] = 0;   // Octant 1
+                if ( l >= 0 && l <= win_width && (-y + y0) >= 0 && (-y + y0) <= win_height)
+                    world_map[l][-y + y0] = 0;  // Octant 8
+            }
+            for (int l = x + y0; l >= y0; l--){
+                if ( (y + x0) >= 0 && (y + x0) <= win_width && l >= 0 && l <= win_height)
+                    world_map[y + x0][l] = 0;   // Octant 2
+                if ( (-y + x0) >= 0 && (-y + x0) <= win_width && l >= 0 && l <= win_height)
+                    world_map[-y + x0][l] = 0;  // Octant 3
+            }
+            for (int l = -x + x0; l <= x0; l++){
+                if ( l >= 0 && l <= win_width && (y + y0) >= 0 && (y + y0) <= win_height)
+                    world_map[l][y + y0] = 0;   //Octant 4
+                if ( l >= 0 && l <= win_width && (-y + y0) >= 0 && (-y + y0) <= win_height)
+                    world_map[l][-y + y0] = 0;  //Octant 5
+            }
+            for (int l = -x + y0; l <= y0; l++){
+                if ( (-y + x0) >= 0 && (-y + x0) <= win_width && l >= 0 && l <= win_height)
+                    world_map[-y + x0][l] = 0;  //Octant 6
+                if ( (y + x0) >= 0 && (y + x0) <= win_width && l >= 0 && l <= win_height)
+                    world_map[y + x0][l] = 0;   //Octant 7
+            }
+
+            y++;
+            if (decisionOver2 <= 0) {
+                decisionOver2 += 2 * y + 1;   // Change in decision criterion for y -> y+1
+            }
+            else {
+                x--;
+                decisionOver2 += 2 * (y - x) + 1;   // Change for y -> y+1, x -> x-1
+            }
         }
-        cout << endl;
     }
+}
+
+void Game::generateTerrain() {
+    world_map.resize(win_width + 1);
+    vector<pair<int, int>> points_vector;
+    pair<int, int> point_coordinates;            // respectively x and y
+    int distance;                               // distance between points
+    int river_height;
+    if (win_width < 50) {
+        distance = win_width / 10;
+        river_height = distance;
+    } else {
+        distance = win_width / 50;
+        river_height = 3 * distance;
+    }
+    int max_height = win_height / 2;
+    int cur_x = 0;
+    int cur_y = max_height + distance;
+
+    // CREATING POINTS
+    // adding first const. point to vector
+    point_coordinates.first = cur_x;
+    point_coordinates.second = cur_y;
+    cout << "x = " << point_coordinates.first << ", y = " << point_coordinates.second << endl;
+    points_vector.push_back(point_coordinates);
+
+    // creating and adding the rest of points
+    while (cur_x != (win_width)) {
+        point_coordinates = findNext(cur_x, cur_y, max_height, distance, river_height);
+        cout << "x = " << point_coordinates.first << ", y = " << point_coordinates.second << endl;
+        cur_x = point_coordinates.first;
+        cur_y = point_coordinates.second;
+        points_vector.push_back(point_coordinates);
+    }
+
+    // CONNECTING POINTS
+    connectingPoints(points_vector, river_height);
+
+    displayArrayOfValues();
+    createHoles(303, 210, 30);
+    displayArrayOfValues();
+
 }
 
 void Game::placeMice() {
@@ -176,3 +233,6 @@ int Game::getRandomIntBetween(int min, int max) {
 void Game::readConfigFile() {
 
 }
+
+
+

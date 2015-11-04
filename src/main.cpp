@@ -12,9 +12,9 @@ int main(int argc, char **argv) {
     Game.createPlayer("Joe", true, 3, 0);
     Game.placeMice();
 
+
     while (true) {
         Game.redraw();
     }
-
 
 }
