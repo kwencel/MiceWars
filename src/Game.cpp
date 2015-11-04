@@ -92,8 +92,6 @@ pair<int,int> Game::findNext(int x, int y, int max_height, int distance, int riv
 
 void Game::connectingPoints(vector<pair<int,int>> points_vector, int river_height) {
     // CONNECTING POINTS
-    connectingPoints(points_vector, river_height);
-
     vector<pair<int,int>>::iterator current;
     int x1,y1,x2,y2,a, b;
     current = points_vector.begin();            // iterator at the beginning

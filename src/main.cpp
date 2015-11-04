@@ -27,5 +27,4 @@ int main(int argc, char **argv) {
         cout << "Frametime: " << Timer.getDelta() << endl;
         Game.redraw();
     }
-
 }
