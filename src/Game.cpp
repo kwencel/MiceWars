@@ -259,7 +259,7 @@ void Game::applyGravity() {
     for (auto player : player_vector) {
         for (auto mouse: player->mice_vector) {
             if (not doesCollide(mouse)) {
-                mouse->pos_y += 200 * Timer::Instance()->getDelta();
+                mouse->pos_y += GRAVITY_MUL * Timer::Instance()->getDelta();
             }
         }
     }

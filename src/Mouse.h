@@ -4,8 +4,6 @@
 #include "Weapon.h"
 #include "NotificationBox.h"
 
-enum {left = 0, right = 1};
-
 class Mouse: public Object {
 public:
     int hp = 100;
@@ -25,6 +23,8 @@ public:
     void destroy() override;
 
     void flipTexture();
+
+    void overcomeHill(bool direction);
 };
 
 
