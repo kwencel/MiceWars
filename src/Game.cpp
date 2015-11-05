@@ -74,7 +74,7 @@ void Game::displayArrayOfValues() {
 }
 
 std::pair<int,int> Game::findNext(int x, int y, int max_height, int distance, int river_height) {
-    pair<int,int> point_coordinates;
+    std::pair<int,int> point_coordinates;
     int x_2, y_2;
 
     // SEARCHING FOR X
@@ -99,7 +99,7 @@ std::pair<int,int> Game::findNext(int x, int y, int max_height, int distance, in
     return point_coordinates;
 }
 
-void Game::connectingPoints(vector<pair<int,int>> points_vector, int river_height) {
+void Game::connectingPoints(std::vector<std::pair<int,int>> points_vector, int river_height) {
     // CONNECTING POINTS
     std::vector<std::pair<int,int>>::iterator current;
     int x1,y1,x2,y2,a, b;
@@ -194,8 +194,8 @@ void Game::createHoles(int x0, int y0, int radius) {
 
 void Game::generateTerrain() {
     world_map.resize(win_width + 1);
-    vector<pair<int, int>> points_vector;
-    pair<int, int> point_coordinates;            // respectively x and y
+    std::vector<std::pair<int, int>> points_vector;
+    std::pair<int, int> point_coordinates;            // respectively x and y
     int distance;                               // distance between points
     int river_height;
     if (win_width < 50) {
@@ -304,7 +304,6 @@ void Game::applyMovement() {
     for (auto player : player_vector) {
         for (auto mouse : player->mice_vector) {
             mouse->move();
-}
-
-}
+        }
+    }
 }
