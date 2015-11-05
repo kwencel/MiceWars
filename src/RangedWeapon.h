@@ -3,8 +3,6 @@
 
 #include "Weapon.h"
 
-using namespace std;
-
 class RangedWeapon: Weapon {
 public:
     bool gravity;

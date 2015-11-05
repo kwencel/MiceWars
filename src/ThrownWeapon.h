@@ -3,8 +3,6 @@
 
 #include "RangedWeapon.h"
 
-using namespace std;
-
 class ThrownWeapon: RangedWeapon {
 public:
     float timer;

@@ -3,8 +3,6 @@
 
 #include "Object.h"
 
-using namespace std;
-
 class Button: public Object {
 public:
     bool state;

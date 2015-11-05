@@ -5,8 +5,6 @@
 #include "Player.h"
 #include "Mouse.h"
 
-using namespace std;
-
 class AI: public Player {
 private:
     Mouse* enemy_target;
@@ -18,7 +16,7 @@ private:
     void fire();
 
 public:
-    AI(string name, bool is_human, int mouse_amount, int colour)
+    AI(std::string name, bool is_human, int mouse_amount, int colour)
             : Player(name, is_human, mouse_amount, colour) { cout << "AI created!" << endl; }
     void makeTurn() override;
 };

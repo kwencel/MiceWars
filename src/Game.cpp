@@ -1,12 +1,22 @@
 #include "Game.h"
 #include "Engine.h"
 #include "global_vars.h"
+#include "Timer.h"
 
-void Game::saveGame(string fileName) {
+Game* Game::m_pInstance = nullptr;
+
+Game* Game::Instance() {
+    if (m_pInstance == nullptr) {
+        m_pInstance = new Game;
+    }
+    return m_pInstance;
+}
+
+void Game::saveGame(std::string fileName) {
 
 }
 
-void Game::loadGame(string fileName) {
+void Game::loadGame(std::string fileName) {
 
 }
 
@@ -52,8 +62,8 @@ void Game::redraw() {
     SDL_RenderPresent(Engine::Instance()->renderer);
 }
 
-pair<int,int> Game::findNext(int x, int y, int max_height, int distance, int river_height) {
-    pair<int,int> point_coordinates;
+std::pair<int,int> Game::findNext(int x, int y, int max_height, int distance, int river_height) {
+    std::pair<int,int> point_coordinates;
     int x_2, y_2;
 
     // SEARCHING FOR X
@@ -80,8 +90,8 @@ pair<int,int> Game::findNext(int x, int y, int max_height, int distance, int riv
 
 void Game::generateTerrain() {
     world_map.resize(win_width + 1);
-    vector<pair<int,int>> points_vector;
-    pair<int,int> point_coordinates;            // respectively x and y
+    std::vector<std::pair<int,int>> points_vector;
+    std::pair<int,int> point_coordinates;            // respectively x and y
     int distance;                               // distance between points
     int river_height;
     if (win_width < 50){
@@ -112,7 +122,7 @@ void Game::generateTerrain() {
     }
 
     // CONNECTING POINTS
-    vector<pair<int,int>>::iterator current;
+    std::vector<std::pair<int,int>>::iterator current;
     int x1,y1,x2,y2,a, b;
     current = points_vector.begin();            // iterator at the beginning
 
@@ -192,7 +202,7 @@ void Game::applyGravity() {
     for (auto player : player_vector) {
         for (auto mouse: player->mice_vector) {
             if (not doesCollide(mouse)) {
-                mouse->pos_y++;
+                mouse->pos_y += 200 * Timer::Instance()->getDelta();
             }
         }
     }
@@ -209,7 +219,7 @@ void Game::placeMice() {
     }
 }
 
-void Game::createPlayer(string name, bool is_human, int mouse_amount, int colour) {
+void Game::createPlayer(std::string name, bool is_human, int mouse_amount, int colour) {
     Player* player = new Player(name, is_human, mouse_amount, colour);
     player_vector.push_back(player);
 }
@@ -224,11 +234,20 @@ void Game::pause() {
 }
 
 int Game::getRandomIntBetween(int min, int max) {
-    uniform_int_distribution<int> distribution(min, nextafter(max, INT_MAX));
+    std::uniform_int_distribution<int> distribution(min, nextafter(max, INT_MAX));
     return distribution(mt);
 }
 
 //TODO
 void Game::readConfigFile() {
 
+}
+
+void Game::applyMovement() {
+    for (auto player : player_vector) {
+        for (auto mouse : player->mice_vector) {
+            mouse->move();
+}
+
+}
 }

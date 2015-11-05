@@ -3,8 +3,6 @@
 
 #include "Weapon.h"
 
-using namespace std;
-
 class PlacedWeapon : Weapon {
 public:
     int trig_range;

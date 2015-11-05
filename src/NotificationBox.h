@@ -5,16 +5,14 @@
 #include "Object.h"
 #include <iostream>
 
-using namespace std;
-
 class NotificationBox: public Object {
 public:
-    string text;
+    std::string text;
     float timer;
 
-    NotificationBox(int x, int y, int width, int height, string text, float timer)
+    NotificationBox(int x, int y, int width, int height, std::string text, float timer)
             : Object(x, y, width, height), text(text), timer(timer) { cout << "NotificationBox created!" << endl; }
-    NotificationBox(string text, float timer) {} // TODO
+    NotificationBox(std::string text, float timer) {} // TODO
 
     void display() override;
 };

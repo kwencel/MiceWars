@@ -9,37 +9,36 @@
 #include "Player.h"
 #include "NotificationBox.h"
 
-using namespace std;
-
 class Game {
 private:
-    random_device rd;
-    mt19937 mt;
+    std::random_device rd;
+    std::mt19937 mt;
     float time;
     bool state;
     bool fullscreen;
-    pair<int,int> findNext(int x, int y, int max_height, int distance, int river_height);
+    std::pair<int,int> findNext(int x, int y, int max_height, int distance, int river_height);
     bool checkCollision(int x, int y);
+    static Game* m_pInstance;
+    Game() { mt.seed(rd()); cout << "Game created!" << endl; };
 
 public:
-    vector<vector<char>> world_map;
-    vector<Player*> player_vector;
-    vector<NotificationBox*> notification_vector;
+    std::vector<std::vector<char>> world_map;
+    std::vector<Player*> player_vector;
+    std::vector<NotificationBox*> notification_vector;
     int players_count = 1;
     int win_width = 800;
     int win_height = 600;
     float FPS = 60;
 
-    Game() { mt.seed(rd()); cout << "Game created!" << endl; };
     void readConfigFile();
-    void saveGame(string file_name);
-    void loadGame(string file_name);
+    void saveGame(std::string file_name);
+    void loadGame(std::string file_name);
     void returnToMenu();
     void exit();
     void redraw();
     void generateTerrain();
     void placeMice();
-    void createPlayer(string name, bool is_human, int mouse_amount, int colour);
+    void createPlayer(std::string name, bool is_human, int mouse_amount, int colour);
     void gameplay();
     void pause();
     float getTime()         { return time; };
@@ -49,6 +48,9 @@ public:
     void drawBackground();
     bool doesCollide(Object*);
     void applyGravity();
+    static Game* Instance();
+
+    void applyMovement();
 };
 
 

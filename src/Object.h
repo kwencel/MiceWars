@@ -4,8 +4,8 @@
 #include <vector>
 #include <SDL2/SDL.h>
 #include <iostream>
-
-using namespace std;
+using std::cout;
+using std::endl;
 
 class Object {
 protected:

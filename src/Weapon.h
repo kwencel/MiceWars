@@ -3,8 +3,6 @@
 
 #include "Object.h"
 
-using namespace std;
-
 class Weapon: public Object {
 public:
     int damage;

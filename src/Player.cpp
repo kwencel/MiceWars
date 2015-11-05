@@ -4,7 +4,7 @@ void Player::makeTurn() {
 
 }
 
-string Player::getName() {
+std::string Player::getName() {
     return name;
 }
 
