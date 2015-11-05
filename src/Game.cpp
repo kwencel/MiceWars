@@ -1,12 +1,22 @@
 #include "Game.h"
 #include "Engine.h"
 #include "global_vars.h"
+#include "Timer.h"
 
-void Game::saveGame(string fileName) {
+Game* Game::m_pInstance = nullptr;
+
+Game* Game::Instance() {
+    if (m_pInstance == nullptr) {
+        m_pInstance = new Game;
+    }
+    return m_pInstance;
+}
+
+void Game::saveGame(std::string fileName) {
 
 }
 
-void Game::loadGame(string fileName) {
+void Game::loadGame(std::string fileName) {
 
 }
 
@@ -36,7 +46,6 @@ void Game::drawBackground() {
             }
         }
     }
-
     SDL_UnlockSurface(Engine::Instance()->background);
     Engine::Instance()->background_texture = SDL_CreateTextureFromSurface(Engine::Instance()->renderer, Engine::Instance()->background);
     SDL_RenderCopy(Engine::Instance()->renderer, Engine::Instance()->background_texture, NULL, NULL);
@@ -64,7 +73,7 @@ void Game::displayArrayOfValues() {
     }
 }
 
-pair<int,int> Game::findNext(int x, int y, int max_height, int distance, int river_height) {
+std::pair<int,int> Game::findNext(int x, int y, int max_height, int distance, int river_height) {
     pair<int,int> point_coordinates;
     int x_2, y_2;
 
@@ -92,7 +101,7 @@ pair<int,int> Game::findNext(int x, int y, int max_height, int distance, int riv
 
 void Game::connectingPoints(vector<pair<int,int>> points_vector, int river_height) {
     // CONNECTING POINTS
-    vector<pair<int,int>>::iterator current;
+    std::vector<std::pair<int,int>>::iterator current;
     int x1,y1,x2,y2,a, b;
     current = points_vector.begin();            // iterator at the beginning
 
@@ -124,7 +133,6 @@ void Game::connectingPoints(vector<pair<int,int>> points_vector, int river_heigh
             }
         }
     }
-
     // column for last point
     cout << endl;
     for (int i = 0; i <= win_height; i++) {
@@ -225,18 +233,50 @@ void Game::generateTerrain() {
     displayArrayOfValues();
 
 }
+inline bool Game::checkCollision(int x, int y) {
+    return (world_map[x][y] > 0);
+}
+
+bool Game::doesCollide(Object* object) {
+    int x = object->pos_x;
+    int y = object->pos_y;
+    // Upper object rectangle edge check
+    for (; x <= object->pos_x + object->obj_width; ++x)
+        if (checkCollision(x,y)) { return true; }
+    // Right object rectangle edge check
+    for (--x; y <= object->pos_y + object->obj_height; ++y)
+        if (checkCollision(x,y)) { return true; }
+    // Lower object rectangle edge check
+    for (--y; x >= object->pos_x; --x)
+        if (checkCollision(x,y)) { return true; }
+    // Left object rectangle edge chceck
+    for (++x; y >= object->pos_x; --y)
+        if (checkCollision(x,y)) { return true; }
+    return false;
+}
+
+void Game::applyGravity() {
+    for (auto player : player_vector) {
+        for (auto mouse: player->mice_vector) {
+            if (not doesCollide(mouse)) {
+                mouse->pos_y += 200 * Timer::Instance()->getDelta();
+            }
+        }
+    }
+}
 
 void Game::placeMice() {
     for (auto player : player_vector) { // For each player
         for (int i = 0; i < player->mouse_amount; ++i) {    // Place their mice
-            Mouse *mouse = new Mouse(getRandomIntBetween(0, win_width), getRandomIntBetween(0, win_height), 50, 50);
+            //Mouse *mouse = new Mouse(getRandomIntBetween(0, win_width - MICE_WIDTH), getRandomIntBetween(0, win_height/3), 25, 25);
+            Mouse *mouse = new Mouse(getRandomIntBetween(0, win_width - MICE_WIDTH), getRandomIntBetween(0, win_height/3), MICE_WIDTH, MICE_HEIGHT);
             mouse->texture = Engine::Instance()->makeTexture(MOUSE1_IMG);
             player->mice_vector.push_back(mouse);
         }
     }
 }
 
-void Game::createPlayer(string name, bool is_human, int mouse_amount, int colour) {
+void Game::createPlayer(std::string name, bool is_human, int mouse_amount, int colour) {
     Player* player = new Player(name, is_human, mouse_amount, colour);
     player_vector.push_back(player);
 }
@@ -251,11 +291,20 @@ void Game::pause() {
 }
 
 int Game::getRandomIntBetween(int min, int max) {
-    uniform_int_distribution<int> distribution(min, nextafter(max, INT_MAX));
+    std::uniform_int_distribution<int> distribution(min, nextafter(max, INT_MAX));
     return distribution(mt);
 }
 
 //TODO
 void Game::readConfigFile() {
 
+}
+
+void Game::applyMovement() {
+    for (auto player : player_vector) {
+        for (auto mouse : player->mice_vector) {
+            mouse->move();
+}
+
+}
 }

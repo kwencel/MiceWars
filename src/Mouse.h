@@ -4,12 +4,13 @@
 #include "Weapon.h"
 #include "NotificationBox.h"
 
-using namespace std;
+enum {left = 0, right = 1};
 
 class Mouse: public Object {
 public:
     int hp = 100;
     bool can_move = false;
+    short wants_to_move = -1;
     int movepoints = 0;
     Weapon* last_weapon = nullptr;
     NotificationBox* notification_hp = nullptr;
@@ -17,12 +18,13 @@ public:
 
     Mouse(int x, int y, int width, int height)
             : Object(x, y, width, height) { cout << "Mouse created!" << endl; }
-    void move(bool facing_direction);
+    void move();
     void jump();
     void ready();
     void changeWeapon();
     void destroy() override;
 
+    void flipTexture();
 };
 
 

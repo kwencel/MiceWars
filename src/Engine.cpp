@@ -2,6 +2,13 @@
 
 Engine* Engine::m_pInstance = nullptr;
 
+Engine* Engine::Instance() {
+    if (m_pInstance == nullptr) {
+        m_pInstance = new Engine;
+    } // Only allow one instance at time
+    return m_pInstance;
+}
+
 int Engine::createWindow(int win_width, int win_height) {
     window = SDL_CreateWindow("Mice Wars", 100, 100, win_width, win_height, SDL_WINDOW_SHOWN);
     if (window == nullptr) {
@@ -84,14 +91,6 @@ SDL_Texture* Engine::makeTexture(const char* img_path) {
 //    return texture;
     SDL_Texture* texture = IMG_LoadTexture(renderer, img_path);
     return texture;
-}
-
-
-
-Engine* Engine::Instance() {
-    if (!m_pInstance) {
-        m_pInstance = new Engine;
-    } // Only allow one instance at time
 }
 
 void Engine::destroy() {
