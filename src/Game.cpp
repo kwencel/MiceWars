@@ -76,21 +76,25 @@ void Game::displayArrayOfValues() {
 std::pair<int,int> Game::findNext(int x, int y, int max_height, int distance, int river_height) {
     std::pair<int,int> point_coordinates;
     int x_2, y_2;
+    int flag = -10;       // from -10 to 0 and from 0 to 10
 
     // SEARCHING FOR X
     if ((win_width - x) < distance) {  // setting x_2 as last
         x_2 = win_width;
     }
-    else x_2 = getRandomIntBetween(x + 1, x + distance);
+    else x_2 = getRandomIntBetween(x + distance/2, x + distance);
 
     // SEARCHING FOR Y
     if ((y - max_height) > distance) { // if not too high
         if ((win_height - river_height - y) < distance) {   // too low
             y_2 = getRandomIntBetween(y - distance, win_height - river_height);
         }
-        else y_2 = getRandomIntBetween(y - distance, y + distance); // if not too low
+        else
+            y_2 = getRandomIntBetween(y - distance, y + distance);
     }
-    else y_2 = getRandomIntBetween(max_height, y + distance);  // if too high
+    else
+        y_2 = getRandomIntBetween(max_height, y + distance);
+
 
     // ADDING COORDINATES TO VECTOR
     point_coordinates.first = x_2;
@@ -197,13 +201,11 @@ void Game::generateTerrain() {
     std::vector<std::pair<int, int>> points_vector;
     std::pair<int, int> point_coordinates;            // respectively x and y
     int distance;                               // distance between points
-    int river_height;
-    if (win_width < 50) {
-        distance = win_width / 10;
-        river_height = distance;
+    int river_height = win_height/7;
+    if (win_width < DISTANCE_DIVIDER) {
+        distance = win_width / DISTANCE_DIVIDER/5;
     } else {
-        distance = win_width / 50;
-        river_height = 3 * distance;
+        distance = win_width / DISTANCE_DIVIDER;
     }
     int max_height = win_height / 2;
     int cur_x = 0;
@@ -228,9 +230,14 @@ void Game::generateTerrain() {
     // CONNECTING POINTS
     connectingPoints(points_vector, river_height);
 
-    displayArrayOfValues();
-    createHoles(303, 210, 30);
-    displayArrayOfValues();
+    //displayArrayOfValues();
+    for ( int i = 1; i <= AMOUNT_OF_CHEESE_HOLES/2; i++){
+        createHoles(getRandomIntBetween(0,win_width/2), getRandomIntBetween(2*win_height/5, win_height - river_height - 60),getRandomIntBetween (20,60));
+    }
+    for ( int i = 1; i <= AMOUNT_OF_CHEESE_HOLES/2; i++){
+        createHoles(getRandomIntBetween(win_width/2,win_width), getRandomIntBetween(2*win_height/5, win_height - river_height - 60),getRandomIntBetween (20,60));
+    }
+    //displayArrayOfValues();
 
 }
 inline bool Game::checkCollision(int x, int y) {
