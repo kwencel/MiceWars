@@ -6,8 +6,8 @@
 #define MICE_WIDTH  25
 #define MICE_HEIGHT 25
 
-#define AMOUNT_OF_CHEESE_HOLES 15
-#define DISTANCE_DIVIDER 200
+#define AMOUNT_OF_CHEESE_HOLES 18
+#define RIVER_DIVIDER 7
 
 #define MOUSE1_IMG "img/mouse.png"
 

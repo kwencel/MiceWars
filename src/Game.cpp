@@ -76,24 +76,23 @@ void Game::displayArrayOfValues() {
 std::pair<int,int> Game::findNext(int x, int y, int max_height, int distance, int river_height) {
     std::pair<int,int> point_coordinates;
     int x_2, y_2;
-    int flag = -10;       // from -10 to 0 and from 0 to 10
 
     // SEARCHING FOR X
     if ((win_width - x) < distance) {  // setting x_2 as last
         x_2 = win_width;
     }
-    else x_2 = getRandomIntBetween(x + distance/2, x + distance);
+    else x_2 = x + distance;
 
     // SEARCHING FOR Y
-    if ((y - max_height) > distance) { // if not too high
-        if ((win_height - river_height - y) < distance) {   // too low
-            y_2 = getRandomIntBetween(y - distance, win_height - river_height);
+    if ((y - max_height) > distance) {                          // if not too high
+        if ((win_height - river_height - y) < 3*distance) {    // too low
+            y_2 = getRandomIntBetween(y - 3*distance, win_height - river_height);
         }
         else
-            y_2 = getRandomIntBetween(y - distance, y + distance);
+            y_2 = getRandomIntBetween(y - 3*distance, y + 3*distance);
     }
     else
-        y_2 = getRandomIntBetween(max_height, y + distance);
+        y_2 = getRandomIntBetween(max_height, y + 3*distance);
 
 
     // ADDING COORDINATES TO VECTOR
@@ -115,7 +114,7 @@ void Game::connectingPoints(std::vector<std::pair<int,int>> points_vector, int r
         current++;
         x2 = current->first;
         y2 = current->second;
-        a = (y2-y1)/(x2-x1);
+        a = (y1-y2)/(x1-x2);
         b = y1 - (a*x1);
 
         // columns for points between P1 and P2
@@ -160,28 +159,52 @@ void Game::createHoles(int x0, int y0, int radius) {
         // drawing and colouring cicle
         while (y <= x) {
             for (int l = x + x0; l >= x0; l--){
-                if ( l >= 0 && l <= win_width && (y + y0) >= 0 && (y + y0) <= win_height)
-                    world_map[l][y + y0] = 0;   // Octant 1
-                if ( l >= 0 && l <= win_width && (-y + y0) >= 0 && (-y + y0) <= win_height)
-                    world_map[l][-y + y0] = 0;  // Octant 8
+                if ( l >= 0 && l <= win_width && (y + y0) >= 0 && (y + y0) <= win_height) {
+                    if (y + y0 >= (win_height - win_height / RIVER_DIVIDER))
+                        world_map[l][y + y0] = 2;
+                    else world_map[l][y + y0] = 0;   // Octant 1
+                }
+                if ( l >= 0 && l <= win_width && (-y + y0) >= 0 && (-y + y0) <= win_height) {
+                    if (-y + y0 >= (win_height - win_height / RIVER_DIVIDER))
+                        world_map[l][-y + y0] = 2;  // Octant 8
+                    else world_map[l][-y + y0] = 0;
+                }
             }
             for (int l = x + y0; l >= y0; l--){
-                if ( (y + x0) >= 0 && (y + x0) <= win_width && l >= 0 && l <= win_height)
-                    world_map[y + x0][l] = 0;   // Octant 2
-                if ( (-y + x0) >= 0 && (-y + x0) <= win_width && l >= 0 && l <= win_height)
-                    world_map[-y + x0][l] = 0;  // Octant 3
+                if ( (y + x0) >= 0 && (y + x0) <= win_width && l >= 0 && l <= win_height){
+                    if (l >= (win_height - win_height / RIVER_DIVIDER))
+                        world_map[y + x0][l] = 2;   // Octant 2
+                    else world_map[y + x0][l] = 0;
+                }
+                if ( (-y + x0) >= 0 && (-y + x0) <= win_width && l >= 0 && l <= win_height){
+                    if (l >= (win_height - win_height / RIVER_DIVIDER))
+                        world_map[-y + x0][l] = 2;  // Octant 3
+                    else world_map[-y + x0][l] = 0;
+                }
             }
             for (int l = -x + x0; l <= x0; l++){
-                if ( l >= 0 && l <= win_width && (y + y0) >= 0 && (y + y0) <= win_height)
-                    world_map[l][y + y0] = 0;   //Octant 4
-                if ( l >= 0 && l <= win_width && (-y + y0) >= 0 && (-y + y0) <= win_height)
-                    world_map[l][-y + y0] = 0;  //Octant 5
+                if ( l >= 0 && l <= win_width && (y + y0) >= 0 && (y + y0) <= win_height) {
+                    if (y + y0 >= (win_height - win_height / RIVER_DIVIDER))
+                        world_map[l][y + y0] = 2;   //Octant 4
+                    else world_map[l][y + y0] = 0;
+                }
+                if ( l >= 0 && l <= win_width && (-y + y0) >= 0 && (-y + y0) <= win_height) {
+                    if (-y + y0 >= (win_height - win_height / RIVER_DIVIDER))
+                        world_map[l][-y + y0] = 2;  //Octant 5
+                    else world_map[l][-y + y0] = 0;
+                }
             }
             for (int l = -x + y0; l <= y0; l++){
-                if ( (-y + x0) >= 0 && (-y + x0) <= win_width && l >= 0 && l <= win_height)
-                    world_map[-y + x0][l] = 0;  //Octant 6
-                if ( (y + x0) >= 0 && (y + x0) <= win_width && l >= 0 && l <= win_height)
-                    world_map[y + x0][l] = 0;   //Octant 7
+                if ( (-y + x0) >= 0 && (-y + x0) <= win_width && l >= 0 && l <= win_height) {
+                    if (l >= (win_height - win_height / RIVER_DIVIDER))
+                        world_map[-y + x0][l] = 2;  //Octant 6
+                    else world_map[-y + x0][l] = 0;
+                }
+                if ( (y + x0) >= 0 && (y + x0) <= win_width && l >= 0 && l <= win_height) {
+                    if (l >= (win_height - win_height / RIVER_DIVIDER))
+                        world_map[y + x0][l] = 2;   //Octant 7
+                    else world_map[y + x0][l] = 0;
+                }
             }
 
             y++;
@@ -200,14 +223,9 @@ void Game::generateTerrain() {
     world_map.resize(win_width + 1);
     std::vector<std::pair<int, int>> points_vector;
     std::pair<int, int> point_coordinates;            // respectively x and y
-    int distance;                               // distance between points
-    int river_height = win_height/7;
-    if (win_width < DISTANCE_DIVIDER) {
-        distance = win_width / DISTANCE_DIVIDER/5;
-    } else {
-        distance = win_width / DISTANCE_DIVIDER;
-    }
-    int max_height = win_height / 2;
+    int river_height = win_height/RIVER_DIVIDER;
+    int distance = win_width / (win_width/10); // distance between points
+    int max_height = 2* win_height / 5;
     int cur_x = 0;
     int cur_y = max_height + distance;
 
@@ -230,16 +248,33 @@ void Game::generateTerrain() {
     // CONNECTING POINTS
     connectingPoints(points_vector, river_height);
 
-    //displayArrayOfValues();
-    for ( int i = 1; i <= AMOUNT_OF_CHEESE_HOLES/2; i++){
-        createHoles(getRandomIntBetween(0,win_width/2), getRandomIntBetween(2*win_height/5, win_height - river_height - 60),getRandomIntBetween (20,60));
+    // ADDING CHEESE HOLES EFFECT
+    for ( int i = 1; i <= AMOUNT_OF_CHEESE_HOLES/6; i++){
+        createHoles(getRandomIntBetween(0,win_width/3),
+                    getRandomIntBetween(win_height/3, 2*win_height/3),
+                    getRandomIntBetween (win_height/40,win_height/10));
+        createHoles(getRandomIntBetween(0,win_width/3),
+                    getRandomIntBetween(2*win_height/3, win_height - river_height - 50),
+                    getRandomIntBetween (win_height/40,win_height/10));
     }
-    for ( int i = 1; i <= AMOUNT_OF_CHEESE_HOLES/2; i++){
-        createHoles(getRandomIntBetween(win_width/2,win_width), getRandomIntBetween(2*win_height/5, win_height - river_height - 60),getRandomIntBetween (20,60));
+    for ( int i = 1; i <= AMOUNT_OF_CHEESE_HOLES/6; i++){
+        createHoles(getRandomIntBetween(win_width/3,2*win_width/3),
+                    getRandomIntBetween(win_height/3, 2*win_height/3),
+                    getRandomIntBetween (win_height/40,win_height/10));
+        createHoles(getRandomIntBetween(win_width/3,2*win_width/3),
+                    getRandomIntBetween(2*win_height/3, win_height - river_height - 50),
+                    getRandomIntBetween (win_height/40,win_height/10));
     }
-    //displayArrayOfValues();
-
+    for ( int i = 1; i <= AMOUNT_OF_CHEESE_HOLES/6; i++){
+        createHoles(getRandomIntBetween(2*win_width/3,win_width),
+                    getRandomIntBetween(win_height/3, 2*win_height/3),
+                    getRandomIntBetween (win_height/40,win_height/10));
+        createHoles(getRandomIntBetween(2*win_width/3,win_width),
+                    getRandomIntBetween(2*win_height/3, win_height - river_height - 50),
+                    getRandomIntBetween (win_height/40,win_height/10));
+    }
 }
+
 inline bool Game::checkCollision(int x, int y) {
     return (world_map[x][y] > 0);
 }
