@@ -11,6 +11,10 @@ enum {  gravity = 0,
 #define BLUE    0x3885E7
 #define MICE_WIDTH  25
 #define MICE_HEIGHT 25
+
+#define AMOUNT_OF_CHEESE_HOLES 18
+#define RIVER_DIVIDER 7
+
 #define MOUSE1_IMG "img/mouse.png"
 #define MICE_SPEED_MUL 100
 #define GRAVITY_MUL 200
