@@ -20,7 +20,8 @@ int Engine::createWindow(int win_width, int win_height) {
 }
 
 int Engine::createRenderer() {
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    //renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (renderer == nullptr) {
         cout << "SDL_CreateRenderer Error: " << SDL_GetError() << endl;
         return 1;
@@ -50,10 +51,6 @@ int Engine::init() {
 }
 
 int Engine::initializeImageSystem() {
-//    if (IMG_Init(IMG_INIT_JPG) != IMG_INIT_JPG) {
-//        cout << "IMG_Init Error: " << IMG_GetError() << endl;
-//        return 1;
-//    }
     if (IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG) {
         cout << "IMG_Init Error: " << IMG_GetError() << endl;
         return 1;
@@ -81,14 +78,6 @@ int Engine::getReady(int win_width, int win_height) {
 }
 
 SDL_Texture* Engine::makeTexture(const char* img_path) {
-//    SDL_Surface* img = IMG_Load(img_path);
-//    if (img == nullptr) {
-//        cout << "IMG_LoadError: " << IMG_GetError() << endl;
-//        return nullptr;
-//    }
-//    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, img);
-//    SDL_FreeSurface(img);
-//    return texture;
     SDL_Texture* texture = IMG_LoadTexture(renderer, img_path);
     return texture;
 }
@@ -100,4 +89,12 @@ void Engine::destroy() {
 
 void Engine::clearRenderer() {
     SDL_RenderClear(renderer);
+}
+
+void Engine::readCursorPosition() {
+    SDL_GetMouseState(&cursor_pos.first, &cursor_pos.second);
+}
+
+void Engine::setCursorPosition(int x, int y) {
+
 }

@@ -1,6 +1,5 @@
 #include "Game.h"
 #include "Engine.h"
-#include "global_vars.h"
 #include "Timer.h"
 
 Game* Game::m_pInstance = nullptr;
@@ -10,6 +9,30 @@ Game* Game::Instance() {
         m_pInstance = new Game;
     }
     return m_pInstance;
+}
+
+void Game::updateGameState() {
+    SDL_Event event;
+    while ( SDL_PollEvent(&event) ) {
+        if (event.type == SDL_QUIT)
+            quit = true;
+        else if (event.type == SDL_KEYDOWN) {
+            if (event.key.keysym.sym == SDLK_ESCAPE) {
+                quit = true;
+            }
+            else if (event.key.keysym.sym == SDLK_LEFT) {
+                cout << "LEFT ARROW KEY PRESSED" << endl;
+                Game::Instance()->player_vector[0]->mice_vector[0]->wants_to_move_direction = -1;
+            }
+            else if (event.key.keysym.sym == SDLK_RIGHT) {
+                cout << "RIGHT ARROW KEY PRESSED" << endl;
+                Game::Instance()->player_vector[0]->mice_vector[0]->wants_to_move_direction = 1;
+            }
+        }
+        else if (event.type == SDL_MOUSEMOTION) {
+            Engine::Instance()->readCursorPosition();
+        }
+    }
 }
 
 void Game::saveGame(std::string fileName) {
@@ -213,13 +236,13 @@ void Game::generateTerrain() {
     // adding first const. point to vector
     point_coordinates.first = cur_x;
     point_coordinates.second = cur_y;
-    cout << "x = " << point_coordinates.first << ", y = " << point_coordinates.second << endl;
+    //cout << "x = " << point_coordinates.first << ", y = " << point_coordinates.second << endl;
     points_vector.push_back(point_coordinates);
 
     // creating and adding the rest of points
     while (cur_x != (win_width)) {
         point_coordinates = findNext(cur_x, cur_y, max_height, distance, river_height);
-        cout << "x = " << point_coordinates.first << ", y = " << point_coordinates.second << endl;
+        //cout << "x = " << point_coordinates.first << ", y = " << point_coordinates.second << endl;
         cur_x = point_coordinates.first;
         cur_y = point_coordinates.second;
         points_vector.push_back(point_coordinates);
@@ -228,29 +251,29 @@ void Game::generateTerrain() {
     // CONNECTING POINTS
     connectingPoints(points_vector, river_height);
 
-    displayArrayOfValues();
+    //displayArrayOfValues();
     createHoles(303, 210, 30);
-    displayArrayOfValues();
+    //displayArrayOfValues();
 
 }
 inline bool Game::checkCollision(int x, int y) {
     return (world_map[x][y] > 0);
 }
 
-bool Game::doesCollide(Object* object) {
-    int x = object->pos_x;
-    int y = object->pos_y;
+bool Game::doesCollide(Object* object, int x_offset, int y_offset) {
+    int x = object->pos_x + x_offset;
+    int y = object->pos_y + y_offset;
     // Upper object rectangle edge check
-    for (; x <= object->pos_x + object->obj_width; ++x)
+    for (; x <= object->pos_x + x_offset + object->obj_width; ++x)
         if (checkCollision(x,y)) { return true; }
     // Right object rectangle edge check
-    for (--x; y <= object->pos_y + object->obj_height; ++y)
+    for (--x; y <= object->pos_y + y_offset + object->obj_height; ++y)
         if (checkCollision(x,y)) { return true; }
     // Lower object rectangle edge check
-    for (--y; x >= object->pos_x; --x)
+    for (--y; x >= object->pos_x + x_offset; --x)
         if (checkCollision(x,y)) { return true; }
     // Left object rectangle edge chceck
-    for (++x; y >= object->pos_x; --y)
+    for (++x; y >= object->pos_y + y_offset; --y)
         if (checkCollision(x,y)) { return true; }
     return false;
 }
@@ -258,8 +281,14 @@ bool Game::doesCollide(Object* object) {
 void Game::applyGravity() {
     for (auto player : player_vector) {
         for (auto mouse: player->mice_vector) {
-            if (not doesCollide(mouse)) {
-                mouse->pos_y += GRAVITY_MUL * Timer::Instance()->getDelta();
+            int steps = (int) (GRAVITY_MUL * Timer::Instance()->getDelta());
+            for (int pixel = 0; pixel < steps; ++pixel) {
+                if (not doesCollide(mouse, 0, 1)) {
+                    mouse->pos_y++;
+                }
+                else {
+                    return;
+                }
             }
         }
     }
@@ -306,4 +335,9 @@ void Game::applyMovement() {
             mouse->move();
         }
     }
+}
+
+bool Game::isInsideWindowBorders(Object* object, int x_offset, int y_offset) {
+    return ((object->pos_x + x_offset >= 0) and (object->pos_x + x_offset + object->obj_width <= win_width) and
+            (object->pos_y + y_offset >= 0) and (object->pos_y + y_offset + object->obj_height <= win_height));
 }

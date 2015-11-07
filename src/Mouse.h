@@ -7,12 +7,11 @@
 class Mouse: public Object {
 public:
     int hp = 100;
-    bool can_move = false;
-    short wants_to_move = -1;
+    short wants_to_move_direction = 0;
     int movepoints = 0;
+    bool can_move = false;
     Weapon* last_weapon = nullptr;
     NotificationBox* notification_hp = nullptr;
-    bool facing_direction;
 
     Mouse(int x, int y, int width, int height)
             : Object(x, y, width, height) { cout << "Mouse created!" << endl; }
@@ -21,10 +20,7 @@ public:
     void ready();
     void changeWeapon();
     void destroy() override;
-
-    void flipTexture();
-
-    void overcomeHill(bool direction);
+    bool overcomeHill(int direction);
 };
 
 

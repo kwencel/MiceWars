@@ -1,54 +1,49 @@
 #include "Mouse.h"
 #include "Timer.h"
-#include "global_vars.h"
 #include "Game.h"
 
-void Mouse::overcomeHill(bool direction) {
+bool Mouse::overcomeHill(int direction) {
     int hill_pixels_used = 0;
-    for (int pixel = 0; pixel < steps; ++pixel) {
-        while (Game::Instance()->doesCollide(this) and (hill_pixels_used < HILL_OVERCOME_PIXELS)) {
-            pos_y--;                    // Try to overcome the sharp hill
-            ++hill_pixels_used;
-        }
-        if (hill_pixels_used == HILL_OVERCOME_PIXELS) { //  Number of tries (pixels) exceeded
-            pos_y += HILL_OVERCOME_PIXELS;              // Revert to the previous position
-            break;
-        }
-        pos_x--;
+    while (Game::Instance()->doesCollide(this, direction) and (hill_pixels_used < HILL_OVERCOME_PIXELS)) {
+        pos_y--;                                    // Try to overcome the sharp hill
+        ++hill_pixels_used;
     }
+    if (hill_pixels_used == HILL_OVERCOME_PIXELS) { // If number of tries (pixels) exceeded
+        pos_y += HILL_OVERCOME_PIXELS;              // Revert to the previous position
+        return false;                               // Return mouse's failure to overcome the hill
+    }
+    pos_x += direction;
+    return true;                                    // Return success
 }
 
 void Mouse::move() {
-    int steps = (int) (MICE_SPEED_MUL * Timer::Instance()->getDelta());
-    if (wants_to_move == left) {
-        if (facing_direction == right) {
-            flipTexture();
-        }
-    }
-    else if (wants_to_move == right) {
-        if (facing_direction == left) {
-            flipTexture();
-        }
-    }
-    else {
-        wants_to_move = 0;
+    if (wants_to_move_direction == stay) {
         return;
     }
+    else if (wants_to_move_direction == left) {
+        flip = 0;
+    }
+    else {
+        flip = 1;
+    }
 
-        int hill_pixels_used = 0;
-        for (int pixel = 0; pixel < steps; ++pixel) {
-            if (Game::Instance()->isInsideWindowBorders(this->pos_x + wants_to_move, this->pos_y))   // wants_to_move is negative for left movement
-            if (Game::Instance()->doesCollide(this)) {                                               // and positive for right movement
-
+    int steps = (int) (MICE_SPEED_MUL * Timer::Instance()->getDelta());
+    for (int pixel = 0; pixel < steps; ++pixel) {
+        if (Game::Instance()->isInsideWindowBorders(this, wants_to_move_direction)) {
+            if (Game::Instance()->doesCollide(this, wants_to_move_direction)) { // checking collision in advance (prior to actually moving an object
+                if (not overcomeHill(wants_to_move_direction)) {                // if collision is detected, try to overcome it (if it's not too high)
+                    break;                                                      // if mouse didn't manage to overcome the hill, stop the further movement
+                }
             }
-
+            else {
+                pos_x += wants_to_move_direction;
+            }
+        }
+        else {
+            break;
         }
     }
-    else if (wants_to_move == right) {
-        if (facing_direction == left) {
-            flipTexture();
-        }
-    }
+    wants_to_move_direction = 0;
 }
 
 void Mouse::ready() {
@@ -64,9 +59,5 @@ void Mouse::destroy() {
 }
 
 void Mouse::jump() {
-
-}
-
-void Mouse::flipTexture() {
 
 }

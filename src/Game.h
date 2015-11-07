@@ -31,7 +31,7 @@ public:
     int players_count = 1;
     int win_width = 800;
     int win_height = 600;
-    float FPS = 60;
+    bool quit = false;
 
     void readConfigFile();
     void saveGame(std::string file_name);
@@ -49,11 +49,15 @@ public:
     int getWindowHeigth()   { return win_height; };
     int getRandomIntBetween(int min, int max);
     void drawBackground();
-    bool doesCollide(Object*);
+    bool doesCollide(Object* object, int x_offset = 0, int y_offset = 0);
     void applyGravity();
     static Game* Instance();
 
     void applyMovement();
+
+    bool isInsideWindowBorders(Object* object, int x_offset = 0, int y_offset = 0);
+
+    void updateGameState();
 };
 
 
