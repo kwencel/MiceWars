@@ -1,6 +1,5 @@
 #include "Game.h"
 #include "Engine.h"
-#include "global_vars.h"
 #include "Timer.h"
 
 Game* Game::m_pInstance = nullptr;
@@ -14,28 +13,45 @@ Game* Game::Instance() {
 
 void Game::updateGameState() {
     SDL_Event event;
-    while ( SDL_PollEvent(&event) ) {
-        if (event.type == SDL_QUIT)
-            quit = true;
-        else if (event.type == SDL_KEYDOWN) {
-            if (event.key.keysym.sym == SDLK_ESCAPE) {
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+
+            case (SDL_QUIT):
                 quit = true;
-            }
-            else if (event.key.keysym.sym == SDLK_LEFT) {
-                cout << "LEFT ARROW KEY PRESSED" << endl;
-                Game::Instance()->player_vector[0]->mice_vector[0]->wants_to_move_direction = -1;
-            }
-            else if (event.key.keysym.sym == SDLK_RIGHT) {
-                cout << "RIGHT ARROW KEY PRESSED" << endl;
-                Game::Instance()->player_vector[0]->mice_vector[0]->wants_to_move_direction = 1;
-            }
-        }
-        else if (event.type == SDL_MOUSEMOTION) {
-            Engine::Instance()->readCursorPosition();
+                break;
+
+            case (SDL_KEYDOWN):
+                switch (event.key.keysym.sym) {
+                    case (SDLK_ESCAPE):
+                        quit = true;
+                        break;
+
+                    case (SDLK_LEFT):
+                        //cout << "LEFT ARROW KEY PRESSED" << endl;
+                        Game::Instance()->player_vector[0]->mice_vector[0]->wants_to_move_direction = -1;
+                        break;
+
+                    case (SDLK_RIGHT):
+                        //cout << "RIGHT ARROW KEY PRESSED" << endl;
+                        Game::Instance()->player_vector[0]->mice_vector[0]->wants_to_move_direction = 1;
+                        break;
+                    default:break;
+                }
+                break;
+
+//            case (SDL_KEYUP):
+//                if (event.key.keysym.sym == SDLK_LEFT or SDLK_RIGHT) {
+//                    Game::Instance()->player_vector[0]->mice_vector[0]->wants_to_move_direction = 0;
+//                }
+//                break;
+
+            case (SDL_MOUSEMOTION):
+                Engine::Instance()->readCursorPosition();
+                break;
+            default:break;
         }
     }
 }
-
 void Game::saveGame(std::string fileName) {
 
 }

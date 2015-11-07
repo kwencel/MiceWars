@@ -38,6 +38,8 @@ public:
     void destroy();
     static Engine* Instance();
     std::pair<int,int> getCursorPosition() { return cursor_pos; };
+
+    void setWindowTitle();
 };
 
 
