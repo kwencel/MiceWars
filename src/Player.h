@@ -9,7 +9,7 @@ class Player {
 private:
     std::string name;
     int colour;
-    Mouse* current_mouse = nullptr;
+    //Mouse* current_mouse = nullptr;
     int current_mouse_vecpos = 0;
     std::vector<int> weapon_amount;
 
@@ -17,6 +17,7 @@ public:
     std::vector<Mouse*> mice_vector;
     int mouse_amount;
     bool is_human;
+    Mouse* current_mouse = nullptr;
 
     Player(std::string name, bool is_human, int mouse_amount, int colour)
             : name(name), is_human(is_human), mouse_amount(mouse_amount), colour(colour) { cout << "Player created!" << endl; };

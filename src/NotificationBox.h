@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include <SDL_ttf.h>
+#include <chrono>
 #include "Object.h"
 #include "Engine.h"
 
@@ -11,12 +12,13 @@ class NotificationBox: public Object {
 public:
     std::string text;
     float timer;
-    TTF_Font* font = TTF_OpenFont("font/OpenSans-Bold.ttf", NOTIFICATIONBOX_FONTSIZE);;
+    TTF_Font* font = TTF_OpenFont("font/OpenSans-Bold.ttf", NOTIFICATIONBOX_FONTSIZE);
     SDL_Color colour = {255, 255, 255};  // White colour
+    std::chrono::time_point<std::chrono::system_clock> time_created;
+    std::chrono::time_point<std::chrono::system_clock> time_to_destroy;
 
-    NotificationBox(int x, int y, int width, int height, float timer)
-            : Object(x, y, width, height), timer(timer) { cout << "NotificationBox created!" << endl;}
-    NotificationBox(std::string text, float timer) {} // TODO
+    NotificationBox(int* msg, float timer, int x, int y, int width, int height);
+    NotificationBox(std::string msg, float timer, int x, int y, int width, int height);
 
     void display() override;
     void refresh();

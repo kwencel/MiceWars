@@ -24,6 +24,7 @@ int main(int argc, char **argv) {
     Game::Instance()->createPlayer("Aleker", true, 1, 0);
     Game::Instance()->placeMice();
     Game::Instance()->player_vector[0]->makeTurn();
+    Game::Instance()->createNotification("Trolololololololololololololololololololoo", -1.0);
 
     //TODO ADD 60FPS cap, if deltatime is lower than for 60fps, switch to auto.
 

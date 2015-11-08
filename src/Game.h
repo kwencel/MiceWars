@@ -16,7 +16,7 @@ private:
     float time;
     bool state = 0;
     bool fullscreen = 0;
-    Player* current_player = nullptr;
+    //Player* current_player = nullptr;
     int current_player_vecpos = 0;
     std::pair<int,int> findNext(int x, int y, int max_height, int distance, int river_height);
     bool checkCollision(int x, int y);
@@ -34,6 +34,8 @@ public:
     int win_width = 800;
     int win_height = 600;
     bool quit = false;
+    bool background_need_redraw = true;
+    Player* current_player = nullptr;
 
     void readConfigFile();
     void saveGame(std::string file_name);
@@ -54,11 +56,9 @@ public:
     bool doesCollide(Object* object, int x_offset = 0, int y_offset = 0);
     void applyGravity();
     static Game* Instance();
-
     void applyMovement();
-
+    void createNotification(std::string message, float timer = -1.0, int x = -1, int y = -1, int width = -1, int height = -1);
     bool isInsideWindowBorders(Object* object, int x_offset = 0, int y_offset = 0);
-
     void updateGameState();
 };
 

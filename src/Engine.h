@@ -21,7 +21,7 @@ private:
     int initializeImageSystem();
     int initializeAudioSystem();
     int initializeFontTTF();
-    Engine() { };
+    Engine() { cout << "Engine created!" << endl; };
 
 public:
     SDL_Window* window = nullptr;

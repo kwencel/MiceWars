@@ -28,29 +28,7 @@ void Game::updateGameState() {
                         event.key.keysym.sym == SDLK_KP_ENTER) {
                     current_player->handle_keys(event.key.keysym.sym);
                 }
-//                switch (event.key.keysym.sym) {
-//                    case (SDLK_ESCAPE):
-//                        quit = true;
-//                        break;
-//
-//                    case (SDLK_LEFT):
-//                        //cout << "LEFT ARROW KEY PRESSED" << endl;
-//                        //current_player->handle_keys(left);
-//                        break;
-//
-//                    case (SDLK_RIGHT):
-//                        //cout << "RIGHT ARROW KEY PRESSED" << endl;
-//                        Game::Instance()->player_vector[0]->mice_vector[0]->wants_to_move_direction = 1;
-//                        break;
-//                    default:break;
-//                }
                 break;
-
-//            case (SDL_KEYUP):
-//                if (event.key.keysym.sym == SDLK_LEFT or SDLK_RIGHT) {
-//                    Game::Instance()->player_vector[0]->mice_vector[0]->wants_to_move_direction = 0;
-//                }
-//                break;
 
             case (SDL_MOUSEMOTION):
                 Engine::Instance()->readCursorPosition();
@@ -100,11 +78,17 @@ void Game::drawBackground() {
 
 void Game::redraw() {
     Engine::Instance()->clearRenderer();
-    drawBackground();
+    if (background_need_redraw) {
+        drawBackground();
+        //background_need_redraw = false;   //TODO
+    }
     for (auto player : player_vector) {
         for (auto mouse : player->mice_vector) {
             mouse->display();
         }
+    }
+    for (auto notification: notification_vector) {
+        notification->display();
     }
     SDL_RenderPresent(Engine::Instance()->renderer);
 }
@@ -152,7 +136,7 @@ std::pair<int,int> Game::findNext(int x, int y, int max_height, int distance, in
 void Game::connectingPoints(std::vector<std::pair<int,int>> points_vector, int river_height) {
     // CONNECTING POINTS
     std::vector<std::pair<int,int>>::iterator current;
-    int x1,y1,x2,y2,a, b;
+    int x1, y1, x2, y2, a, b;
     current = points_vector.begin();            // iterator at the beginning
 
     while (*current != points_vector.back()) {
@@ -367,11 +351,12 @@ void Game::placeMice() {
             //Mouse *mouse = new Mouse(getRandomIntBetween(0, win_width - MICE_WIDTH), getRandomIntBetween(0, win_height/3), 25, 25);
             Mouse *mouse = new Mouse(getRandomIntBetween(0, win_width - MICE_WIDTH), getRandomIntBetween(0, win_height/3), MICE_WIDTH, MICE_HEIGHT);
             mouse->texture = Engine::Instance()->makeTexture(MOUSE1_IMG);
-            mouse->notification_hp = new NotificationBox(mouse->pos_x,
+            mouse->notification_hp = new NotificationBox(&mouse->hp,
+                                                         -1,
+                                                         mouse->pos_x,
                                                          mouse->pos_y - NOTIFICATION_HP_OFFSET,
                                                          NOTIFICATION_HP_WIDTH,
-                                                         NOTIFICATION_HP_HEIGHT,
-                                                         -1);
+                                                         NOTIFICATION_HP_HEIGHT);
             player->mice_vector.push_back(mouse);
         }
     }
@@ -413,4 +398,15 @@ void Game::applyMovement() {
 bool Game::isInsideWindowBorders(Object* object, int x_offset, int y_offset) {
     return ((object->pos_x + x_offset >= 0) and (object->pos_x + x_offset + object->obj_width <= win_width) and
             (object->pos_y + y_offset >= 0) and (object->pos_y + y_offset + object->obj_height <= win_height));
+}
+
+void Game::createNotification(std::string message, float timer, int x, int y, int width, int height) {
+    int message_length = message.length();
+    if (x == -1) { x = (win_width / 2) - message_length * 5; };
+    if (y == -1) { y = win_height / 16; };
+    if (width == -1) { width = (message.length() * 10); }
+    if (height == -1) { height = NOTIFICATIONBOX_FONTSIZE; };
+    NotificationBox* message_box = new NotificationBox(message, timer, x, y, width, height);
+    message_box->refresh();
+    notification_vector.push_back(message_box);
 }
