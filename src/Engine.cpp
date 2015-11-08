@@ -1,4 +1,5 @@
 #include <sstream>
+#include <SDL_ttf.h>
 #include "Engine.h"
 #include "Timer.h"
 
@@ -64,6 +65,13 @@ int Engine::initializeAudioSystem() {
     return 0;
 }
 
+int Engine::initializeFontTTF() {
+    if (TTF_Init() != 0) {
+        cout << "TTF_Init Error: " << TTF_GetError() << endl;
+        return 1;
+    }
+}
+
 int Engine::getReady(int win_width, int win_height) {
     this->win_width = win_width;
     this->win_height = win_height;
@@ -72,7 +80,8 @@ int Engine::getReady(int win_width, int win_height) {
         (createRenderer()) or
         (createBackground()) or
         (initializeImageSystem()) or
-        (initializeAudioSystem())) {
+        (initializeAudioSystem()) or
+        (initializeFontTTF())) {
         cout << "Something went wrong! I'm afraid we're going to crash, soldier!" << endl;
         return 1;
     }

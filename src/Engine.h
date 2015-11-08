@@ -2,8 +2,8 @@
 #define MICEWARS_ENGINE_H
 
 #include <iostream>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
+#include <SDL.h>
+#include <SDL_image.h>
 using std::cout;
 using std::endl;
 
@@ -20,6 +20,7 @@ private:
     int createRenderer();
     int initializeImageSystem();
     int initializeAudioSystem();
+    int initializeFontTTF();
     Engine() { };
 
 public:
@@ -38,7 +39,6 @@ public:
     void destroy();
     static Engine* Instance();
     std::pair<int,int> getCursorPosition() { return cursor_pos; };
-
     void setWindowTitle();
 };
 

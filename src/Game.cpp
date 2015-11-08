@@ -1,5 +1,4 @@
 #include "Game.h"
-#include "Engine.h"
 #include "Timer.h"
 
 Game* Game::m_pInstance = nullptr;
@@ -21,22 +20,30 @@ void Game::updateGameState() {
                 break;
 
             case (SDL_KEYDOWN):
-                switch (event.key.keysym.sym) {
-                    case (SDLK_ESCAPE):
-                        quit = true;
-                        break;
-
-                    case (SDLK_LEFT):
-                        //cout << "LEFT ARROW KEY PRESSED" << endl;
-                        Game::Instance()->player_vector[0]->mice_vector[0]->wants_to_move_direction = -1;
-                        break;
-
-                    case (SDLK_RIGHT):
-                        //cout << "RIGHT ARROW KEY PRESSED" << endl;
-                        Game::Instance()->player_vector[0]->mice_vector[0]->wants_to_move_direction = 1;
-                        break;
-                    default:break;
+                if (event.key.keysym.sym == SDLK_ESCAPE) {
+                    quit = true;
                 }
+                else if (event.key.keysym.sym == SDLK_LEFT or event.key.keysym.sym == SDLK_RIGHT or
+                        event.key.keysym.sym == SDLK_UP or event.key.keysym.sym == SDLK_DOWN or
+                        event.key.keysym.sym == SDLK_KP_ENTER) {
+                    current_player->handle_keys(event.key.keysym.sym);
+                }
+//                switch (event.key.keysym.sym) {
+//                    case (SDLK_ESCAPE):
+//                        quit = true;
+//                        break;
+//
+//                    case (SDLK_LEFT):
+//                        //cout << "LEFT ARROW KEY PRESSED" << endl;
+//                        //current_player->handle_keys(left);
+//                        break;
+//
+//                    case (SDLK_RIGHT):
+//                        //cout << "RIGHT ARROW KEY PRESSED" << endl;
+//                        Game::Instance()->player_vector[0]->mice_vector[0]->wants_to_move_direction = 1;
+//                        break;
+//                    default:break;
+//                }
                 break;
 
 //            case (SDL_KEYUP):
@@ -344,9 +351,10 @@ void Game::applyGravity() {
             for (int pixel = 0; pixel < steps; ++pixel) {
                 if (not doesCollide(mouse, 0, 1)) {
                     mouse->pos_y++;
+                    mouse->hpbox_need_refreshing = true;
                 }
                 else {
-                    return;
+                    break;
                 }
             }
         }
@@ -359,6 +367,11 @@ void Game::placeMice() {
             //Mouse *mouse = new Mouse(getRandomIntBetween(0, win_width - MICE_WIDTH), getRandomIntBetween(0, win_height/3), 25, 25);
             Mouse *mouse = new Mouse(getRandomIntBetween(0, win_width - MICE_WIDTH), getRandomIntBetween(0, win_height/3), MICE_WIDTH, MICE_HEIGHT);
             mouse->texture = Engine::Instance()->makeTexture(MOUSE1_IMG);
+            mouse->notification_hp = new NotificationBox(mouse->pos_x,
+                                                         mouse->pos_y - NOTIFICATION_HP_OFFSET,
+                                                         NOTIFICATION_HP_WIDTH,
+                                                         NOTIFICATION_HP_HEIGHT,
+                                                         -1);
             player->mice_vector.push_back(mouse);
         }
     }
@@ -370,8 +383,10 @@ void Game::createPlayer(std::string name, bool is_human, int mouse_amount, int c
 }
 
 void Game::gameplay() {
-
-
+    if (current_player == nullptr) {
+        current_player = player_vector[0];
+        current_player_vecpos = 0;
+    }
 }
 
 void Game::pause() {
@@ -383,7 +398,6 @@ int Game::getRandomIntBetween(int min, int max) {
     return distribution(mt);
 }
 
-//TODO
 void Game::readConfigFile() {
 
 }

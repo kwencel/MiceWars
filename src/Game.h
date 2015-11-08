@@ -14,8 +14,10 @@ private:
     std::random_device rd;
     std::mt19937 mt;
     float time;
-    bool state;
-    bool fullscreen;
+    bool state = 0;
+    bool fullscreen = 0;
+    Player* current_player = nullptr;
+    int current_player_vecpos = 0;
     std::pair<int,int> findNext(int x, int y, int max_height, int distance, int river_height);
     bool checkCollision(int x, int y);
     void connectingPoints(std::vector<std::pair<int,int>> points_vector, int river_height);

@@ -22,7 +22,7 @@ public:
     int pos_y;
     int obj_width;
     int obj_height;
-    SDL_Texture* texture;
+    SDL_Texture* texture = nullptr;
     SDL_Rect rectangle;
     SDL_Point center;
 

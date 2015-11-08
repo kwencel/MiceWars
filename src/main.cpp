@@ -1,6 +1,5 @@
 #include <iostream>
 #include "Game.h"
-#include "Engine.h"
 #include "Timer.h"
 
 void printDebugInfo(std::pair<int, int> &last_mouse_pos) {
@@ -21,13 +20,17 @@ int main(int argc, char **argv) {
     Engine::Instance()->getReady(Game::Instance()->getWindowWidth(), Game::Instance()->getWindowHeigth());
     Timer::Instance()->setFPS(60);
     Game::Instance()->generateTerrain();
-    Game::Instance()->createPlayer("Joe", true, 1, 0);
+    Game::Instance()->createPlayer("Daktyl", true, 1, 0);
+    Game::Instance()->createPlayer("Aleker", true, 1, 0);
     Game::Instance()->placeMice();
+    Game::Instance()->player_vector[0]->makeTurn();
+
+    //TODO ADD 60FPS cap, if deltatime is lower than for 60fps, switch to auto.
 
     while (!Game::Instance()->quit) {
-
+        Game::Instance()->gameplay();
         Game::Instance()->updateGameState();
-        printDebugInfo(last_mouse_pos);
+        //printDebugInfo(last_mouse_pos);
 
         Timer::Instance()->getNewDelta();
         Engine::Instance()->setWindowTitle();
