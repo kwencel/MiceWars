@@ -10,7 +10,6 @@ public:
     short wants_to_move_direction = 0;
     int movepoints = MOUSE_MOVEPOINTS;
     bool can_move = false;
-    bool hpbox_need_refreshing = true;
     Weapon* last_weapon = nullptr;
     NotificationBox* notification_hp = nullptr;
 

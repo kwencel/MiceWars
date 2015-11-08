@@ -13,7 +13,6 @@ bool Mouse::overcomeHill(int direction) {
         return false;                               // Return mouse's failure to overcome the hill
     }
     pos_x += direction;
-    hpbox_need_refreshing = true;
     if (--movepoints == 0) {
         can_move = false;
         return false;
@@ -42,7 +41,6 @@ void Mouse::move() {
             }
             else {
                 pos_x += wants_to_move_direction;
-                hpbox_need_refreshing = true;
                 if (--movepoints == 0) {
                     can_move = false;
                     break;
@@ -71,13 +69,8 @@ void Mouse::destroy() {
 void Mouse::display() {
     Object::display();
     if (notification_hp != nullptr) {
-        if (hpbox_need_refreshing) {
-            notification_hp->pos_x = pos_x;
-            notification_hp->pos_y = pos_y - NOTIFICATION_HP_OFFSET;
-            notification_hp->text = std::to_string(hp);
-            notification_hp->refresh();
-            hpbox_need_refreshing = false;
-        }
+        notification_hp->pos_x = pos_x;
+        notification_hp->pos_y = pos_y - NOTIFICATION_HP_OFFSET;
         notification_hp->display();
     }
 }

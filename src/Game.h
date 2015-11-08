@@ -60,6 +60,8 @@ public:
     void createNotification(std::string message, float timer = -1.0, int x = -1, int y = -1, int width = -1, int height = -1);
     bool isInsideWindowBorders(Object* object, int x_offset = 0, int y_offset = 0);
     void updateGameState();
+    void displayBackground();
+    NotificationBox* createNotification(std::string message, int* number_ptr, float timer = -1.0, int x = -1, int y = -1, int width = -1, int height = -1, bool push_to_vector = true);
 };
 
 

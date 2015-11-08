@@ -73,15 +73,19 @@ void Game::drawBackground() {
     }
     SDL_UnlockSurface(Engine::Instance()->background);
     Engine::Instance()->background_texture = SDL_CreateTextureFromSurface(Engine::Instance()->renderer, Engine::Instance()->background);
+}
+
+void Game::displayBackground() {
     SDL_RenderCopy(Engine::Instance()->renderer, Engine::Instance()->background_texture, NULL, NULL);
 }
 
 void Game::redraw() {
-    Engine::Instance()->clearRenderer();
+    //Engine::Instance()->clearRenderer();
     if (background_need_redraw) {
         drawBackground();
-        //background_need_redraw = false;   //TODO
+        background_need_redraw = false;
     }
+    displayBackground();
     for (auto player : player_vector) {
         for (auto mouse : player->mice_vector) {
             mouse->display();
@@ -335,7 +339,6 @@ void Game::applyGravity() {
             for (int pixel = 0; pixel < steps; ++pixel) {
                 if (not doesCollide(mouse, 0, 1)) {
                     mouse->pos_y++;
-                    mouse->hpbox_need_refreshing = true;
                 }
                 else {
                     break;
@@ -351,12 +354,20 @@ void Game::placeMice() {
             //Mouse *mouse = new Mouse(getRandomIntBetween(0, win_width - MICE_WIDTH), getRandomIntBetween(0, win_height/3), 25, 25);
             Mouse *mouse = new Mouse(getRandomIntBetween(0, win_width - MICE_WIDTH), getRandomIntBetween(0, win_height/3), MICE_WIDTH, MICE_HEIGHT);
             mouse->texture = Engine::Instance()->makeTexture(MOUSE1_IMG);
-            mouse->notification_hp = new NotificationBox(&mouse->hp,
-                                                         -1,
-                                                         mouse->pos_x,
-                                                         mouse->pos_y - NOTIFICATION_HP_OFFSET,
-                                                         NOTIFICATION_HP_WIDTH,
-                                                         NOTIFICATION_HP_HEIGHT);
+//            mouse->notification_hp = new NotificationBox(mouse->hp,
+//                                                         -1,
+//                                                         mouse->pos_x,
+//                                                         mouse->pos_y - NOTIFICATION_HP_OFFSET,
+//                                                         NOTIFICATION_HP_WIDTH,
+//                                                         NOTIFICATION_HP_HEIGHT);
+            mouse->notification_hp = createNotification("",
+                                                        &mouse->hp,
+                                                        -1,
+                                                        mouse->pos_x,
+                                                        mouse->pos_y - NOTIFICATION_HP_OFFSET,
+                                                        NOTIFICATION_HP_WIDTH,
+                                                        NOTIFICATION_HP_HEIGHT,
+                                                        false);
             player->mice_vector.push_back(mouse);
         }
     }
@@ -404,9 +415,27 @@ void Game::createNotification(std::string message, float timer, int x, int y, in
     int message_length = message.length();
     if (x == -1) { x = (win_width / 2) - message_length * 5; };
     if (y == -1) { y = win_height / 16; };
-    if (width == -1) { width = (message.length() * 10); }
+    if (width == -1) { width = (message_length * 10); }
     if (height == -1) { height = NOTIFICATIONBOX_FONTSIZE; };
     NotificationBox* message_box = new NotificationBox(message, timer, x, y, width, height);
     message_box->refresh();
     notification_vector.push_back(message_box);
+}
+
+NotificationBox* Game::createNotification(std::string message, int *number_ptr, float timer, int x, int y, int width, int height, bool push_to_vector) {
+    int message_length = message.length() + 1;
+    if (x == -1) { x = (win_width / 2) - message_length * 5; };
+    if (y == -1) { y = win_height / 16; };
+    if (width == -1) { width = (message_length * 10); }
+    if (height == -1) { height = NOTIFICATIONBOX_FONTSIZE; };
+    NotificationBox* message_box = new NotificationBox(message, timer, x, y, width, height);
+    message_box->number_ptr = number_ptr;
+    message_box->refresh();
+    if (push_to_vector) {
+        notification_vector.push_back(message_box);
+    }
+    else {
+        return message_box;
+    }
+    return nullptr;
 }
