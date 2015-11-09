@@ -27,13 +27,14 @@ int main(int argc, char **argv) {
     Game::Instance()->gameplay();
     Game::Instance()->createNotification("Movepoints remaining: ", &Game::Instance()->current_player->current_mouse->movepoints, -1.0);
 
+
+
     //TODO ADD 60FPS cap, if deltatime is lower than for 60fps, switch to auto.
 
     while (!Game::Instance()->quit) {
         //Game::Instance()->gameplay();
         Game::Instance()->updateGameState();
         //printDebugInfo(last_mouse_pos);
-        //Game::Instance()->current_player->current_mouse->hp--;
 
         Timer::Instance()->getNewDelta();
         Engine::Instance()->setWindowTitle();

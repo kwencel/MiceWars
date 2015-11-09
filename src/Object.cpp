@@ -13,5 +13,7 @@ void Object::display() {
 }
 
 void Object::destroy() {
-
+    if (texture != nullptr) {
+        SDL_DestroyTexture(texture);
+    }
 }

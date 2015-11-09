@@ -91,8 +91,21 @@ void Game::redraw() {
             mouse->display();
         }
     }
-    for (auto notification: notification_vector) {
-        notification->display();
+    if (not notification_queue.empty()) {
+        auto time_now = Timer::Instance()->getTime();
+        if (notification_queue.front()->is_being_displayed == false) {
+            notification_queue.front()->time_created = time_now;
+            notification_queue.front()->is_being_displayed = true;
+        }
+        auto time_notification_created = notification_queue.front()->time_created;
+        float time_difference = std::chrono::duration_cast<std::chrono::milliseconds>(time_now - time_notification_created).count() / 1000.0;
+        if ((notification_queue.front()->timer != -1) and (time_difference > notification_queue.front()->timer)) {
+            notification_queue.front()->destroy();
+            notification_queue.pop();
+        }
+        else {
+            notification_queue.front()->display();
+        }
     }
     SDL_RenderPresent(Engine::Instance()->renderer);
 }
@@ -354,12 +367,6 @@ void Game::placeMice() {
             //Mouse *mouse = new Mouse(getRandomIntBetween(0, win_width - MICE_WIDTH), getRandomIntBetween(0, win_height/3), 25, 25);
             Mouse *mouse = new Mouse(getRandomIntBetween(0, win_width - MICE_WIDTH), getRandomIntBetween(0, win_height/3), MICE_WIDTH, MICE_HEIGHT);
             mouse->texture = Engine::Instance()->makeTexture(MOUSE1_IMG);
-//            mouse->notification_hp = new NotificationBox(mouse->hp,
-//                                                         -1,
-//                                                         mouse->pos_x,
-//                                                         mouse->pos_y - NOTIFICATION_HP_OFFSET,
-//                                                         NOTIFICATION_HP_WIDTH,
-//                                                         NOTIFICATION_HP_HEIGHT);
             mouse->notification_hp = createNotification("",
                                                         &mouse->hp,
                                                         -1,
@@ -419,10 +426,10 @@ void Game::createNotification(std::string message, float timer, int x, int y, in
     if (height == -1) { height = NOTIFICATIONBOX_FONTSIZE; };
     NotificationBox* message_box = new NotificationBox(message, timer, x, y, width, height);
     message_box->refresh();
-    notification_vector.push_back(message_box);
+    notification_queue.push(message_box);
 }
 
-NotificationBox* Game::createNotification(std::string message, int *number_ptr, float timer, int x, int y, int width, int height, bool push_to_vector) {
+NotificationBox* Game::createNotification(std::string message, int *number_ptr, float timer, int x, int y, int width, int height, bool push_to_queue) {
     int message_length = message.length() + 1;
     if (x == -1) { x = (win_width / 2) - message_length * 5; };
     if (y == -1) { y = win_height / 16; };
@@ -431,8 +438,8 @@ NotificationBox* Game::createNotification(std::string message, int *number_ptr, 
     NotificationBox* message_box = new NotificationBox(message, timer, x, y, width, height);
     message_box->number_ptr = number_ptr;
     message_box->refresh();
-    if (push_to_vector) {
-        notification_vector.push_back(message_box);
+    if (push_to_queue) {
+        notification_queue.push(message_box);
     }
     else {
         return message_box;

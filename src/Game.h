@@ -2,10 +2,12 @@
 #define MICEWARS_GAME_H
 
 #include <vector>
+#include <queue>
 #include <string>
 #include <random>
 #include <climits>
 #include <SDL2/SDL.h>
+#include <bits/stl_queue.h>
 #include "Player.h"
 #include "NotificationBox.h"
 
@@ -29,7 +31,8 @@ private:
 public:
     std::vector<std::vector<char>> world_map;
     std::vector<Player*> player_vector;
-    std::vector<NotificationBox*> notification_vector;
+    //std::vector<NotificationBox*> notification_vector;
+    std::queue<NotificationBox*> notification_queue;
     int players_count = 1;
     int win_width = 800;
     int win_height = 600;

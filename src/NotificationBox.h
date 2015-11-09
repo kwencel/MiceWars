@@ -14,17 +14,16 @@ public:
     int* number_ptr = nullptr;
     int number;
     float timer;
+    bool is_being_displayed = false;
     TTF_Font* font = TTF_OpenFont("font/OpenSans-Bold.ttf", NOTIFICATIONBOX_FONTSIZE);
     SDL_Color colour = {255, 255, 255};  // White colour
-    std::chrono::time_point<std::chrono::system_clock> time_created;
-    std::chrono::time_point<std::chrono::system_clock> time_to_destroy;
+    std::chrono::time_point<std::chrono::high_resolution_clock> time_created;
 
     NotificationBox(int& msg, float timer, int x, int y, int width, int height);
     NotificationBox(std::string msg, float timer, int x, int y, int width, int height);
 
     void display() override;
-    void replaceText(std::string message);
-    void replaceText(int* message);
+    void destroy() override;
     void refresh();
 };
 

@@ -23,7 +23,7 @@ public:
     // in seconds with nanosecond precision
     double getNewDelta();
     double getDelta();
-    std::chrono::time_point<std::chrono::system_clock> getTime() { return std::chrono::system_clock::now(); }
+    std::chrono::time_point<std::chrono::system_clock> getTime() { return std::chrono::high_resolution_clock::now(); }
     void start() { time_prev = std::chrono::high_resolution_clock::now(); }
 //    void restart();
     void setFPS(float FPS);
