@@ -27,10 +27,8 @@ public:
     SDL_Point center;
 
     Object() { cout << "Created temp object!" << endl; };
-    Object(int x, int y, int width, int height)
-            : pos_x(x), pos_y(y), obj_height(height), obj_width(width) { center.x = obj_width/2;
-                                                                         center.y = obj_height/2;
-                                                                         cout << "Object created!" << endl; }
+    Object(int x, int y, int width, int height, std::string img_path = "");
+    
     virtual void display();
     virtual void destroy();
 };

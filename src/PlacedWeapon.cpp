@@ -1,9 +1,13 @@
 #include "PlacedWeapon.h"
 
-void PlacedWeapon::shoot() {
+void PlacedWeapon::prepare() {
 
 }
 
 void PlacedWeapon::explode() {
+
+}
+
+void PlacedWeapon::shoot() {
 
 }

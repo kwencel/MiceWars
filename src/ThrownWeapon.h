@@ -3,12 +3,13 @@
 
 #include "RangedWeapon.h"
 
-class ThrownWeapon: RangedWeapon {
+class ThrownWeapon: public RangedWeapon {
 public:
     float timer;
 
-    ThrownWeapon(int x, int y, int width, int height)
-            : RangedWeapon(x, y, width, height) { cout << "ThrownWeapon created!" << endl; }
+    ThrownWeapon(int x, int y, int width, int height, std::string img_path)
+            : RangedWeapon(x, y, width, height, img_path) { cout << "ThrownWeapon created!" << endl; }
+    void prepare() override;
     void shoot() override;
 };
 

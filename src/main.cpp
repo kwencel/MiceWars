@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Game.h"
 #include "Timer.h"
+#include "RangedWeapon.h"
 
 void printDebugInfo(std::pair<int, int> &last_mouse_pos) {
     if ((Game::Instance()->player_vector[0]->mice_vector[0]->pos_x != last_mouse_pos.first) or
@@ -30,7 +31,6 @@ int main(int argc, char **argv) {
 
 
     //TODO ADD 60FPS cap, if deltatime is lower than for 60fps, switch to auto.
-
     while (!Game::Instance()->quit) {
         //Game::Instance()->gameplay();
         Game::Instance()->updateGameState();

@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "Timer.h"
+#include "RangedWeapon.h"
 
 Game* Game::m_pInstance = nullptr;
 
@@ -23,9 +24,7 @@ void Game::updateGameState() {
                 if (event.key.keysym.sym == SDLK_ESCAPE) {
                     quit = true;
                 }
-                else if (event.key.keysym.sym == SDLK_LEFT or event.key.keysym.sym == SDLK_RIGHT or
-                        event.key.keysym.sym == SDLK_UP or event.key.keysym.sym == SDLK_DOWN or
-                        event.key.keysym.sym == SDLK_KP_ENTER) {
+                else {
                     current_player->handle_keys(event.key.keysym.sym);
                 }
                 break;
@@ -62,7 +61,7 @@ void Game::drawBackground() {
         for (int y = 0; y < win_height; ++y) {
             switch(world_map[x][y]) {
                 case 1:
-                    Engine::Instance()->colorPixel(Engine::Instance()->background, x, y, GREEN);
+                    Engine::Instance()->colorPixel(Engine::Instance()->background, x, y, YELLOW);
                     break;
                 case 2:
                     Engine::Instance()->colorPixel(Engine::Instance()->background, x, y, BLUE);
@@ -204,7 +203,7 @@ void Game::createHoles(int x0, int y0, int radius) {
         int x = i;
         int y = 0;
         int decisionOver2 = 1 - x;   // Decision criterion divided by 2 evaluated at x=radius, y=0
-        // drawing and colouring cicle
+        // drawing and colouring circle
         while (y <= x) {
             for (int l = x + x0; l >= x0; l--){
                 if ( l >= 0 && l <= win_width && (y + y0) >= 0 && (y + y0) <= win_height) {
@@ -272,8 +271,8 @@ void Game::generateTerrain() {
     std::vector<std::pair<int, int>> points_vector;
     std::pair<int, int> point_coordinates;            // respectively x and y
     int river_height = win_height/RIVER_DIVIDER;
-    int distance = win_width / (win_width/10); // distance between points
-    int max_height = 2* win_height / 5;
+    int distance = win_width / (win_width/15); // distance between points
+    int max_height = 2 * win_height / 5;
     int cur_x = 0;
     int cur_y = max_height + distance;
 
@@ -364,9 +363,8 @@ void Game::applyGravity() {
 void Game::placeMice() {
     for (auto player : player_vector) { // For each player
         for (int i = 0; i < player->mouse_amount; ++i) {    // Place their mice
-            //Mouse *mouse = new Mouse(getRandomIntBetween(0, win_width - MICE_WIDTH), getRandomIntBetween(0, win_height/3), 25, 25);
-            Mouse *mouse = new Mouse(getRandomIntBetween(0, win_width - MICE_WIDTH), getRandomIntBetween(0, win_height/3), MICE_WIDTH, MICE_HEIGHT);
-            mouse->texture = Engine::Instance()->makeTexture(MOUSE1_IMG);
+            Mouse* mouse = new Mouse(getRandomIntBetween(0, win_width - MICE_WIDTH), getRandomIntBetween(0, win_height/3), MICE_WIDTH, MICE_HEIGHT, MOUSE1_IMG);
+            mouse->changeWeapon(shotgun);
             mouse->notification_hp = createNotification("",
                                                         &mouse->hp,
                                                         -1,
@@ -406,10 +404,11 @@ void Game::readConfigFile() {
 }
 
 void Game::applyMovement() {
-    for (auto player : player_vector) {
-        for (auto mouse : player->mice_vector) {
-            mouse->move();
-        }
+    if (current_player->current_mouse->can_move) {
+        current_player->current_mouse->move();
+    }
+    else {
+        current_player->current_mouse->weapon->prepare();
     }
 }
 
@@ -429,7 +428,7 @@ void Game::createNotification(std::string message, float timer, int x, int y, in
     notification_queue.push(message_box);
 }
 
-NotificationBox* Game::createNotification(std::string message, int *number_ptr, float timer, int x, int y, int width, int height, bool push_to_queue) {
+NotificationBox* Game::createNotification(std::string message, int* number_ptr, float timer, int x, int y, int width, int height, bool push_to_queue) {
     int message_length = message.length() + 1;
     if (x == -1) { x = (win_width / 2) - message_length * 5; };
     if (y == -1) { y = win_height / 16; };

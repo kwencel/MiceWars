@@ -1,5 +1,9 @@
 #include "ThrownWeapon.h"
 
 void ThrownWeapon::shoot() {
-  RangedWeapon::shoot();
+  RangedWeapon::prepare();
+}
+
+void ThrownWeapon::prepare() {
+  RangedWeapon::prepare();
 }

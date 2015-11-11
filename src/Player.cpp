@@ -38,6 +38,31 @@ void Player::handle_keys(SDL_Keycode keycode) {
                 current_mouse->wants_to_move_direction = 1;
             }
             break;
+        case SDLK_UP:
+            if (current_mouse->can_move) {
+                current_mouse->weapon->wants_to_move_crosshair = -1;
+            }
+            break;
+        case SDLK_DOWN:
+            if (current_mouse->can_move) {
+                current_mouse->weapon->wants_to_move_crosshair = 1;
+            }
+            break;
+        case SDLK_1:
+            current_mouse->changeWeapon(shotgun);
+            break;
+        case SDLK_2:
+            current_mouse->changeWeapon(bazooka);
+            break;
+        case SDLK_3:
+            current_mouse->changeWeapon(grenade);
+            break;
+        case SDLK_4:
+            current_mouse->changeWeapon(cheesebomb);
+            break;
+        case SDLK_5:
+            current_mouse->changeWeapon(mousetrap);
+            break;
         default:break;
     }
 }
