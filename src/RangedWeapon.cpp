@@ -116,7 +116,10 @@ void RangedWeapon::moveCrosshair() {
         return;
     }
 
-    int steps = (int) (MICE_SPEED_MUL * Timer::Instance()->getDelta());
+    int steps = static_cast<int>(CROSSHAIR_SPEED_MUL * Timer::Instance()->getDelta());
+    if (steps == 0) {
+        steps = 1;
+    }
     for (int pixel = 0; pixel < steps; ++pixel) {
         if (Game::Instance()->isInsideWindowBorders(this, wants_to_move_crosshair)) {
             if (wants_to_move_crosshair == up && it != semicircle_vector.begin()) {

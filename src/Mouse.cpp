@@ -34,7 +34,10 @@ void Mouse::move() {
         flip = 1;
     }
 
-    int steps = (int) (MICE_SPEED_MUL * Timer::Instance()->getDelta());
+    int steps = static_cast<int>(MICE_SPEED_MUL * Timer::Instance()->getDelta());
+    if (steps == 0) {
+        steps = 1;
+    }
     for (int pixel = 0; pixel < steps; ++pixel) {
         if (Game::Instance()->isInsideWindowBorders(this, wants_to_move_direction)) {
             if (Game::Instance()->doesCollide(this, wants_to_move_direction)) { // checking collision in advance (prior to actually moving an object

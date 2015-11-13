@@ -346,7 +346,10 @@ bool Game::doesCollide(Object* object, int x_offset, int y_offset) {
 void Game::applyGravity() {
     for (auto player : player_vector) {
         for (auto mouse: player->mice_vector) {
-            int steps = (int) (GRAVITY_MUL * Timer::Instance()->getDelta());
+            int steps = static_cast<int>(GRAVITY_MUL * Timer::Instance()->getDelta());
+            if (steps == 0) {
+                steps = 1;
+            }
             for (int pixel = 0; pixel < steps; ++pixel) {
                 if (not doesCollide(mouse, 0, 1)) {
                     mouse->pos_y++;

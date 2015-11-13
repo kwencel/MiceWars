@@ -112,7 +112,7 @@ void Engine::setCursorPosition(int x, int y) {
 
 void Engine::setWindowTitle() {
     std::stringstream window_title;
-    window_title << "Frametime: " << Timer::Instance()->getDelta() << " Cursor " << cursor_pos.first << " " << cursor_pos.second;
+    window_title << "Frametime: " << Timer::Instance()->getTimeFromLastDelta() << " Cursor " << cursor_pos.first << " " << cursor_pos.second;
     window_title.str().c_str();
     SDL_SetWindowTitle(window, window_title.str().c_str());
 }

@@ -25,12 +25,13 @@ enum {  gravity = 0,
 #define RADIUS_CROSSHAIR        70
 #define CROSSHAIR_WIDTH         20
 #define CROSSHAIR_IMG           "img/Crosshair.png"
+#define CROSSHAIR_SPEED_MUL     150
 
 #define MOUSE_IMG               "img/Mouse(30x37)"
 #define MOUSE_IMG_EXTENSION     ".png"
-#define MOUSE_MOVEPOINTS        10
-#define MICE_SPEED_MUL          100
-#define GRAVITY_MUL             150
+#define MOUSE_MOVEPOINTS        100
+#define MICE_SPEED_MUL          100 // previously 100
+#define GRAVITY_MUL             300 // previously 150
 #define HILL_OVERCOME_PIXELS    20
 
 // NOTICATIONS' SPECIFICATIONS

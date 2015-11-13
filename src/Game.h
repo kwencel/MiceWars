@@ -29,6 +29,7 @@ private:
     Game() { mt.seed(rd()); cout << "Game created!" << endl; };
 
 public:
+    const Uint8* keystates = SDL_GetKeyboardState(NULL);
     std::vector<std::vector<char>> world_map;
     std::vector<Player*> player_vector;
     //std::vector<NotificationBox*> notification_vector;
