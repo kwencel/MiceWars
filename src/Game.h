@@ -33,7 +33,7 @@ public:
     std::vector<Player*> player_vector;
     //std::vector<NotificationBox*> notification_vector;
     std::queue<NotificationBox*> notification_queue;
-    int players_count = 1;
+    int players_count = 2;
     int win_width = 800;
     int win_height = 600;
     bool quit = false;

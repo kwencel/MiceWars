@@ -1,6 +1,5 @@
 #include "Game.h"
 #include "Timer.h"
-#include "RangedWeapon.h"
 
 Game* Game::m_pInstance = nullptr;
 
@@ -361,9 +360,11 @@ void Game::applyGravity() {
 }
 
 void Game::placeMice() {
-    for (auto player : player_vector) { // For each player
-        for (int i = 0; i < player->mouse_amount; ++i) {    // Place their mice
-            Mouse* mouse = new Mouse(getRandomIntBetween(0, win_width - MICE_WIDTH), getRandomIntBetween(0, win_height/3), MICE_WIDTH, MICE_HEIGHT, MOUSE1_IMG);
+    for (int player_id = 0; player_id < players_count; ++player_id) { // For each player
+        for (int i = 0; i < player_vector[player_id]->mouse_amount; ++i) {    // Place their mice
+            std::stringstream mouse_img;
+            mouse_img << MOUSE_IMG << player_id + 1 << MOUSE_IMG_EXTENSION;
+            Mouse* mouse = new Mouse(getRandomIntBetween(0, win_width - MICE_WIDTH), getRandomIntBetween(0, win_height/3), MICE_WIDTH, MICE_HEIGHT, mouse_img.str());
             mouse->changeWeapon(shotgun);
             mouse->notification_hp = createNotification("",
                                                         &mouse->hp,
@@ -373,7 +374,7 @@ void Game::placeMice() {
                                                         NOTIFICATION_HP_WIDTH,
                                                         NOTIFICATION_HP_HEIGHT,
                                                         false);
-            player->mice_vector.push_back(mouse);
+            player_vector[player_id]->mice_vector.push_back(mouse);
         }
     }
 }
