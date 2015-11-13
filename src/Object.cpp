@@ -2,6 +2,7 @@
 #include "Engine.h"
 
 void Object::display() {
+    updateCenter();
     rectangle.x = pos_x; rectangle.y = pos_y;
     rectangle.w = obj_width; rectangle.h = obj_height;
     if (flip) {
@@ -27,6 +28,9 @@ Object::Object(int x, int y, int width, int height, std::string img_path) {
         texture = Engine::Instance()->makeTexture(img_path.c_str());
     }
     cout << "Object created!" << endl;
-    center.x = obj_width / 2;
-    center.y = obj_height / 2;
+}
+
+void Object::updateCenter() {
+    center.x = pos_x + obj_width / 2;
+    center.y = pos_y + obj_height / 2;
 }

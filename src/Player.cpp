@@ -39,12 +39,12 @@ void Player::handle_keys(SDL_Keycode keycode) {
             }
             break;
         case SDLK_UP:
-            if (current_mouse->can_move) {
+            if (not current_mouse->can_move) {
                 current_mouse->weapon->wants_to_move_crosshair = -1;
             }
             break;
         case SDLK_DOWN:
-            if (current_mouse->can_move) {
+            if (not current_mouse->can_move) {
                 current_mouse->weapon->wants_to_move_crosshair = 1;
             }
             break;

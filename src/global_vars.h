@@ -6,6 +6,8 @@ enum {  gravity = 0,
         left = -1,
         stay = 0,
         right = 1,
+        up = -1,
+        down = 1,
         shotgun = 0,
         bazooka = 1,
         grenade = 2,
@@ -20,10 +22,12 @@ enum {  gravity = 0,
 
 #define AMOUNT_OF_CHEESE_HOLES  18
 #define RIVER_DIVIDER           7
-#define RADIUS_CROSSHAIR        20
+#define RADIUS_CROSSHAIR        70
+#define CROSSHAIR_WIDTH         20
+#define CROSSHAIR_IMG           "img/crosshair.png"
 
 #define MOUSE1_IMG              "img/Mouse1(30x37).png"
-#define MOUSE_MOVEPOINTS        250
+#define MOUSE_MOVEPOINTS        10
 #define MICE_SPEED_MUL          100
 #define GRAVITY_MUL             150
 #define HILL_OVERCOME_PIXELS    20

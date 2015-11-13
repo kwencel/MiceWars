@@ -15,7 +15,6 @@ private:
 protected:
 //    vector<SDL_Surface*> bitmap_vector;
 //    int current_bitmap;
-    bool flip = false;
 
 public:
     int pos_x;
@@ -25,9 +24,11 @@ public:
     SDL_Texture* texture = nullptr;
     SDL_Rect rectangle;
     SDL_Point center;
+    bool flip = false;
 
     Object() { cout << "Created temp object!" << endl; };
     Object(int x, int y, int width, int height, std::string img_path = "");
+    void updateCenter();
     
     virtual void display();
     virtual void destroy();

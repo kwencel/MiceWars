@@ -54,7 +54,8 @@ void Mouse::move() {
             break;
         }
     }
-    wants_to_move_direction = 0;
+
+    wants_to_move_direction = stay;
 }
 
 void Mouse::changeWeapon(short index) {
