@@ -54,6 +54,7 @@ void RangedWeapon::sortVector() {
 }
 
 void RangedWeapon::markSemicircle() {
+    semicircle_vector.clear();
     std::pair<int,int> pair;
     int x0 = Game::Instance()->current_player->current_mouse->pos_x;
     int y0 = Game::Instance()->current_player->current_mouse->pos_y;
@@ -109,6 +110,7 @@ void RangedWeapon::markSemicircle() {
 //        cout << "x " << gucio.first << " ";
 //        cout << "y " << gucio.second << endl;
 //    }
+    cout << "mofm" << endl;
 }
 
 void RangedWeapon::moveCrosshair() {
@@ -133,7 +135,7 @@ void RangedWeapon::moveCrosshair() {
                     ++angle;
                 }
             }
-            else if (wants_to_move_crosshair == down and it != semicircle_vector.end()) {
+            else if (wants_to_move_crosshair == down and it != semicircle_vector.end() - 1) {
                 ++it;
                 crosshair->pos_x = it->first;
                 crosshair->pos_y = it->second;
@@ -157,6 +159,22 @@ void RangedWeapon::prepare() {
 }
 
 void RangedWeapon::shoot() {
+    wants_to_move_crosshair = stay;
+    // CREATING BULLET
+    if (bullet == nullptr){
+        bullet = new Object(this->center.x,this->center.y,BULLET_WIDTH,BULLET_HEIGHT,BULLET_IMG);
+        bullet->flip = this->flip;
+        bullet->angle = this->angle;
+    }
+    // CALCULATING TRAJECTORY
+    float x1, y1, x2, y2;
+    x1 = (this->bullet->pos_x);
+    y1 = (this->bullet->pos_y);
+    x2 = (crosshair->center.x);
+    y2 = (crosshair->center.y);
+
+    a_coefficient = (y1-y2)/(x1-x2);
+    b_coefficient = y1 - (a_coefficient * x1);
     std::cout << "SHOOOOOOOOOOOOOOOOT!!!" << endl;
 }
 
@@ -180,4 +198,55 @@ void RangedWeapon::display() {
     if (crosshair != nullptr) {
         crosshair->display();
     }
+    if (bullet != nullptr) {
+        bullet->display();
+    }
+}
+
+void RangedWeapon::moveBullet() {
+    //bullet->center.y = (a_coefficient * bullet->center.x) + b_coefficient;
+    int steps = static_cast<int>(BULLET_SPEED_MUL * Timer::Instance()->getDelta());
+    if (steps == 0) {
+        steps = 1;
+    }
+    for (int pixel = 0; pixel < steps; ++pixel) {
+        int offset_x = -1, offset_y = -1;
+        if (flip) {
+            offset_x = 1;
+        }
+        if (a_coefficient) {
+            offset_y = 1;
+        }
+        if (Game::Instance()->isInsideWindowBorders(bullet)) {
+            if (Game::Instance()->doesCollide(bullet, offset_x, offset_y)) { // checking collision
+                Game::Instance()->createHoles(bullet->center.x, bullet->center.y, SHOTGUN_RANGE);
+                Game::Instance()->background_need_redraw = true;
+                // czyszczenie?
+                bullet->destroy();
+                bullet = nullptr;
+                crosshair->destroy();
+                crosshair = nullptr;
+                Game::Instance()->changePlayer();
+                break;
+            }
+            else {
+                if (bullet->flip == 0) {
+                    bullet->pos_x -= 1;
+                }
+                else {
+                    bullet->pos_x += 1;
+                }
+                bullet->pos_y = int(ceil((a_coefficient * bullet->pos_x) + b_coefficient));
+            }
+        }
+        else {   // outside the windowBorders
+            bullet->destroy();
+            bullet = nullptr;
+            crosshair->destroy();
+            crosshair = nullptr;
+            Game::Instance()->changePlayer();
+            break;
+        }
+    }
+    wants_to_move_crosshair = stay;
 }

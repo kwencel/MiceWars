@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "Timer.h"
+#include "RangedWeapon.h"
 
 Game* Game::m_pInstance = nullptr;
 
@@ -20,7 +21,6 @@ void Game::readKeyboardState() {
                 quit = true;
                 break;
             }
-
             case SDL_KEYDOWN: {
                 if (event.key.keysym.sym == SDLK_ESCAPE) {
                     quit = true;
@@ -36,7 +36,6 @@ void Game::readKeyboardState() {
                     current_player->current_mouse->space_key_released = true;
                 }
             }
-
             case SDL_MOUSEMOTION: {
                 Engine::Instance()->readCursorPosition();
                 break;
@@ -69,6 +68,9 @@ void Game::drawBackground() {
     for (int x = 0; x < win_width; ++x) {
         for (int y = 0; y < win_height; ++y) {
             switch(world_map[x][y]) {
+                case 0:
+                    Engine::Instance()->colorPixel(Engine::Instance()->background, x, y, BLACK);
+                    break;
                 case 1:
                     Engine::Instance()->colorPixel(Engine::Instance()->background, x, y, YELLOW);
                     break;
@@ -109,7 +111,7 @@ void Game::redraw() {
         float time_difference = std::chrono::duration_cast<std::chrono::milliseconds>(time_now - time_notification_created).count() / 1000.0;
         if ((notification_queue.front()->timer != -1) and (time_difference > notification_queue.front()->timer)) {
             notification_queue.front()->destroy();
-            notification_queue.pop();
+            notification_queue.pop_front();
         }
         else {
             notification_queue.front()->display();
@@ -150,7 +152,6 @@ std::pair<int,int> Game::findNext(int x, int y, int max_height, int distance, in
     else
         y_2 = getRandomIntBetween(max_height, y + 3*distance);
 
-
     // ADDING COORDINATES TO VECTOR
     point_coordinates.first = x_2;
     point_coordinates.second = y_2;
@@ -158,7 +159,7 @@ std::pair<int,int> Game::findNext(int x, int y, int max_height, int distance, in
     return point_coordinates;
 }
 
-void Game::connectingPoints(std::vector<std::pair<int,int>> points_vector, int river_height) {
+void Game::connectPoints(std::vector<std::pair<int, int>> points_vector, int river_height) {
     // CONNECTING POINTS
     std::vector<std::pair<int,int>>::iterator current;
     int x1, y1, x2, y2, a, b;
@@ -171,7 +172,7 @@ void Game::connectingPoints(std::vector<std::pair<int,int>> points_vector, int r
         x2 = current->first;
         y2 = current->second;
         a = (y1-y2)/(x1-x2);
-        b = y1 - (a*x1);
+        b = y1 - (a * x1);
 
         // columns for points between P1 and P2
         for (int x = x1; x < x2; x++) {
@@ -207,7 +208,7 @@ void Game::connectingPoints(std::vector<std::pair<int,int>> points_vector, int r
     }
 }
 
-void Game::createHoles(int x0, int y0, int radius) {
+void Game::createHoles(int x0, int y0, int radius, int damage) {
     for (int i = radius; i >= 1; i--) {
         int x = i;
         int y = 0;
@@ -262,7 +263,6 @@ void Game::createHoles(int x0, int y0, int radius) {
                     else world_map[y + x0][l] = 0;
                 }
             }
-
             y++;
             if (decisionOver2 <= 0) {
                 decisionOver2 += 2 * y + 1;   // Change in decision criterion for y -> y+1
@@ -302,7 +302,7 @@ void Game::generateTerrain() {
     }
 
     // CONNECTING POINTS
-    connectingPoints(points_vector, river_height);
+    connectPoints(points_vector, river_height);
 
     // ADDING CHEESE HOLES EFFECT
     for ( int i = 1; i <= AMOUNT_OF_CHEESE_HOLES/6; i++){
@@ -347,7 +347,7 @@ bool Game::doesCollide(Object* object, int x_offset, int y_offset) {
     // Lower object rectangle edge check
     for (--y; x >= object->pos_x + x_offset; --x)
         if (checkCollision(x,y)) { return true; }
-    // Left object rectangle edge chceck
+    // Left object rectangle edge check
     for (++x; y >= object->pos_y + y_offset; --y)
         if (checkCollision(x,y)) { return true; }
     return false;
@@ -397,11 +397,25 @@ void Game::createPlayer(std::string name, bool is_human, int mouse_amount, int c
     player_vector.push_back(player);
 }
 
-void Game::gameplay() {
+void Game::changePlayer() {
+    removePersistentNotifications();
     if (current_player == nullptr) {
         current_player = player_vector[0];
         current_player_vecpos = 0;
     }
+    else {
+        if (current_player_vecpos != player_vector.size() - 1) {
+            ++current_player_vecpos;
+            current_player = player_vector[current_player_vecpos];
+        }
+        else {
+            current_player = player_vector[0];
+            current_player_vecpos = 0;
+        }
+    }
+    current_player->makeTurn();
+    createNotification(current_player->getName(), 4);
+    createNotification("Movepoints remaining: ", &Game::Instance()->current_player->current_mouse->movepoints, -1.0);
 }
 
 void Game::pause() {
@@ -423,6 +437,9 @@ void Game::applyMovement() {
     }
     else {
         current_player->current_mouse->weapon->prepare();
+        if (dynamic_cast<RangedWeapon*>(current_player->current_mouse->weapon)->bullet != nullptr) {
+            dynamic_cast<RangedWeapon*>(current_player->current_mouse->weapon)->moveBullet();
+        }
     }
 }
 
@@ -439,7 +456,7 @@ void Game::createNotification(std::string message, float timer, int x, int y, in
     if (height == -1) { height = NOTIFICATIONBOX_FONTSIZE; };
     NotificationBox* message_box = new NotificationBox(message, timer, x, y, width, height);
     message_box->refresh();
-    notification_queue.push(message_box);
+    notification_queue.push_back(message_box);
 }
 
 NotificationBox* Game::createNotification(std::string message, int* number_ptr, float timer, int x, int y, int width, int height, bool push_to_queue) {
@@ -452,7 +469,7 @@ NotificationBox* Game::createNotification(std::string message, int* number_ptr, 
     message_box->number_ptr = number_ptr;
     message_box->refresh();
     if (push_to_queue) {
-        notification_queue.push(message_box);
+        notification_queue.push_back(message_box);
     }
     else {
         return message_box;
@@ -460,8 +477,19 @@ NotificationBox* Game::createNotification(std::string message, int* number_ptr, 
     return nullptr;
 }
 
+void Game::removePersistentNotifications() {
+    for (int i = 0; i < notification_queue.size(); ++i) {
+        if (notification_queue[i]->timer == -1.0) {
+            notification_queue[i]->destroy();
+            notification_queue.erase(notification_queue.begin() + i);
+        }
+    }
+}
+
 void Game::capFPS() {
     if (Timer::Instance()->getTimeFromLastDelta() + 0.010 < Timer::Instance()->getTargetFrametime()) {
         SDL_Delay((Timer::Instance()->getTargetFrametime() - Timer::Instance()->getTimeFromLastDelta())*975);
     }
 }
+
+

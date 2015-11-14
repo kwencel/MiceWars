@@ -14,6 +14,7 @@ enum {  gravity = 0,
         cheesebomb = 3,
         mousetrap = 4   };
 
+#define BLACK                   0x000000
 #define GREEN                   0x95C355
 #define BLUE                    0x3885E7
 #define YELLOW                  0XFFFF33
@@ -44,18 +45,23 @@ enum {  gravity = 0,
 #define WEAPON_X_OFFSET         0
 #define WEAPON_Y_OFFSET         7
 #define WEAPON_WIDTH            20
-#define WEAPON_HEIGHT           20
+#define WEAPON_HEIGHT           15
 
-#define SHOTGUN_IMG             "img/Bazooka.png"
+#define BULLET_IMG              "img/Bullet.png"
+#define BULLET_WIDTH            10
+#define BULLET_HEIGHT           5
+#define BULLET_SPEED_MUL        15
+
+#define SHOTGUN_IMG             "img/Shotgun.png"
 #define SHOTGUN_DAMAGE          30
-#define SHOTGUN_RANGE           5
+#define SHOTGUN_RANGE           50
 
 #define BAZOOKA_IMG             "img/Bazooka.png"
 #define BAZOOKA_DAMAGE          40
 #define BAZOOKA_RANGE           40
 #define BAZOOKA_WEIGHT          15
 
-#define GRENADE_IMG             "img/Bazooka.png"
+#define GRENADE_IMG             "img/Granade.png"
 #define GRENADE_DAMAGE          30
 #define GRENADE_RANGE           40
 #define GRENADE_WEIGHT          10

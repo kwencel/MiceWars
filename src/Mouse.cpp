@@ -122,7 +122,6 @@ void Mouse::changeWeapon(short index) {
             tmp_weapon->trig_range = MOUSE_TRAP_TRIG_RANGE;
             weapon = tmp_weapon;
             break;
-
         }
         default:break;
     }
@@ -145,6 +144,10 @@ void Mouse::display() {
         weapon->display();
     }
 }
+
+//void Mouse::markPositionOnMap() {
+//
+//}
 
 void Mouse::jump() {
 

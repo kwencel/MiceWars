@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <queue>
+#include <deque>
 #include <string>
 #include <random>
 #include <climits>
@@ -18,13 +19,12 @@ private:
     float time;
     bool state = 0;
     bool fullscreen = 0;
-    //Player* current_player = nullptr;
     int current_player_vecpos = 0;
     std::pair<int,int> findNext(int x, int y, int max_height, int distance, int river_height);
     bool checkCollision(int x, int y);
-    void connectingPoints(std::vector<std::pair<int,int>> points_vector, int river_height);
+    void connectPoints(std::vector<std::pair<int, int>> points_vector, int river_height);
     void displayArrayOfValues();
-    void createHoles(int x0, int y0, int radius);
+
     static Game* m_pInstance;
     Game() { mt.seed(rd()); cout << "Game created!" << endl; };
 
@@ -33,7 +33,7 @@ public:
     std::vector<std::vector<char>> world_map;
     std::vector<Player*> player_vector;
     //std::vector<NotificationBox*> notification_vector;
-    std::queue<NotificationBox*> notification_queue;
+    std::deque<NotificationBox*> notification_queue;
     int players_count = 2;
     int win_width = 800;
     int win_height = 600;
@@ -41,6 +41,7 @@ public:
     bool background_need_redraw = true;
     Player* current_player = nullptr;
 
+    void createHoles(int x0, int y0, int radius, int damage = 0);
     void readConfigFile();
     void saveGame(std::string file_name);
     void loadGame(std::string file_name);
@@ -50,7 +51,7 @@ public:
     void generateTerrain();
     void placeMice();
     void createPlayer(std::string name, bool is_human, int mouse_amount, int colour);
-    void gameplay();
+    void changePlayer();
     void pause();
     float getTime()         { return time; };
     int getWindowWidth()    { return win_width; };
@@ -62,11 +63,13 @@ public:
     static Game* Instance();
     void applyMovement();
     void createNotification(std::string message, float timer = -1.0, int x = -1, int y = -1, int width = -1, int height = -1);
+    NotificationBox* createNotification(std::string message, int* number_ptr, float timer = -1.0, int x = -1,
+                                        int y = -1, int width = -1, int height = -1, bool push_to_vector = true);
     bool isInsideWindowBorders(Object* object, int x_offset = 0, int y_offset = 0);
     void readKeyboardState();
     void displayBackground();
     void capFPS();
-    NotificationBox* createNotification(std::string message, int* number_ptr, float timer = -1.0, int x = -1, int y = -1, int width = -1, int height = -1, bool push_to_vector = true);
+    void removePersistentNotifications();
 };
 
 

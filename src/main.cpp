@@ -19,12 +19,11 @@ int main(int argc, char** argv) {
     Engine::Instance()->getReady(Game::Instance()->getWindowWidth(), Game::Instance()->getWindowHeigth());
     Timer::Instance()->setFPS(60);
     Game::Instance()->generateTerrain();
-    Game::Instance()->createPlayer("Daktyl", true, 1, 0);
-    Game::Instance()->createPlayer("Aleker", true, 1, 0);
+    Game::Instance()->createPlayer("Daktyl", true, 2, 0);
+    Game::Instance()->createPlayer("Aleker", true, 2, 0);
     Game::Instance()->placeMice();
-    Game::Instance()->player_vector[0]->makeTurn();
-    Game::Instance()->gameplay();
-    Game::Instance()->createNotification("Movepoints remaining: ", &Game::Instance()->current_player->current_mouse->movepoints, -1.0);
+//    Game::Instance()->player_vector[0]->makeTurn();
+    Game::Instance()->changePlayer();
     Timer::Instance()->getNewDelta();
 
     while (not Game::Instance()->quit) {

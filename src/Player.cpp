@@ -6,8 +6,10 @@ void Player::makeTurn() {
         current_mouse_vecpos = 0;
     }
     else {
-        if (current_mouse_vecpos == mice_vector.size()) {
+        current_mouse->weapon->angle = 0;
+        if (current_mouse_vecpos == mice_vector.size() - 1) {
             current_mouse_vecpos = 0;   // Reset the counter if the end of vector was reached
+            current_mouse = mice_vector[0];
         }
         else {
             ++current_mouse_vecpos;
