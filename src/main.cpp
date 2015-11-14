@@ -14,11 +14,10 @@ void printDebugInfo(std::pair<int, int> &last_mouse_pos) {
     }
 }
 
-int main(int argc, char **argv) {
-    std::pair<int, int> last_mouse_pos;
+int main(int argc, char** argv) {
 
     Engine::Instance()->getReady(Game::Instance()->getWindowWidth(), Game::Instance()->getWindowHeigth());
-    Timer::Instance()->setFPS(30);
+    Timer::Instance()->setFPS(60);
     Game::Instance()->generateTerrain();
     Game::Instance()->createPlayer("Daktyl", true, 1, 0);
     Game::Instance()->createPlayer("Aleker", true, 1, 0);
@@ -28,17 +27,13 @@ int main(int argc, char **argv) {
     Game::Instance()->createNotification("Movepoints remaining: ", &Game::Instance()->current_player->current_mouse->movepoints, -1.0);
     Timer::Instance()->getNewDelta();
 
-    while (!Game::Instance()->quit) {
+    while (not Game::Instance()->quit) {
 
-        Game::Instance()->updateGameState();
+        Game::Instance()->readKeyboardState();
         Game::Instance()->applyMovement();
         Game::Instance()->applyGravity();
         Game::Instance()->redraw();
-
-        if (Timer::Instance()->getTimeFromLastDelta() + 0.010 < Timer::Instance()->getTargetFrametime()) {
-            SDL_Delay((Timer::Instance()->getTargetFrametime() - Timer::Instance()->getTimeFromLastDelta())*975);
-        }
-
+        Game::Instance()->capFPS();
         Engine::Instance()->setWindowTitle();
         Timer::Instance()->getNewDelta();
     }

@@ -105,10 +105,10 @@ void RangedWeapon::markSemicircle() {
     }
     sortVector();
     // DISPLAY THE CONTENT OF VECTOR:
-    for (auto gucio: semicircle_vector){
-        cout << "x " << gucio.first << " ";
-        cout << "y " << gucio.second << endl;
-    }
+//    for (auto gucio: semicircle_vector){
+//        cout << "x " << gucio.first << " ";
+//        cout << "y " << gucio.second << endl;
+//    }
 }
 
 void RangedWeapon::moveCrosshair() {
@@ -123,15 +123,26 @@ void RangedWeapon::moveCrosshair() {
     for (int pixel = 0; pixel < steps; ++pixel) {
         if (Game::Instance()->isInsideWindowBorders(this, wants_to_move_crosshair)) {
             if (wants_to_move_crosshair == up && it != semicircle_vector.begin()) {
-
                 --it;
                 crosshair->pos_x = it->first;
                 crosshair->pos_y = it->second;
+                if (Game::Instance()->current_player->current_mouse->flip) {
+                    --angle;
+                }
+                else {
+                    ++angle;
+                }
             }
             else if (wants_to_move_crosshair == down and it != semicircle_vector.end()) {
                 ++it;
                 crosshair->pos_x = it->first;
                 crosshair->pos_y = it->second;
+                if (Game::Instance()->current_player->current_mouse->flip) {
+                    ++angle;
+                }
+                else {
+                    --angle;
+                }
             }
         }
     }
@@ -146,16 +157,21 @@ void RangedWeapon::prepare() {
 }
 
 void RangedWeapon::shoot() {
-
+    std::cout << "SHOOOOOOOOOOOOOOOOT!!!" << endl;
 }
 
 void RangedWeapon::createCrosshair() {
     if (crosshair == nullptr) {
         int mouse_x = Game::Instance()->current_player->current_mouse->pos_x;
         int mouse_y = Game::Instance()->current_player->current_mouse->pos_y;
-        crosshair = new Object(mouse_x, mouse_y - RADIUS_CROSSHAIR, CROSSHAIR_WIDTH, CROSSHAIR_WIDTH, CROSSHAIR_IMG);
+        if (Game::Instance()->current_player->current_mouse->flip) {
+            crosshair = new Object(mouse_x + RADIUS_CROSSHAIR, mouse_y, CROSSHAIR_WIDTH, CROSSHAIR_WIDTH, CROSSHAIR_IMG);
+        }
+        else {
+            crosshair = new Object(mouse_x - RADIUS_CROSSHAIR, mouse_y, CROSSHAIR_WIDTH, CROSSHAIR_WIDTH, CROSSHAIR_IMG);
+        }
         markSemicircle();
-        it = semicircle_vector.begin();
+        it = (semicircle_vector.begin() + semicircle_vector.size()/2);
     }
 }
 

@@ -3,13 +3,18 @@
 
 void Object::display() {
     updateCenter();
+    SDL_Rect clip;
+    clip.x = 0;
+    clip.y = 0;
+    clip.w = obj_width;
+    clip.h = obj_height;
     rectangle.x = pos_x; rectangle.y = pos_y;
     rectangle.w = obj_width; rectangle.h = obj_height;
     if (flip) {
-        SDL_RenderCopyEx(Engine::Instance()->renderer, texture, NULL, &rectangle, angle, &center, SDL_FLIP_HORIZONTAL);
+        SDL_RenderCopyEx(Engine::Instance()->renderer, texture, NULL, &rectangle, angle, NULL, SDL_FLIP_HORIZONTAL);
     }
     else {
-        SDL_RenderCopyEx(Engine::Instance()->renderer, texture, NULL, &rectangle, angle, &center, SDL_FLIP_NONE);
+        SDL_RenderCopyEx(Engine::Instance()->renderer, texture, NULL, &rectangle, angle, NULL, SDL_FLIP_NONE);
     }
 }
 

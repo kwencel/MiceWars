@@ -49,6 +49,7 @@ void Mouse::move() {
                 pos_x += wants_to_move_direction;
                 if (--movepoints == 0) {
                     can_move = false;
+                    space_key_released = true;
                     break;
                 }
             }
@@ -57,7 +58,6 @@ void Mouse::move() {
             break;
         }
     }
-
     wants_to_move_direction = stay;
 }
 

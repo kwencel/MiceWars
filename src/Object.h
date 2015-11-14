@@ -9,9 +9,6 @@ using std::cout;
 using std::endl;
 
 class Object {
-private:
-    double angle = 0;
-
 protected:
 //    vector<SDL_Surface*> bitmap_vector;
 //    int current_bitmap;
@@ -25,6 +22,7 @@ public:
     SDL_Rect rectangle;
     SDL_Point center;
     bool flip = false;
+    double angle = 0;
 
     Object() { cout << "Created temp object!" << endl; };
     Object(int x, int y, int width, int height, std::string img_path = "");

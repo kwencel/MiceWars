@@ -26,28 +26,40 @@ int Player::getColour() {
     return colour;
 }
 
+void Player::handle_keys(const Uint8* keystates) {
+    if (keystates[SDL_SCANCODE_LEFT]) {
+        if (current_mouse->can_move) {
+            current_mouse->wants_to_move_direction = -1;
+        }
+    }
+    else if (keystates[SDL_SCANCODE_RIGHT]) {
+        if (current_mouse->can_move) {
+            current_mouse->wants_to_move_direction = 1;
+        }
+    }
+    if (keystates[SDL_SCANCODE_UP]) {
+        if (not current_mouse->can_move) {
+            current_mouse->weapon->wants_to_move_crosshair = -1;
+        }
+    }
+    else if (keystates[SDL_SCANCODE_DOWN]) {
+        if (not current_mouse->can_move) {
+            current_mouse->weapon->wants_to_move_crosshair = 1;
+        }
+    }
+    if (keystates[SDL_SCANCODE_SPACE]) {
+        if (current_mouse->can_move) {
+            current_mouse->can_move = false;
+            current_mouse->movepoints = 0;
+            current_mouse->space_key_released = false;
+        }
+        else if (current_mouse->space_key_released) {
+            current_mouse->weapon->shoot();
+        }
+    }
+}
 void Player::handle_keys(SDL_Keycode keycode) {
     switch (keycode) {
-        case SDLK_LEFT:
-            if (current_mouse->can_move) {
-                current_mouse->wants_to_move_direction = -1;
-            }
-            break;
-        case SDLK_RIGHT:
-            if (current_mouse->can_move) {
-                current_mouse->wants_to_move_direction = 1;
-            }
-            break;
-        case SDLK_UP:
-            if (not current_mouse->can_move) {
-                current_mouse->weapon->wants_to_move_crosshair = -1;
-            }
-            break;
-        case SDLK_DOWN:
-            if (not current_mouse->can_move) {
-                current_mouse->weapon->wants_to_move_crosshair = 1;
-            }
-            break;
         case SDLK_1:
             current_mouse->changeWeapon(shotgun);
             break;

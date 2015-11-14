@@ -29,9 +29,9 @@ enum {  gravity = 0,
 
 #define MOUSE_IMG               "img/Mouse(30x37)"
 #define MOUSE_IMG_EXTENSION     ".png"
-#define MOUSE_MOVEPOINTS        100
-#define MICE_SPEED_MUL          100 // previously 100
-#define GRAVITY_MUL             300 // previously 150
+#define MOUSE_MOVEPOINTS        250
+#define MICE_SPEED_MUL          70 // previously 100
+#define GRAVITY_MUL             400 // previously 150
 #define HILL_OVERCOME_PIXELS    20
 
 // NOTICATIONS' SPECIFICATIONS
@@ -42,7 +42,7 @@ enum {  gravity = 0,
 
 // WEAPONS' SPECIFICATIONS
 #define WEAPON_X_OFFSET         0
-#define WEAPON_Y_OFFSET         10
+#define WEAPON_Y_OFFSET         7
 #define WEAPON_WIDTH            20
 #define WEAPON_HEIGHT           20
 

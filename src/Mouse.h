@@ -12,6 +12,7 @@ public:
     bool can_move = false;
     Weapon* weapon = nullptr;
     int weapon_index = 0;
+    bool space_key_released = false;
     NotificationBox* notification_hp = nullptr;
 
     Mouse(int x, int y, int width, int height, std::string img_path)

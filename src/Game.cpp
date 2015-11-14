@@ -10,27 +10,37 @@ Game* Game::Instance() {
     return m_pInstance;
 }
 
-void Game::updateGameState() {
+void Game::readKeyboardState() {
+    current_player->handle_keys(keystates);
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
 
-            case (SDL_QUIT):
+            case SDL_QUIT: {
                 quit = true;
                 break;
+            }
 
-            case (SDL_KEYDOWN):
+            case SDL_KEYDOWN: {
                 if (event.key.keysym.sym == SDLK_ESCAPE) {
                     quit = true;
                 }
-                else {
+                else if (event.key.keysym.sym != SDLK_LEFT or event.key.keysym.sym != SDLK_RIGHT or
+                         event.key.keysym.sym != SDLK_UP or event.key.keysym.sym != SDLK_DOWN) {
                     current_player->handle_keys(event.key.keysym.sym);
                 }
                 break;
+            }
+            case SDL_KEYUP: {
+                if ((event.key.keysym.sym == SDLK_SPACE) and (not current_player->current_mouse->space_key_released)) {
+                    current_player->current_mouse->space_key_released = true;
+                }
+            }
 
-            case (SDL_MOUSEMOTION):
+            case SDL_MOUSEMOTION: {
                 Engine::Instance()->readCursorPosition();
                 break;
+            }
             default:break;
         }
     }
@@ -448,4 +458,10 @@ NotificationBox* Game::createNotification(std::string message, int* number_ptr, 
         return message_box;
     }
     return nullptr;
+}
+
+void Game::capFPS() {
+    if (Timer::Instance()->getTimeFromLastDelta() + 0.010 < Timer::Instance()->getTargetFrametime()) {
+        SDL_Delay((Timer::Instance()->getTargetFrametime() - Timer::Instance()->getTimeFromLastDelta())*975);
+    }
 }
