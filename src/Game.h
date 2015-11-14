@@ -41,7 +41,7 @@ public:
     bool background_need_redraw = true;
     Player* current_player = nullptr;
 
-    void createHoles(int x0, int y0, int radius, int damage = 0);
+    void createHoles(int x0, int y0, int radius, std::vector<Mouse*> *affectedMice = nullptr);
     void readConfigFile();
     void saveGame(std::string file_name);
     void loadGame(std::string file_name);
@@ -59,6 +59,7 @@ public:
     int getRandomIntBetween(int min, int max);
     void drawBackground();
     bool doesCollide(Object* object, int x_offset = 0, int y_offset = 0);
+    bool doesCollideWithPoint(Object *object, int coll_x, int coll_y, int x_offset = 0, int y_offset = 0);
     void applyGravity();
     static Game* Instance();
     void applyMovement();
@@ -70,6 +71,9 @@ public:
     void displayBackground();
     void capFPS();
     void removePersistentNotifications();
+    bool checkMiceCollisionBool(int coll_x, int coll_y, int x_offset = 0, int y_offset = 0);
+    std::vector<Mouse *> checkMiceCollision(int coll_x, int coll_y, int x_offset = 0, int y_offset = 0);
+    void checkMiceCollisionRef(int coll_x, int coll_y, std::vector<Mouse*> *affectedMice, int x_offset = 0, int y_offset = 0);
 };
 
 

@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "Game.h"
 #include "Timer.h"
 #include "RangedWeapon.h"
@@ -209,7 +210,7 @@ void Game::connectPoints(std::vector<std::pair<int, int>> points_vector, int riv
     }
 }
 
-void Game::createHoles(int x0, int y0, int radius, int damage) {
+void Game::createHoles(int x0, int y0, int radius, std::vector<Mouse*> *affectedMice) {
     for (int i = radius; i >= 1; i--) {
         int x = i;
         int y = 0;
@@ -218,23 +219,31 @@ void Game::createHoles(int x0, int y0, int radius, int damage) {
         while (y <= x) {
             for (int l = x + x0; l >= x0; l--){
                 if ( l >= 0 && l <= win_width && (y + y0) >= 0 && (y + y0) <= win_height) {
+                    if (affectedMice != nullptr)
+                        checkMiceCollisionRef(l, y + y0, affectedMice);
                     if (y + y0 >= (win_height - win_height / RIVER_DIVIDER))
                         world_map[l][y + y0] = 2;
                     else world_map[l][y + y0] = 0;   // Octant 1
                 }
                 if ( l >= 0 && l <= win_width && (-y + y0) >= 0 && (-y + y0) <= win_height) {
+                    if (affectedMice != nullptr)
+                        checkMiceCollisionRef(l, -y + y0, affectedMice);
                     if (-y + y0 >= (win_height - win_height / RIVER_DIVIDER))
                         world_map[l][-y + y0] = 2;  // Octant 8
                     else world_map[l][-y + y0] = 0;
                 }
             }
             for (int l = x + y0; l >= y0; l--){
-                if ( (y + x0) >= 0 && (y + x0) <= win_width && l >= 0 && l <= win_height){
+                if ( (y + x0) >= 0 && (y + x0) <= win_width && l >= 0 && l <= win_height) {
+                    if (affectedMice != nullptr)
+                        checkMiceCollisionRef(y + x0, l, affectedMice);
                     if (l >= (win_height - win_height / RIVER_DIVIDER))
                         world_map[y + x0][l] = 2;   // Octant 2
                     else world_map[y + x0][l] = 0;
                 }
-                if ( (-y + x0) >= 0 && (-y + x0) <= win_width && l >= 0 && l <= win_height){
+                if ( (-y + x0) >= 0 && (-y + x0) <= win_width && l >= 0 && l <= win_height) {
+                    if (affectedMice != nullptr)
+                        checkMiceCollisionRef(-y + x0, l, affectedMice);
                     if (l >= (win_height - win_height / RIVER_DIVIDER))
                         world_map[-y + x0][l] = 2;  // Octant 3
                     else world_map[-y + x0][l] = 0;
@@ -242,11 +251,15 @@ void Game::createHoles(int x0, int y0, int radius, int damage) {
             }
             for (int l = -x + x0; l <= x0; l++){
                 if ( l >= 0 && l <= win_width && (y + y0) >= 0 && (y + y0) <= win_height) {
+                    if (affectedMice != nullptr)
+                        checkMiceCollisionRef(l, y + y0, affectedMice);
                     if (y + y0 >= (win_height - win_height / RIVER_DIVIDER))
                         world_map[l][y + y0] = 2;   //Octant 4
                     else world_map[l][y + y0] = 0;
                 }
                 if ( l >= 0 && l <= win_width && (-y + y0) >= 0 && (-y + y0) <= win_height) {
+                    if (affectedMice != nullptr)
+                        checkMiceCollisionRef(l, -y + y0, affectedMice);
                     if (-y + y0 >= (win_height - win_height / RIVER_DIVIDER))
                         world_map[l][-y + y0] = 2;  //Octant 5
                     else world_map[l][-y + y0] = 0;
@@ -254,11 +267,15 @@ void Game::createHoles(int x0, int y0, int radius, int damage) {
             }
             for (int l = -x + y0; l <= y0; l++){
                 if ( (-y + x0) >= 0 && (-y + x0) <= win_width && l >= 0 && l <= win_height) {
+                    if (affectedMice != nullptr)
+                        checkMiceCollisionRef(-y + x0, l, affectedMice);
                     if (l >= (win_height - win_height / RIVER_DIVIDER))
                         world_map[-y + x0][l] = 2;  //Octant 6
                     else world_map[-y + x0][l] = 0;
                 }
                 if ( (y + x0) >= 0 && (y + x0) <= win_width && l >= 0 && l <= win_height) {
+                    if (affectedMice != nullptr)
+                        checkMiceCollisionRef(y + x0, l, affectedMice);
                     if (l >= (win_height - win_height / RIVER_DIVIDER))
                         world_map[y + x0][l] = 2;   //Octant 7
                     else world_map[y + x0][l] = 0;
@@ -354,6 +371,60 @@ bool Game::doesCollide(Object* object, int x_offset, int y_offset) {
     return false;
 }
 
+bool Game::doesCollideWithPoint(Object* object, int coll_x, int coll_y, int x_offset, int y_offset) {
+    int x = object->pos_x + x_offset;
+    int y = object->pos_y + y_offset;
+    // Upper object rectangle edge check
+    for (; x <= object->pos_x + x_offset + object->obj_width; ++x)
+        if (x == coll_x and y == coll_y) { return true; }
+    // Right object rectangle edge check
+    for (--x; y <= object->pos_y + y_offset + object->obj_height; ++y)
+        if (x == coll_x and y == coll_y) { return true; }
+    // Lower object rectangle edge check
+    for (--y; x >= object->pos_x + x_offset; --x)
+        if (x == coll_x and y == coll_y) { return true; }
+    // Left object rectangle edge check
+    for (++x; y >= object->pos_y + y_offset; --y)
+        if (x == coll_x and y == coll_y) { return true; }
+    return false;
+}
+
+std::vector<Mouse*> Game::checkMiceCollision(int coll_x, int coll_y, int x_offset, int y_offset) {
+    std::vector<Mouse*> affectedMice;
+    for (auto player : player_vector) {
+        for (auto mouse: player->mice_vector) {
+            if (doesCollideWithPoint(mouse, coll_x, coll_y, x_offset, y_offset)) {
+                affectedMice.push_back(mouse);
+            }
+        }
+    }
+    return affectedMice;
+}
+
+bool Game::checkMiceCollisionBool(int coll_x, int coll_y, int x_offset, int y_offset) {
+    for (auto player : player_vector) {
+        for (auto mouse: player->mice_vector) {
+            if (mouse != current_player->current_mouse and doesCollideWithPoint(mouse, coll_x, coll_y, x_offset, y_offset)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+void Game::checkMiceCollisionRef(int coll_x, int coll_y, std::vector<Mouse *> *affectedMice, int x_offset, int y_offset) {
+    for (auto player : player_vector) {
+        for (auto mouse: player->mice_vector) {
+            if (std::find (affectedMice->begin(), affectedMice->end(), mouse) != affectedMice->end()) {
+                continue;
+            }
+            if (doesCollideWithPoint(mouse, coll_x, coll_y, x_offset, y_offset)) {
+                affectedMice->push_back(mouse);
+            }
+        }
+    }
+}
+
 void Game::applyGravity() {
     for (auto player : player_vector) {
         for (auto mouse: player->mice_vector) {
@@ -405,6 +476,9 @@ void Game::changePlayer() {
         current_player_vecpos = 0;
     }
     else {
+        if (current_player->mice_vector.size() == 0) {
+            exit();
+        }
         if (current_player_vecpos != player_vector.size() - 1) {
             ++current_player_vecpos;
             current_player = player_vector[current_player_vecpos];
@@ -433,6 +507,9 @@ void Game::readConfigFile() {
 }
 
 void Game::applyMovement() {
+    if (current_player == nullptr or current_player->current_mouse == nullptr) {
+        return;
+    }
     if (current_player->current_mouse->can_move) {
         current_player->current_mouse->move();
     }

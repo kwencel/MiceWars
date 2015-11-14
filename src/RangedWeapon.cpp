@@ -216,11 +216,27 @@ void RangedWeapon::moveBullet() {
         if (a_coefficient) {
             offset_y = 1;
         }
-        if (Game::Instance()->isInsideWindowBorders(bullet)) {
-            if (Game::Instance()->doesCollide(bullet, offset_x, offset_y)) { // checking collision
-                Game::Instance()->createHoles(bullet->center.x, bullet->center.y, SHOTGUN_RANGE);
+        if (Game::Instance()->isInsideWindowBorders(bullet, offset_x, offset_y)) {
+            if (Game::Instance()->doesCollide(bullet, offset_x, offset_y) or Game::Instance()->checkMiceCollisionBool(bullet->center.x, bullet->center.y)) { // checking collision
+                std::vector<Mouse*> affectedMice;
+                Game::Instance()->createHoles(bullet->center.x, bullet->center.y, SHOTGUN_RANGE, &affectedMice);
+                // APPLY DAMAGE
+                for (auto mouse : affectedMice) {
+                    mouse->hp -= damage;
+                    if (mouse->hp <= 0) {
+                        for (int player_id = 0; player_id < Game::Instance()->player_vector.size(); ++player_id) {
+                            for (int mouse_id = 0; mouse_id < Game::Instance()->player_vector[player_id]->mice_vector.size(); ++mouse_id) {
+                                if (Game::Instance()->player_vector[player_id]->mice_vector[mouse_id] == mouse) {
+                                    Game::Instance()->player_vector[player_id]->mice_vector.erase(Game::Instance()->player_vector[player_id]->mice_vector.begin() + mouse_id);
+                                    Game::Instance()->player_vector[player_id]->mice_vector.shrink_to_fit();
+                                    mouse->destroy();
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
                 Game::Instance()->background_need_redraw = true;
-                // czyszczenie?
                 bullet->destroy();
                 bullet = nullptr;
                 crosshair->destroy();
