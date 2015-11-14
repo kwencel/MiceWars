@@ -28,10 +28,12 @@ void Mouse::move() {
         return;
     }
     else if (wants_to_move_direction == left) {
-        flip = 0;
+        flip = false;
+        weapon->flip = false;
     }
     else {
-        flip = 1;
+        flip = true;
+        weapon->flip = true;
     }
 
     int steps = static_cast<int>(MICE_SPEED_MUL * Timer::Instance()->getDelta());
