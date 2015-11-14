@@ -26,16 +26,17 @@ void Game::readKeyboardState() {
                     quit = true;
                 }
                 else if (event.key.keysym.sym != SDLK_LEFT or event.key.keysym.sym != SDLK_RIGHT or
-                         event.key.keysym.sym != SDLK_UP or event.key.keysym.sym != SDLK_DOWN) {
+                         event.key.keysym.sym != SDLK_UP or event.key.keysym.sym != SDLK_DOWN or
+                         event.key.keysym.sym != SDLK_SPACE) {
                     current_player->handle_keys(event.key.keysym.sym);
                 }
                 break;
             }
-            case SDL_KEYUP: {
-                if ((event.key.keysym.sym == SDLK_SPACE) and (not current_player->current_mouse->space_key_released)) {
-                    current_player->current_mouse->space_key_released = true;
-                }
-            }
+//            case SDL_KEYUP: {
+//                if ((event.key.keysym.sym == SDLK_SPACE) and (not current_player->current_mouse->space_key_released)) {
+//                    current_player->current_mouse->space_key_released = true;
+//                }
+//            }
             case SDL_MOUSEMOTION: {
                 Engine::Instance()->readCursorPosition();
                 break;

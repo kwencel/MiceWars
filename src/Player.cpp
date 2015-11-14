@@ -49,19 +49,28 @@ void Player::handle_keys(const Uint8* keystates) {
             current_mouse->weapon->wants_to_move_crosshair = 1;
         }
     }
-    if (keystates[SDL_SCANCODE_SPACE]) {
-        if (current_mouse->can_move) {
-            current_mouse->can_move = false;
-            current_mouse->movepoints = 0;
-            current_mouse->space_key_released = false;
-        }
-        else if (current_mouse->space_key_released) {
-            current_mouse->weapon->shoot();
-        }
-    }
+//    if (keystates[SDL_SCANCODE_SPACE]) {
+//        if (current_mouse->can_move) {
+//            current_mouse->can_move = false;
+//            current_mouse->movepoints = 0;
+//            current_mouse->space_key_released = false;
+//        }
+//        else if (current_mouse->space_key_released) {
+//            current_mouse->weapon->shoot();
+//        }
+//    }
 }
 void Player::handle_keys(SDL_Keycode keycode) {
     switch (keycode) {
+        case SDLK_SPACE:
+            if (current_mouse->can_move) {
+                current_mouse->can_move = false;
+                current_mouse->movepoints = 0;
+            }
+            else {
+                current_mouse->weapon->shoot();
+            }
+            break;
         case SDLK_1:
             current_mouse->changeWeapon(shotgun);
             break;

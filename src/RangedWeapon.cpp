@@ -110,7 +110,6 @@ void RangedWeapon::markSemicircle() {
 //        cout << "x " << gucio.first << " ";
 //        cout << "y " << gucio.second << endl;
 //    }
-    cout << "mofm" << endl;
 }
 
 void RangedWeapon::moveCrosshair() {
