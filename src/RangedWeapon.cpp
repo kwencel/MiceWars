@@ -147,6 +147,12 @@ void RangedWeapon::moveCrosshair() {
 }
 
 void RangedWeapon::prepare() {
+    if (Game::Instance()->current_player->current_mouse->flip != this->flip) {
+        this->flip = Game::Instance()->current_player->current_mouse->flip;
+        delete crosshair;
+        crosshair = nullptr;
+        angle = 0;
+    }
     if (crosshair == nullptr) {
         createCrosshair();
     }

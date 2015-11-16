@@ -469,7 +469,7 @@ void Game::applyGravity() {
 
 void Game::placeMice() {
     for (int player_id = 0; player_id < players_count; ++player_id) { // For each player
-        for (int i = 0; i < player_vector[player_id]->mouse_amount; ++i) {    // Place their mice
+        for (int i = 0; i < player_vector[player_id]->mice_amount; ++i) {    // Place their mice
             std::stringstream mouse_img;
             mouse_img << MOUSE_IMG << player_id + 1 << MOUSE_IMG_EXTENSION;
             Mouse* mouse = new Mouse(getRandomIntBetween(0, win_width - MICE_WIDTH), getRandomIntBetween(0, win_height/3), MICE_WIDTH, MICE_HEIGHT, mouse_img.str());
@@ -611,6 +611,7 @@ void Game::checkWinLoseConditions() {
     if (player_vector.size() == 1) {
         std::stringstream ss;
         ss << "Player " << player_vector[0]->getName() << " has won!";
+        cout << "[INFO] Player " << player_vector[0]->getName() << " has won!!!" << endl;
         createNotification(ss.str(), 1);
         returnToMenu();
     }
