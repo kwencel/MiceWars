@@ -11,6 +11,8 @@ public:
             : RangedWeapon(x, y, width, height, img_path) { cout << "ThrownWeapon created!" << endl; }
     void prepare() override;
     void shoot() override;
+    void save(std::ofstream& file) override;
+    void load(std::ifstream& file) override;
 };
 
 

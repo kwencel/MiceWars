@@ -152,3 +152,21 @@ void Mouse::display() {
 void Mouse::jump() {
 
 }
+
+void Mouse::save(std::ofstream &file) {
+    Object::save(file);
+    file.write((char*)&hp, sizeof(hp));
+    file.write((char*)&wants_to_move_direction, sizeof(wants_to_move_direction));
+    file.write((char*)&movepoints, sizeof(movepoints));
+    file.write((char*)&can_move, sizeof(can_move));
+    file.write((char*)&weapon_index, sizeof(weapon_index));
+}
+
+void Mouse::load(std::ifstream &file) {
+    Object::load(file);
+    file.read((char*)&hp, sizeof(hp));
+    file.read((char*)&wants_to_move_direction, sizeof(wants_to_move_direction));
+    file.read((char*)&movepoints, sizeof(movepoints));
+    file.read((char*)&can_move, sizeof(can_move));
+    file.read((char*)&weapon_index, sizeof(weapon_index));
+}

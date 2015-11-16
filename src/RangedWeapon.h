@@ -24,6 +24,8 @@ public:
     void sortVector();
     void display() override;
     void moveBullet();
+    void save(std::ofstream& file) override;
+    void load(std::ifstream& file) override;
 };
 
 

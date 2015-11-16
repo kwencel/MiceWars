@@ -24,6 +24,8 @@ public:
     void destroy() override;
     bool overcomeHill(int direction);
     void display();
+    void save(std::ofstream& file) override;
+    void load(std::ifstream& file) override;
 };
 
 

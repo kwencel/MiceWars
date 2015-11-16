@@ -53,7 +53,7 @@ enum {  gravity = 0,
 #define BULLET_SPEED_MUL        15
 
 #define SHOTGUN_IMG             "img/Shotgun.png"
-#define SHOTGUN_DAMAGE          100  // previously 30
+#define SHOTGUN_DAMAGE          30  // previously 30
 #define SHOTGUN_RANGE           50
 
 #define BAZOOKA_IMG             "img/Bazooka.png"

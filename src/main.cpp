@@ -26,8 +26,13 @@ int main(int argc, char** argv) {
     Game::Instance()->changePlayer();
     Timer::Instance()->getNewDelta();
 
-    while (not Game::Instance()->quit) {
+    // LOADING PLAYER
+    std::ifstream read_game_file;
+    read_game_file.open("Saved_player.txt", std::ios::in | std::ios::trunc | std::ios::binary);
+    Game::Instance()->player_vector[1]->load(read_game_file);
+    read_game_file.close();
 
+    while (not Game::Instance()->quit) {
         Game::Instance()->readKeyboardState();
         Game::Instance()->applyMovement();
         Game::Instance()->applyGravity();
@@ -36,4 +41,11 @@ int main(int argc, char** argv) {
         Engine::Instance()->setWindowTitle();
         Timer::Instance()->getNewDelta();
     }
+
+    // SAVING PLAYER
+//    std::ofstream save_game_file;
+//    save_game_file.open("Saved_player.txt", std::ios::out | std::ios::trunc | std::ios::binary);
+//    Game::Instance()->player_vector[0]->save(save_game_file);
+//    save_game_file.close();
+
 }

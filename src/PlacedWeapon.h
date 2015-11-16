@@ -12,6 +12,8 @@ public:
     void prepare() override;
     void shoot() override;
     void explode();
+    void save(std::ofstream& file) override;
+    void load(std::ifstream& file) override;
 };
 
 

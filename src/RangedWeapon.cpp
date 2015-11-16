@@ -265,3 +265,19 @@ void RangedWeapon::moveBullet() {
     }
     wants_to_move_crosshair = stay;
 }
+
+void RangedWeapon::save(std::ofstream &file) {
+    Weapon::save(file);
+    file.write((char*)&gravity, sizeof(gravity));
+    file.write((char*)&weight, sizeof(weight));
+    file.write((char*)&a_coefficient, sizeof(a_coefficient));
+    file.write((char*)&b_coefficient, sizeof(b_coefficient));
+}
+
+void RangedWeapon::load(std::ifstream &file) {
+    Weapon::load(file);
+    file.read((char*)&gravity, sizeof(gravity));
+    file.read((char*)&weight, sizeof(weight));
+    file.read((char*)&a_coefficient, sizeof(a_coefficient));
+    file.read((char*)&b_coefficient, sizeof(b_coefficient));
+}

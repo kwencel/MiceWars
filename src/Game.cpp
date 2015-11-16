@@ -46,12 +46,74 @@ void Game::readKeyboardState() {
         }
     }
 }
-void Game::saveGame(std::string fileName) {
 
+void Game::saveGame(std::string fileName) {
+    std::ofstream save_game_file;
+    save_game_file.open(fileName, std::ios::out | std::ios::trunc | std::ios::binary); // output operations, replace content, in binary mode
+    if (save_game_file.is_open()) {
+        // GAME STATE
+        save_game_file.write((char*)&time, sizeof(time));
+        save_game_file.write((char*)&state, sizeof(state));
+        save_game_file.write((char*)&fullscreen, sizeof(0));
+        save_game_file.write((char*)&current_player_vecpos, sizeof(current_player_vecpos));
+        save_game_file.write((char*)&world_map, sizeof(world_map));
+        save_game_file.write((char*)&player_vector, players_count*sizeof(Player));
+        save_game_file.write((char*)&players_count, sizeof(players_count));
+        save_game_file.write((char*)&win_width, sizeof(win_width));
+        save_game_file.write((char*)&win_height, sizeof(win_height));
+        save_game_file.write((char*)&quit, sizeof(quit));
+        save_game_file.write((char*)&time, sizeof(time));
+        save_game_file.write((char*)&background_need_redraw, sizeof(background_need_redraw));
+
+        // PLAYERS AND MICE
+        if (player_vector.size() > 0) {
+            for (int i = 0; i < player_vector.size(); i++) {
+                player_vector[i]->save(save_game_file);
+                for (auto mouse: player_vector[i]->mice_vector) {
+                    mouse->save(save_game_file);
+                }
+            }
+        }
+        else save_game_file << "Vector of players is empty\n";
+
+        cout << "File is saved!\n";
+        save_game_file.close();
+    }
+    else cout << "Unable to open file\n";
 }
 
-void Game::loadGame(std::string fileName) {
 
+void Game::loadGame(std::string fileName) {
+    std::ifstream read_game_file;
+    read_game_file.open(fileName, std::ios::in | std::ios::trunc | std::ios::binary); // output operations, replace content, in binary mode
+    if (read_game_file.is_open()) {
+        // GAME STATE
+        read_game_file.read((char*)&time, sizeof(time));
+        read_game_file.read((char*)&state, sizeof(state));
+        read_game_file.read((char*)&fullscreen, sizeof(0));
+        read_game_file.read((char*)&current_player_vecpos, sizeof(current_player_vecpos));
+        read_game_file.read((char*)&world_map, sizeof(world_map));
+        read_game_file.read((char*)&player_vector, players_count*sizeof(Player));
+        read_game_file.read((char*)&players_count, sizeof(players_count));
+        read_game_file.read((char*)&win_width, sizeof(win_width));
+        read_game_file.read((char*)&win_height, sizeof(win_height));
+        read_game_file.read((char*)&quit, sizeof(quit));
+        read_game_file.read((char*)&time, sizeof(time));
+        read_game_file.read((char*)&background_need_redraw, sizeof(background_need_redraw));
+
+        // PLAYERS AND MICE
+        if (player_vector.size() > 0) {
+            for (int i = 0; i < player_vector.size(); i++) {
+                player_vector[i]->load(read_game_file);
+                for (auto mouse: player_vector[i]->mice_vector) {
+                    mouse->load(read_game_file);
+                }
+            }
+        }
+        else cout << "Vector of players is empty\n";
+        read_game_file.close();
+    }
+    else cout << "Unable to open file\n";
 }
 
 void Game::returnToMenu() {
@@ -446,7 +508,7 @@ void Game::applyGravity() {
 
 void Game::placeMice() {
     for (int player_id = 0; player_id < players_count; ++player_id) { // For each player
-        for (int i = 0; i < player_vector[player_id]->mouse_amount; ++i) {    // Place their mice
+        for (int i = 0; i < player_vector[player_id]->mice_amount; ++i) {    // Place their mice
             std::stringstream mouse_img;
             mouse_img << MOUSE_IMG << player_id + 1 << MOUSE_IMG_EXTENSION;
             Mouse* mouse = new Mouse(getRandomIntBetween(0, win_width - MICE_WIDTH), getRandomIntBetween(0, win_height/3), MICE_WIDTH, MICE_HEIGHT, mouse_img.str());

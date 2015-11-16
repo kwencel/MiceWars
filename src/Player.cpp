@@ -9,7 +9,7 @@ void Player::makeTurn() {
         current_mouse->weapon->angle = 0;
         if (current_mouse_vecpos >= mice_vector.size() - 1) {
             if (mice_vector.size() == 0) {
-                
+
             }
             current_mouse_vecpos = 0;   // Reset the counter if the end of vector was reached
             current_mouse = mice_vector[0];
@@ -91,4 +91,20 @@ void Player::handle_keys(SDL_Keycode keycode) {
             break;
         default:break;
     }
+}
+
+void Player::save(std::ofstream &file) {
+    file.write((char*)&this->name, sizeof(name));
+    file.write((char*)&this->colour, sizeof(int));
+    file.write((char*)&this->current_mouse_vecpos, sizeof(int));
+    file.write((char*)&this->mice_amount, sizeof(int));
+    file.write((char*)&this->is_human, sizeof(bool));
+}
+
+void Player::load(std::ifstream &file) {
+    file.read((char*)&this->name, sizeof(name));
+    file.read((char*)&this->colour, sizeof(int));
+    file.read((char*)&this->current_mouse_vecpos, sizeof(int));
+    file.read((char*)&this->mice_amount, sizeof(int));
+    file.read((char*)&this->is_human, sizeof(bool));
 }

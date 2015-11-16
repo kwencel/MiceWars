@@ -25,6 +25,8 @@ public:
     void display() override;
     void destroy() override;
     void refresh();
+    void save(std::ofstream& file) override;
+    void load(std::ifstream& file) override;
 };
 
 

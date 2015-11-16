@@ -39,3 +39,21 @@ void Object::updateCenter() {
     center.x = pos_x + obj_width / 2;
     center.y = pos_y + obj_height / 2;
 }
+
+void Object::save(std::ofstream &file) {
+    file.write((char*)&pos_x, sizeof(pos_x));
+    file.write((char*)&pos_y, sizeof(pos_y));
+    file.write((char*)&obj_width, sizeof(obj_width));
+    file.write((char*)&obj_height, sizeof(obj_height));
+    file.write((char*)&flip, sizeof(flip));
+    file.write((char*)&angle, sizeof(angle));
+}
+
+void Object::load(std::ifstream &file) {
+    file.read((char*)&pos_x, sizeof(pos_x));
+    file.read((char*)&pos_y, sizeof(pos_y));
+    file.read((char*)&obj_width, sizeof(obj_width));
+    file.read((char*)&obj_height, sizeof(obj_height));
+    file.read((char*)&flip, sizeof(flip));
+    file.read((char*)&angle, sizeof(angle));
+}

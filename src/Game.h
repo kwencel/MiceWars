@@ -7,6 +7,7 @@
 #include <string>
 #include <random>
 #include <climits>
+#include <fstream>
 #include <SDL2/SDL.h>
 #include <bits/stl_queue.h>
 #include "Player.h"

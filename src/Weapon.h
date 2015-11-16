@@ -13,6 +13,8 @@ public:
             : Object(x, y, width, height, img_path) { cout << "Weapon created!" << endl; }
     virtual void prepare() = 0;
     virtual void shoot() = 0;
+    void save(std::ofstream& file) override;
+    void load(std::ifstream& file) override;
 };
 
 

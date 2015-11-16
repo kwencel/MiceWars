@@ -11,6 +11,8 @@ public:
             : Object(x, y, width, height) { cout << "Button created!" << endl; }
     Button(bool state = false) : state(state)  { }
     void click() { state = !state; };
+    void save(std::ofstream& file) override;
+    void load(std::ifstream& file) override;
 
 };
 

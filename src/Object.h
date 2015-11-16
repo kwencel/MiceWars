@@ -4,6 +4,7 @@
 #include <vector>
 #include <SDL2/SDL.h>
 #include <iostream>
+#include <fstream>
 #include "global_vars.h"
 using std::cout;
 using std::endl;
@@ -30,6 +31,8 @@ public:
     
     virtual void display();
     virtual void destroy();
+    virtual void save(std::ofstream& file);
+    virtual void load(std::ifstream& file);
 };
 
 
