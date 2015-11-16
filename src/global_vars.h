@@ -12,7 +12,9 @@ enum {  gravity = 0,
         bazooka = 1,
         grenade = 2,
         cheesebomb = 3,
-        mousetrap = 4   };
+        mousetrap = 4,
+        gameplay = 0,
+        menu = 1    };
 
 #define BLACK                   0x000000
 #define GREEN                   0x95C355
@@ -39,6 +41,7 @@ enum {  gravity = 0,
 #define NOTIFICATION_HP_OFFSET  20
 #define NOTIFICATION_HP_WIDTH   25
 #define NOTIFICATION_HP_HEIGHT  20
+#define NOTIFICATIONBOX_FONT    "font/OpenSans-Bold.ttf"
 #define NOTIFICATIONBOX_FONTSIZE 20
 
 // WEAPONS' SPECIFICATIONS
@@ -50,7 +53,7 @@ enum {  gravity = 0,
 #define BULLET_IMG              "img/Bullet.png"
 #define BULLET_WIDTH            10
 #define BULLET_HEIGHT           5
-#define BULLET_SPEED_MUL        15
+#define BULLET_SPEED_MUL        100
 
 #define SHOTGUN_IMG             "img/Shotgun.png"
 #define SHOTGUN_DAMAGE          100  // previously 30

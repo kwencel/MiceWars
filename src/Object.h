@@ -26,10 +26,9 @@ public:
 
     Object() { cout << "Created temp object!" << endl; };
     Object(int x, int y, int width, int height, std::string img_path = "");
+    virtual ~Object();
     void updateCenter();
-    
     virtual void display();
-    virtual void destroy();
 };
 
 

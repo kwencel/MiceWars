@@ -9,6 +9,7 @@ public:
 
     Button(int x, int y, int width, int height)
             : Object(x, y, width, height) { cout << "Button created!" << endl; }
+    ~Button();
     Button(bool state = false) : state(state)  { }
     void click() { state = !state; };
 

@@ -16,8 +16,7 @@ class Game {
 private:
     std::random_device rd;
     std::mt19937 mt;
-    float time;
-    bool state = 0;
+    bool state = gameplay;
     bool fullscreen = 0;
     int current_player_vecpos = 0;
     std::pair<int,int> findNext(int x, int y, int max_height, int distance, int river_height);
@@ -32,9 +31,8 @@ public:
     const Uint8* keystates = SDL_GetKeyboardState(NULL);
     std::vector<std::vector<char>> world_map;
     std::vector<Player*> player_vector;
-    //std::vector<NotificationBox*> notification_vector;
     std::deque<NotificationBox*> notification_queue;
-    int players_count = 2;
+    int players_count = 3;
     int win_width = 800;
     int win_height = 600;
     bool quit = false;
@@ -53,9 +51,9 @@ public:
     void createPlayer(std::string name, bool is_human, int mouse_amount, int colour);
     void changePlayer();
     void pause();
-    float getTime()         { return time; };
     int getWindowWidth()    { return win_width; };
     int getWindowHeigth()   { return win_height; };
+    bool getState()         { return state; };
     int getRandomIntBetween(int min, int max);
     void drawBackground();
     bool doesCollide(Object* object, int x_offset = 0, int y_offset = 0);
@@ -74,6 +72,9 @@ public:
     bool checkMiceCollisionBool(int coll_x, int coll_y, int x_offset = 0, int y_offset = 0);
     std::vector<Mouse *> checkMiceCollision(int coll_x, int coll_y, int x_offset = 0, int y_offset = 0);
     void checkMiceCollisionRef(int coll_x, int coll_y, std::vector<Mouse*> *affectedMice, int x_offset = 0, int y_offset = 0);
+    void checkWinLoseConditions();
+    void controlMenu();
+    void displayMenu();
 };
 
 

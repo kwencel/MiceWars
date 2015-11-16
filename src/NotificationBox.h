@@ -15,15 +15,15 @@ public:
     int number;
     float timer;
     bool is_being_displayed = false;
-    TTF_Font* font = TTF_OpenFont("font/OpenSans-Bold.ttf", NOTIFICATIONBOX_FONTSIZE);
+    TTF_Font* font = TTF_OpenFont(NOTIFICATIONBOX_FONT, NOTIFICATIONBOX_FONTSIZE);
     SDL_Color colour = {255, 255, 255};  // White colour
     std::chrono::time_point<std::chrono::high_resolution_clock> time_created;
 
     NotificationBox(int& msg, float timer, int x, int y, int width, int height);
     NotificationBox(std::string msg, float timer, int x, int y, int width, int height);
+    ~NotificationBox();
 
     void display() override;
-    void destroy() override;
     void refresh();
 };
 

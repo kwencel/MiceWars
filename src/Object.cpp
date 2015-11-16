@@ -18,12 +18,6 @@ void Object::display() {
     }
 }
 
-void Object::destroy() {
-    if (texture != nullptr) {
-        SDL_DestroyTexture(texture);
-    }
-}
-
 Object::Object(int x, int y, int width, int height, std::string img_path) {
     pos_x = x;
     pos_y = y;
@@ -38,4 +32,11 @@ Object::Object(int x, int y, int width, int height, std::string img_path) {
 void Object::updateCenter() {
     center.x = pos_x + obj_width / 2;
     center.y = pos_y + obj_height / 2;
+}
+
+Object::~Object() {
+    if (texture != nullptr) {
+        SDL_DestroyTexture(texture);
+    }
+    cout << "Object destroyed!" << endl;
 }

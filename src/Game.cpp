@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <assert.h>
 #include "Game.h"
 #include "Timer.h"
 #include "RangedWeapon.h"
@@ -13,31 +14,30 @@ Game* Game::Instance() {
 }
 
 void Game::readKeyboardState() {
-    current_player->handle_keys(keystates);
+    if (Game::Instance()->current_player != nullptr) {
+        current_player->handle_keys(keystates);
+    }
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
-
             case SDL_QUIT: {
                 quit = true;
                 break;
             }
             case SDL_KEYDOWN: {
                 if (event.key.keysym.sym == SDLK_ESCAPE) {
+                    pause();
+                }
+                else if (event.key.keysym.sym == SDLK_q) {
                     quit = true;
                 }
-                else if (event.key.keysym.sym != SDLK_LEFT or event.key.keysym.sym != SDLK_RIGHT or
+                else if (current_player != nullptr and (event.key.keysym.sym != SDLK_LEFT or event.key.keysym.sym != SDLK_RIGHT or
                          event.key.keysym.sym != SDLK_UP or event.key.keysym.sym != SDLK_DOWN or
-                         event.key.keysym.sym != SDLK_SPACE) {
+                         event.key.keysym.sym != SDLK_SPACE)) {
                     current_player->handle_keys(event.key.keysym.sym);
                 }
                 break;
             }
-//            case SDL_KEYUP: {
-//                if ((event.key.keysym.sym == SDLK_SPACE) and (not current_player->current_mouse->space_key_released)) {
-//                    current_player->current_mouse->space_key_released = true;
-//                }
-//            }
             case SDL_MOUSEMOTION: {
                 Engine::Instance()->readCursorPosition();
                 break;
@@ -46,6 +46,7 @@ void Game::readKeyboardState() {
         }
     }
 }
+
 void Game::saveGame(std::string fileName) {
 
 }
@@ -55,11 +56,20 @@ void Game::loadGame(std::string fileName) {
 }
 
 void Game::returnToMenu() {
-
+    removePersistentNotifications();
+    for (auto player : player_vector) {
+        delete player;
+    }
+    world_map.clear();
+    notification_queue.clear();
+    current_player_vecpos = 0;
+    current_player = nullptr;
+    background_need_redraw = true;
+    state = menu;
 }
 
 void Game::exit() {
-
+    Engine::Instance()->destroy();
 }
 
 void Game::drawBackground() {
@@ -87,23 +97,35 @@ void Game::drawBackground() {
     Engine::Instance()->background_texture = SDL_CreateTextureFromSurface(Engine::Instance()->renderer, Engine::Instance()->background);
 }
 
+void Game::displayMenu() {
+    SDL_SetRenderDrawColor(Engine::Instance()->renderer, 0, 0, 255, 255 );
+    Engine::Instance()->clearRenderer();
+}
+
 void Game::displayBackground() {
     SDL_RenderCopy(Engine::Instance()->renderer, Engine::Instance()->background_texture, NULL, NULL);
 }
 
 void Game::redraw() {
-    //Engine::Instance()->clearRenderer();
-    if (background_need_redraw) {
-        drawBackground();
-        background_need_redraw = false;
-    }
-    displayBackground();
-    for (auto player : player_vector) {
-        for (auto mouse : player->mice_vector) {
-            mouse->display();
+    if (state == gameplay) {
+        // Draw background
+        if (background_need_redraw) {
+            drawBackground();
+            background_need_redraw = false;
+        }
+        displayBackground();
+        for (auto player : player_vector) {
+            for (auto mouse : player->mice_vector) {
+                mouse->display();
+            }
         }
     }
-    if (not notification_queue.empty()) {
+    else {
+        displayMenu();
+    }
+    // Draw notifications
+    if (not notification_queue.empty() and not (Game::Instance()->getState() == menu and not player_vector.empty())) {
+        // If notification queue is not empty and pause is not active (main menu after match is OK)
         auto time_now = Timer::Instance()->getTime();
         if (notification_queue.front()->is_being_displayed == false) {
             notification_queue.front()->time_created = time_now;
@@ -112,13 +134,14 @@ void Game::redraw() {
         auto time_notification_created = notification_queue.front()->time_created;
         float time_difference = std::chrono::duration_cast<std::chrono::milliseconds>(time_now - time_notification_created).count() / 1000.0;
         if ((notification_queue.front()->timer != -1) and (time_difference > notification_queue.front()->timer)) {
-            notification_queue.front()->destroy();
+            delete notification_queue.front();
             notification_queue.pop_front();
         }
         else {
             notification_queue.front()->display();
         }
     }
+    // Show it on screen
     SDL_RenderPresent(Engine::Instance()->renderer);
 }
 
@@ -466,6 +489,7 @@ void Game::placeMice() {
 
 void Game::createPlayer(std::string name, bool is_human, int mouse_amount, int colour) {
     Player* player = new Player(name, is_human, mouse_amount, colour);
+    player->player_vecpos = player_vector.size();
     player_vector.push_back(player);
 }
 
@@ -476,12 +500,9 @@ void Game::changePlayer() {
         current_player_vecpos = 0;
     }
     else {
-        if (current_player->mice_vector.size() == 0) {
-            exit();
-        }
-        if (current_player_vecpos != player_vector.size() - 1) {
-            ++current_player_vecpos;
-            current_player = player_vector[current_player_vecpos];
+        assert(not Game::player_vector.empty());
+        if (current_player_vecpos < player_vector.size() - 1) {
+            current_player = player_vector[++current_player_vecpos];
         }
         else {
             current_player = player_vector[0];
@@ -489,12 +510,12 @@ void Game::changePlayer() {
         }
     }
     current_player->makeTurn();
-    createNotification(current_player->getName(), 4);
+    createNotification(current_player->getName(), 1);
     createNotification("Movepoints remaining: ", &Game::Instance()->current_player->current_mouse->movepoints, -1.0);
 }
 
 void Game::pause() {
-
+    state = !state;
 }
 
 int Game::getRandomIntBetween(int min, int max) {
@@ -507,7 +528,7 @@ void Game::readConfigFile() {
 }
 
 void Game::applyMovement() {
-    if (current_player == nullptr or current_player->current_mouse == nullptr) {
+    if (current_player == nullptr) {
         return;
     }
     if (current_player->current_mouse->can_move) {
@@ -558,7 +579,7 @@ NotificationBox* Game::createNotification(std::string message, int* number_ptr, 
 void Game::removePersistentNotifications() {
     for (int i = 0; i < notification_queue.size(); ++i) {
         if (notification_queue[i]->timer == -1.0) {
-            notification_queue[i]->destroy();
+            delete notification_queue[i];
             notification_queue.erase(notification_queue.begin() + i);
         }
     }
@@ -571,3 +592,57 @@ void Game::capFPS() {
 }
 
 
+void Game::checkWinLoseConditions() {
+    // Remove players with no mice remaining from player_vector
+    std::vector<Player*> players_to_delete;
+    for (auto player : player_vector) {
+        if (player->mice_vector.empty()) {
+            std::stringstream ss;
+            ss << "Player " << player->getName() << " has lost!";
+            createNotification(ss.str(), 3);
+            players_to_delete.push_back(player);
+        }
+    }
+    if (not players_to_delete.empty()) {
+        for (auto player : players_to_delete) {
+            delete player;
+        }
+    }
+    if (player_vector.size() == 1) {
+        std::stringstream ss;
+        ss << "Player " << player_vector[0]->getName() << " has won!";
+        createNotification(ss.str(), 1);
+        returnToMenu();
+    }
+    else if (player_vector.empty()) {
+        returnToMenu();
+    }
+    else {
+        changePlayer();
+    }
+}
+
+void Game::controlMenu() {
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+            case SDL_QUIT: {
+                quit = true;
+                break;
+            }
+            case SDL_KEYDOWN: {
+                if (event.key.keysym.sym == SDLK_ESCAPE) {
+                    pause();
+                }
+                else if (event.key.keysym.sym == SDLK_q) {
+                    quit = true;
+                }
+            }
+            case SDL_MOUSEMOTION: {
+                Engine::Instance()->readCursorPosition();
+                break;
+            }
+            default:break;
+        }
+    }
+}
