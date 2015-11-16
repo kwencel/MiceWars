@@ -1,18 +1,5 @@
-#include <iostream>
 #include "Game.h"
 #include "Timer.h"
-
-void printDebugInfo(std::pair<int, int> &last_mouse_pos) {
-    if ((Game::Instance()->player_vector[0]->mice_vector[0]->pos_x != last_mouse_pos.first) or
-        (Game::Instance()->player_vector[0]->mice_vector[0]->pos_y != last_mouse_pos.second)) {
-        cout << "Mouse coordinates: " << Game::Instance()->player_vector[0]->mice_vector[0]->pos_x << " " <<
-        Game::Instance()->player_vector[0]->mice_vector[0]->pos_y << endl;
-        cout << "Collision at current position: " <<
-        Game::Instance()->doesCollide(Game::Instance()->player_vector[0]->mice_vector[0]) << endl;
-        last_mouse_pos = {Game::Instance()->player_vector[0]->mice_vector[0]->pos_x,
-                          Game::Instance()->player_vector[0]->mice_vector[0]->pos_y};
-    }
-}
 
 int main(int argc, char** argv) {
 
@@ -21,8 +8,8 @@ int main(int argc, char** argv) {
     Game::Instance()->generateTerrain();
     Game::Instance()->createPlayer("Daktyl", true, 2, 0);
     Game::Instance()->createPlayer("Aleker", true, 2, 0);
+    Game::Instance()->createPlayer("Lazarz", true, 2, 0);
     Game::Instance()->placeMice();
-//    Game::Instance()->player_vector[0]->makeTurn();
     Game::Instance()->changePlayer();
     Timer::Instance()->getNewDelta();
 
@@ -33,7 +20,12 @@ int main(int argc, char** argv) {
     read_game_file.close();
 
     while (not Game::Instance()->quit) {
-        Game::Instance()->readKeyboardState();
+        if (Game::Instance()->getState() == gameplay) {
+            Game::Instance()->readKeyboardState();
+        }
+        else {
+            Game::Instance()->controlMenu();
+        }
         Game::Instance()->applyMovement();
         Game::Instance()->applyGravity();
         Game::Instance()->redraw();
@@ -41,6 +33,7 @@ int main(int argc, char** argv) {
         Engine::Instance()->setWindowTitle();
         Timer::Instance()->getNewDelta();
     }
+    Game::Instance()->exit();
 
     // SAVING PLAYER
 //    std::ofstream save_game_file;

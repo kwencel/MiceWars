@@ -12,16 +12,14 @@ public:
     bool can_move = false;
     Weapon* weapon = nullptr;
     int weapon_index = 0;
-//    bool space_key_released = false;
     NotificationBox* notification_hp = nullptr;
 
     Mouse(int x, int y, int width, int height, std::string img_path)
             : Object(x, y, width, height, img_path) { cout << "Mouse created!" << endl; }
+    ~Mouse();
     void move();
     void jump();
-    //void ready();
     void changeWeapon(short index);
-    void destroy() override;
     bool overcomeHill(int direction);
     void display();
     void save(std::ofstream& file) override;

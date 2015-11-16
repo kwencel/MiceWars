@@ -23,3 +23,7 @@ void AI::aim() {
 void AI::fire() {
 
 }
+
+AI::~AI() {
+  cout << "AI destroyed!" << endl;
+}

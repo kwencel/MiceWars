@@ -2,6 +2,9 @@
 #include "Object.h"
 #include "Button.h"
 
+Button::~Button() {
+    cout << "Button destroyed!" << endl;
+}
 void Button::save(std::ofstream &file) {
     Object::save(file);
     file.write((char*)&state, sizeof(state));

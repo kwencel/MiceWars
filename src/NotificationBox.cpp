@@ -38,9 +38,10 @@ NotificationBox::NotificationBox(std::string message, float timer, int x, int y,
     cout << "NotificationBox created!" << endl;
 }
 
-void NotificationBox::destroy() {
+NotificationBox::~NotificationBox() {
+    number_ptr = nullptr;
     TTF_CloseFont(font);
-    Object::destroy();
+    cout << "NotificationBox destroyed!" << endl;
 }
 
 void NotificationBox::save(std::ofstream &file) {

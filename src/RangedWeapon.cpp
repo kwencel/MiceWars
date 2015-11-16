@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <assert.h>
 #include "RangedWeapon.h"
 #include "Game.h"
 #include "Timer.h"
@@ -105,11 +106,6 @@ void RangedWeapon::markSemicircle() {
         }
     }
     sortVector();
-    // DISPLAY THE CONTENT OF VECTOR:
-//    for (auto gucio: semicircle_vector){
-//        cout << "x " << gucio.first << " ";
-//        cout << "y " << gucio.second << endl;
-//    }
 }
 
 void RangedWeapon::moveCrosshair() {
@@ -175,6 +171,7 @@ void RangedWeapon::shoot() {
     a_coefficient = (y1-y2)/(x1-x2);
     b_coefficient = y1 - (a_coefficient * x1);
     std::cout << "SHOOOOOOOOOOOOOOOOT!!!" << endl;
+    Game::Instance()->current_player->end_turn = true;
 }
 
 void RangedWeapon::createCrosshair() {
@@ -203,7 +200,7 @@ void RangedWeapon::display() {
 }
 
 void RangedWeapon::moveBullet() {
-    //bullet->center.y = (a_coefficient * bullet->center.x) + b_coefficient;
+    assert(bullet->pos_x <= Game::Instance()->win_width);
     int steps = static_cast<int>(BULLET_SPEED_MUL * Timer::Instance()->getDelta());
     if (steps == 0) {
         steps = 1;
@@ -221,27 +218,24 @@ void RangedWeapon::moveBullet() {
                 std::vector<Mouse*> affectedMice;
                 Game::Instance()->createHoles(bullet->center.x, bullet->center.y, SHOTGUN_RANGE, &affectedMice);
                 // APPLY DAMAGE
+                bool self_killed = false;
                 for (auto mouse : affectedMice) {
                     mouse->hp -= damage;
                     if (mouse->hp <= 0) {
-                        for (int player_id = 0; player_id < Game::Instance()->player_vector.size(); ++player_id) {
-                            for (int mouse_id = 0; mouse_id < Game::Instance()->player_vector[player_id]->mice_vector.size(); ++mouse_id) {
-                                if (Game::Instance()->player_vector[player_id]->mice_vector[mouse_id] == mouse) {
-                                    Game::Instance()->player_vector[player_id]->mice_vector.erase(Game::Instance()->player_vector[player_id]->mice_vector.begin() + mouse_id);
-                                    Game::Instance()->player_vector[player_id]->mice_vector.shrink_to_fit();
-                                    mouse->destroy();
-                                    break;
-                                }
-                            }
+                        if (mouse->weapon == this) {
+                            self_killed = true;
                         }
+                        delete mouse;
                     }
                 }
+                if (not self_killed) {
+                    delete bullet;
+                    bullet = nullptr;
+                    delete crosshair;
+                    crosshair = nullptr;
+                }
                 Game::Instance()->background_need_redraw = true;
-                bullet->destroy();
-                bullet = nullptr;
-                crosshair->destroy();
-                crosshair = nullptr;
-                Game::Instance()->changePlayer();
+                Game::Instance()->checkWinLoseConditions();
                 break;
             }
             else {
@@ -255,15 +249,21 @@ void RangedWeapon::moveBullet() {
             }
         }
         else {   // outside the windowBorders
-            bullet->destroy();
+            delete bullet;
             bullet = nullptr;
-            crosshair->destroy();
+            delete crosshair;
             crosshair = nullptr;
-            Game::Instance()->changePlayer();
+            Game::Instance()->checkWinLoseConditions();
             break;
         }
     }
     wants_to_move_crosshair = stay;
+}
+
+RangedWeapon::~RangedWeapon() {
+    delete crosshair;
+    delete bullet;
+    cout << "RangedWeapon destroyed!" << endl;
 }
 
 void RangedWeapon::save(std::ofstream &file) {
