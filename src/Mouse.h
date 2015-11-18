@@ -16,6 +16,7 @@ public:
 
     Mouse(int x, int y, int width, int height, std::string img_path)
             : Object(x, y, width, height, img_path) { cout << "Mouse created!" << endl; }
+    Mouse() {}; // needed to reload game
     ~Mouse();
     void move();
     void jump();

@@ -115,21 +115,56 @@ Player::~Player() {
     for (int i = 0; i < Game::Instance()->player_vector.size(); ++i) {
         Game::Instance()->player_vector[i]->player_vecpos = i;
     }
+    Game::Instance()->players_count--;
     cout << "Player destroyed!" << endl;
 }
 
 void Player::save(std::ofstream &file) {
-    file.write((char*)&this->name, sizeof(name));
-    file.write((char*)&this->colour, sizeof(int));
-    file.write((char*)&this->current_mouse_vecpos, sizeof(int));
-    file.write((char*)&this->mice_amount, sizeof(int));
-    file.write((char*)&this->is_human, sizeof(bool));
+    file.write((char*)&colour, sizeof(int));
+    file.write((char*)&current_mouse_vecpos, sizeof(int));
+    file.write((char*)&mice_amount, sizeof(int));
+    unsigned long weapon_amount_size = weapon_amount.size();
+    file.write((char*)&weapon_amount_size, sizeof (unsigned long));
+    if (weapon_amount_size > 0) {
+        for (auto weapon : weapon_amount) {
+            file.write((char *) &weapon, sizeof(int));
+        }
+    }
+    if (mice_amount != 0) {
+        for (int i=0; i < mice_amount; i++) {
+            mice_vector[i]->save(file);
+        }
+    }
+    file.write((char*)&player_vecpos, sizeof(int));
+    file.write((char*)&is_human, sizeof(bool));
+    file.write((char*)&end_turn, sizeof(bool));
 }
 
 void Player::load(std::ifstream &file) {
-    file.read((char*)&this->name, sizeof(name));
-    file.read((char*)&this->colour, sizeof(int));
-    file.read((char*)&this->current_mouse_vecpos, sizeof(int));
-    file.read((char*)&this->mice_amount, sizeof(int));
-    file.read((char*)&this->is_human, sizeof(bool));
+    weapon_amount.clear();
+    file.read((char*)&colour, sizeof(int));
+    file.read((char*)&current_mouse_vecpos, sizeof(int));
+    file.read((char*)&mice_amount, sizeof(int));
+    unsigned long weapon_amount_size;
+    file.read((char*)&weapon_amount_size, sizeof(unsigned long));
+    // TODO weapon amount size
+    if (weapon_amount_size > 0) {
+        for (int i = 0; i < int(weapon_amount_size); i++) {
+            int number;
+            file.read((char*)&number, sizeof(int));
+            weapon_amount.push_back(number);
+        }
+    }
+    if (mice_amount != 0) {
+        for (int i=0; i< mice_amount; i++) {
+            Mouse* mouse = new Mouse();
+            (*mouse).load(file);
+            mice_vector.push_back(mouse);
+        }
+    }
+    file.read((char*)&player_vecpos, sizeof(int));
+    file.read((char*)&is_human, sizeof(bool));
+    current_mouse = mice_vector[current_mouse_vecpos];
+    file.read((char*)&end_turn, sizeof(bool));
 }
+

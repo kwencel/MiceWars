@@ -1,5 +1,7 @@
 #include <algorithm>
 #include <assert.h>
+#include <iostream>
+#include <fstream>
 #include "Game.h"
 #include "Timer.h"
 #include "RangedWeapon.h"
@@ -51,30 +53,24 @@ void Game::saveGame(std::string fileName) {
     std::ofstream save_game_file;
     save_game_file.open(fileName, std::ios::out | std::ios::trunc | std::ios::binary); // output operations, replace content, in binary mode
     if (save_game_file.is_open()) {
-        // GAME STATE
-        save_game_file.write((char*)&time, sizeof(time));
-        save_game_file.write((char*)&state, sizeof(state));
-        save_game_file.write((char*)&fullscreen, sizeof(0));
-        save_game_file.write((char*)&current_player_vecpos, sizeof(current_player_vecpos));
-        save_game_file.write((char*)&world_map, sizeof(world_map));
-        save_game_file.write((char*)&player_vector, players_count*sizeof(Player));
-        save_game_file.write((char*)&players_count, sizeof(players_count));
-        save_game_file.write((char*)&win_width, sizeof(win_width));
-        save_game_file.write((char*)&win_height, sizeof(win_height));
-        save_game_file.write((char*)&quit, sizeof(quit));
-        save_game_file.write((char*)&time, sizeof(time));
-        save_game_file.write((char*)&background_need_redraw, sizeof(background_need_redraw));
-
-        // PLAYERS AND MICE
-        if (player_vector.size() > 0) {
-            for (int i = 0; i < player_vector.size(); i++) {
-                player_vector[i]->save(save_game_file);
-                for (auto mouse: player_vector[i]->mice_vector) {
-                    mouse->save(save_game_file);
-                }
+        save_game_file.write((char*)&current_player_vecpos, sizeof(int));
+        save_game_file.write((char*)&win_width, sizeof(int));
+        save_game_file.write((char*)&win_height, sizeof(int));
+        save_game_file.write((char*)&background_need_redraw, sizeof(bool));
+        for (auto column: world_map) {
+            for (auto pixel: column) {
+                save_game_file.write(&pixel, sizeof(char));
             }
         }
-        else save_game_file << "Vector of players is empty\n";
+        // PLAYERS AND MICE
+        int players;
+        players = int(player_vector.size());
+        save_game_file.write((char*)&players, sizeof(int));
+        if (players_count > 0) {
+            for (int i=0; i < players_count; i++) {
+                player_vector[i]->save(save_game_file);
+            }
+        }
 
         cout << "File is saved!\n";
         save_game_file.close();
@@ -82,38 +78,61 @@ void Game::saveGame(std::string fileName) {
     else cout << "Unable to open file\n";
 }
 
-
 void Game::loadGame(std::string fileName) {
-    std::ifstream read_game_file;
-    read_game_file.open(fileName, std::ios::in | std::ios::trunc | std::ios::binary); // output operations, replace content, in binary mode
-    if (read_game_file.is_open()) {
-        // GAME STATE
-        read_game_file.read((char*)&time, sizeof(time));
-        read_game_file.read((char*)&state, sizeof(state));
-        read_game_file.read((char*)&fullscreen, sizeof(0));
-        read_game_file.read((char*)&current_player_vecpos, sizeof(current_player_vecpos));
-        read_game_file.read((char*)&world_map, sizeof(world_map));
-        read_game_file.read((char*)&player_vector, players_count*sizeof(Player));
-        read_game_file.read((char*)&players_count, sizeof(players_count));
-        read_game_file.read((char*)&win_width, sizeof(win_width));
-        read_game_file.read((char*)&win_height, sizeof(win_height));
-        read_game_file.read((char*)&quit, sizeof(quit));
-        read_game_file.read((char*)&time, sizeof(time));
-        read_game_file.read((char*)&background_need_redraw, sizeof(background_need_redraw));
+    while (not player_vector.empty()) {
+        delete player_vector[0];
+    }
+    player_vector.clear();
+    world_map.clear();
 
+    std::ifstream read_game_file;
+    read_game_file.open(fileName, std::ios::in | std::ios::binary); // output operations, replace content, in binary mode
+    if (read_game_file.is_open()) {
+        read_game_file.read((char*)&current_player_vecpos, sizeof(int));
+        read_game_file.read((char*)&win_width, sizeof(int));
+        read_game_file.read((char*)&win_height, sizeof(int));
+        read_game_file.read((char*)&background_need_redraw, sizeof(bool));
+        for (int i = 0; i <= win_width; i++) {
+            std::vector<char> pixel_vector;
+            for (int j = 0; j < win_height; j++) {
+                char pixel;
+                read_game_file.read(&pixel, sizeof(char));
+                pixel_vector.push_back(pixel);
+            }
+            world_map.push_back(pixel_vector);
+        }
         // PLAYERS AND MICE
-        if (player_vector.size() > 0) {
-            for (int i = 0; i < player_vector.size(); i++) {
-                player_vector[i]->load(read_game_file);
-                for (auto mouse: player_vector[i]->mice_vector) {
-                    mouse->load(read_game_file);
-                }
+        read_game_file.read((char*)&players_count, sizeof(int));
+        if (players_count != 0) {
+            for (int i = 0; i < players_count; i++) {
+                Player* player = new Player();
+                (*player).load(read_game_file);
+                player_vector.push_back(player);
             }
         }
-        else cout << "Vector of players is empty\n";
+
+        // ADDITIONAL
+        for (int player_id = 0; player_id < players_count; ++player_id) { // For each player
+            for (int i = 0; i < player_vector[player_id]->mice_amount; ++i) {    // Place their mice
+                std::stringstream mouse_img;
+                mouse_img << MOUSE_IMG << player_id + 1 << MOUSE_IMG_EXTENSION;
+                player_vector[player_id]->mice_vector[i]->texture = Engine::Instance()->makeTexture(mouse_img.str().c_str());
+                player_vector[player_id]->mice_vector[i]->changeWeapon(shotgun);
+                player_vector[player_id]->mice_vector[i]->notification_hp = createNotification("",
+                            &player_vector[player_id]->mice_vector[i]->hp,
+                            -1, player_vector[player_id]->mice_vector[i]->pos_x,
+                            player_vector[player_id]->mice_vector[i]->pos_y - NOTIFICATION_HP_OFFSET,
+                            NOTIFICATION_HP_WIDTH, NOTIFICATION_HP_HEIGHT, false);
+            }
+        }
+        //displayArrayOfValues();
+        drawBackground();
+        cout << "File is loaded";
         read_game_file.close();
+        this->current_player = player_vector[current_player_vecpos];
     }
     else cout << "Unable to open file\n";
+
 }
 
 void Game::returnToMenu() {
@@ -651,7 +670,6 @@ void Game::capFPS() {
         SDL_Delay((Timer::Instance()->getTargetFrametime() - Timer::Instance()->getTimeFromLastDelta())*975);
     }
 }
-
 
 void Game::checkWinLoseConditions() {
     // Remove players with no mice remaining from player_vector

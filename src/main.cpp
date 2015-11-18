@@ -9,15 +9,13 @@ int main(int argc, char** argv) {
     Game::Instance()->createPlayer("Daktyl", true, 2, 0);
     Game::Instance()->createPlayer("Aleker", true, 2, 0);
     Game::Instance()->createPlayer("Lazarz", true, 2, 0);
+    Game::Instance()->players_count = Game::Instance()->player_vector.size();
     Game::Instance()->placeMice();
     Game::Instance()->changePlayer();
-    Timer::Instance()->getNewDelta();
 
-    // LOADING PLAYER
-    std::ifstream read_game_file;
-    read_game_file.open("Saved_player.txt", std::ios::in | std::ios::trunc | std::ios::binary);
-    Game::Instance()->player_vector[1]->load(read_game_file);
-    read_game_file.close();
+    //Game::Instance()->loadGame("load_game.dat");
+
+    Timer::Instance()->getNewDelta();
 
     while (not Game::Instance()->quit) {
         if (Game::Instance()->getState() == gameplay) {
@@ -35,10 +33,7 @@ int main(int argc, char** argv) {
     }
     Game::Instance()->exit();
 
-    // SAVING PLAYER
-//    std::ofstream save_game_file;
-//    save_game_file.open("Saved_player.txt", std::ios::out | std::ios::trunc | std::ios::binary);
-//    Game::Instance()->player_vector[0]->save(save_game_file);
-//    save_game_file.close();
+    // SAVING GAME
+    Game::Instance()->saveGame("load_game.dat");
 
 }

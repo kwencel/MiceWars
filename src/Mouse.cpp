@@ -160,6 +160,7 @@ Mouse::~Mouse() {
                 Game::Instance()->player_vector[player_id]->mice_vector[mouse_id] = nullptr;
                 Game::Instance()->player_vector[player_id]->mice_vector.erase(Game::Instance()->player_vector[player_id]->mice_vector.begin() + mouse_id);
                 Game::Instance()->player_vector[player_id]->mice_vector.shrink_to_fit();
+                Game::Instance()->current_player[player_id].mice_amount--;
                 break;
             }
         }
@@ -174,18 +175,18 @@ Mouse::~Mouse() {
 
 void Mouse::save(std::ofstream &file) {
     Object::save(file);
-    file.write((char*)&hp, sizeof(hp));
-    file.write((char*)&wants_to_move_direction, sizeof(wants_to_move_direction));
-    file.write((char*)&movepoints, sizeof(movepoints));
-    file.write((char*)&can_move, sizeof(can_move));
-    file.write((char*)&weapon_index, sizeof(weapon_index));
+    file.write((char*)&hp, sizeof(int));
+    file.write((char*)&wants_to_move_direction, sizeof(short));
+    file.write((char*)&movepoints, sizeof(int));
+    file.write((char*)&can_move, sizeof(bool));
+    file.write((char*)&weapon_index, sizeof(int));
 }
 
 void Mouse::load(std::ifstream &file) {
     Object::load(file);
-    file.read((char*)&hp, sizeof(hp));
-    file.read((char*)&wants_to_move_direction, sizeof(wants_to_move_direction));
-    file.read((char*)&movepoints, sizeof(movepoints));
-    file.read((char*)&can_move, sizeof(can_move));
-    file.read((char*)&weapon_index, sizeof(weapon_index));
+    file.read((char*)&hp, sizeof(int));
+    file.read((char*)&wants_to_move_direction, sizeof(short));
+    file.read((char*)&movepoints, sizeof(int));
+    file.read((char*)&can_move, sizeof(bool));
+    file.read((char*)&weapon_index, sizeof(int));
 }
