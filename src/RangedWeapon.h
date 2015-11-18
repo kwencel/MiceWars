@@ -3,6 +3,8 @@
 
 #include "Weapon.h"
 
+class AI;
+
 class RangedWeapon: public Weapon {
 public:
     bool gravity;

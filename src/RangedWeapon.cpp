@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <assert.h>
 #include "RangedWeapon.h"
 #include "Game.h"
 #include "Timer.h"
@@ -38,13 +37,13 @@ void RangedWeapon::sortVector() {
             it_endY = it_currentY;
             // LEFT
             if (Game::Instance()->current_player->current_mouse->flip == 0) {
-                if (it_startY->second < Game::Instance()->current_player->current_mouse->center.y) // over the center of mouse
+                if (it_startY->second < Game::Instance()->current_player->current_mouse->getCenter().y) // over the center of mouse
                     sort(it_startY, it_endY, compareXDecreasing);
                 else    // under the center of mouse
                     sort(it_startY, it_endY, compareXIncreasing);
             } // RIGHT
             else {
-                if (it_startY->second < Game::Instance()->current_player->current_mouse->center.y) // over the center of mouse
+                if (it_startY->second < Game::Instance()->current_player->current_mouse->getCenter().y) // over the center of mouse
                     sort(it_startY, it_endY, compareXIncreasing);
                 else    // under the center of mouse
                     sort(it_startY, it_endY, compareXDecreasing);
@@ -114,7 +113,7 @@ void RangedWeapon::moveCrosshair() {
     }
 
     int steps = static_cast<int>(CROSSHAIR_SPEED_MUL * Timer::Instance()->getDelta());
-    if (steps == 0) {
+    if (steps == 0 or not Game::Instance()->current_player->is_human) {
         steps = 1;
     }
     for (int pixel = 0; pixel < steps; ++pixel) {
@@ -147,6 +146,12 @@ void RangedWeapon::moveCrosshair() {
 }
 
 void RangedWeapon::prepare() {
+    if (Game::Instance()->current_player->current_mouse->flip != this->flip) {
+        this->flip = Game::Instance()->current_player->current_mouse->flip;
+        delete crosshair;
+        crosshair = nullptr;
+        angle = 0;
+    }
     if (crosshair == nullptr) {
         createCrosshair();
     }
@@ -156,8 +161,8 @@ void RangedWeapon::prepare() {
 void RangedWeapon::shoot() {
     wants_to_move_crosshair = stay;
     // CREATING BULLET
-    if (bullet == nullptr){
-        bullet = new Object(this->center.x,this->center.y,BULLET_WIDTH,BULLET_HEIGHT,BULLET_IMG);
+    if (bullet == nullptr) {
+        bullet = new Object(this->getCenter().x, this->getCenter().y, BULLET_WIDTH, BULLET_HEIGHT, BULLET_IMG);
         bullet->flip = this->flip;
         bullet->angle = this->angle;
     }
@@ -165,8 +170,8 @@ void RangedWeapon::shoot() {
     float x1, y1, x2, y2;
     x1 = (this->bullet->pos_x);
     y1 = (this->bullet->pos_y);
-    x2 = (crosshair->center.x);
-    y2 = (crosshair->center.y);
+    x2 = (crosshair->getCenter().x);
+    y2 = (crosshair->getCenter().y);
 
     a_coefficient = (y1-y2)/(x1-x2);
     b_coefficient = y1 - (a_coefficient * x1);
@@ -200,7 +205,6 @@ void RangedWeapon::display() {
 }
 
 void RangedWeapon::moveBullet() {
-    assert(bullet->pos_x <= Game::Instance()->win_width);
     int steps = static_cast<int>(BULLET_SPEED_MUL * Timer::Instance()->getDelta());
     if (steps == 0) {
         steps = 1;
@@ -214,9 +218,9 @@ void RangedWeapon::moveBullet() {
             offset_y = 1;
         }
         if (Game::Instance()->isInsideWindowBorders(bullet, offset_x, offset_y)) {
-            if (Game::Instance()->doesCollide(bullet, offset_x, offset_y) or Game::Instance()->checkMiceCollisionBool(bullet->center.x, bullet->center.y)) { // checking collision
+            if (Game::Instance()->doesCollide(bullet, offset_x, offset_y) or Game::Instance()->checkMiceCollisionBool(bullet->getCenter().x, bullet->getCenter().y)) { // checking collision
                 std::vector<Mouse*> affectedMice;
-                Game::Instance()->createHoles(bullet->center.x, bullet->center.y, SHOTGUN_RANGE, &affectedMice);
+                Game::Instance()->createHoles(bullet->getCenter().x, bullet->getCenter().y, dmg_range, &affectedMice);
                 // APPLY DAMAGE
                 bool self_killed = false;
                 for (auto mouse : affectedMice) {

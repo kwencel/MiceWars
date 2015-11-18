@@ -21,14 +21,13 @@ public:
     int obj_height;
     SDL_Texture* texture = nullptr;
     SDL_Rect rectangle;
-    SDL_Point center;
     bool flip = false;
     double angle = 0;
 
     Object() { cout << "Created temp object!" << endl; };
     Object(int x, int y, int width, int height, std::string img_path = "");
     virtual ~Object();
-    void updateCenter();
+    SDL_Point getCenter();
     virtual void display();
     virtual void save(std::ofstream& file);
     virtual void load(std::ifstream& file);

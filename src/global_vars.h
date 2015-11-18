@@ -29,13 +29,18 @@ enum {  gravity = 0,
 #define CROSSHAIR_WIDTH         20
 #define CROSSHAIR_IMG           "img/Crosshair.png"
 #define CROSSHAIR_SPEED_MUL     150
+#define CROSSHAIR_SIM_TOLERANCE 5
 
 #define MOUSE_IMG               "img/Mouse(30x37)"
 #define MOUSE_IMG_EXTENSION     ".png"
-#define MOUSE_MOVEPOINTS        250
+#define MOUSE_MOVEPOINTS        500
 #define MICE_SPEED_MUL          70 // previously 100
 #define GRAVITY_MUL             400 // previously 150
 #define HILL_OVERCOME_PIXELS    20
+
+#define AI_STUCK_COUNT          20
+#define AI_MAX_STUCK_TIMES      10
+#define AI_SAFETY_RADIUS        5
 
 // NOTICATIONS' SPECIFICATIONS
 #define NOTIFICATION_HP_OFFSET  20
@@ -56,8 +61,8 @@ enum {  gravity = 0,
 #define BULLET_SPEED_MUL        100
 
 #define SHOTGUN_IMG             "img/Shotgun.png"
-#define SHOTGUN_DAMAGE          30  // previously 30
-#define SHOTGUN_RANGE           50
+#define SHOTGUN_DAMAGE          30
+#define SHOTGUN_RANGE           25
 
 #define BAZOOKA_IMG             "img/Bazooka.png"
 #define BAZOOKA_DAMAGE          40

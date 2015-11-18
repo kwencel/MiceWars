@@ -5,6 +5,7 @@
 #include "Game.h"
 #include "Timer.h"
 #include "RangedWeapon.h"
+#include "AI.h"
 
 Game* Game::m_pInstance = nullptr;
 
@@ -16,8 +17,13 @@ Game* Game::Instance() {
 }
 
 void Game::readKeyboardState() {
-    if (Game::Instance()->current_player != nullptr) {
-        current_player->handle_keys(keystates);
+    if (current_player != nullptr) {
+        if (current_player->is_human) {
+            current_player->handle_keys(keystates);
+        }
+        else {
+            current_player->handle_keys(SDLK_KP_ENTER);
+        }
     }
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
@@ -33,7 +39,8 @@ void Game::readKeyboardState() {
                 else if (event.key.keysym.sym == SDLK_q) {
                     quit = true;
                 }
-                else if (current_player != nullptr and (event.key.keysym.sym != SDLK_LEFT or event.key.keysym.sym != SDLK_RIGHT or
+                else if (current_player != nullptr and current_player->is_human and
+                        (event.key.keysym.sym != SDLK_LEFT or event.key.keysym.sym != SDLK_RIGHT or
                          event.key.keysym.sym != SDLK_UP or event.key.keysym.sym != SDLK_DOWN or
                          event.key.keysym.sym != SDLK_SPACE)) {
                     current_player->handle_keys(event.key.keysym.sym);
@@ -137,8 +144,8 @@ void Game::loadGame(std::string fileName) {
 
 void Game::returnToMenu() {
     removePersistentNotifications();
-    for (auto player : player_vector) {
-        delete player;
+    while (not player_vector.empty()) {
+        delete player_vector[0];
     }
     world_map.clear();
     notification_queue.clear();
@@ -567,10 +574,17 @@ void Game::placeMice() {
     }
 }
 
-void Game::createPlayer(std::string name, bool is_human, int mouse_amount, int colour) {
-    Player* player = new Player(name, is_human, mouse_amount, colour);
-    player->player_vecpos = player_vector.size();
-    player_vector.push_back(player);
+void Game::createPlayer(std::string name, bool is_human, int mice_amount, int colour) {
+    if (is_human) {
+        Player* player = new Player(name, is_human, mice_amount, colour);
+        player->player_vecpos = player_vector.size();
+        player_vector.push_back(player);
+    }
+    else {
+        AI* player = new AI(name, is_human, mice_amount, colour);
+        player->player_vecpos = player_vector.size();
+        player_vector.push_back(player);
+    }
 }
 
 void Game::changePlayer() {
@@ -690,6 +704,7 @@ void Game::checkWinLoseConditions() {
     if (player_vector.size() == 1) {
         std::stringstream ss;
         ss << "Player " << player_vector[0]->getName() << " has won!";
+        cout << "[INFO] Player " << player_vector[0]->getName() << " has won!!!" << endl;
         createNotification(ss.str(), 1);
         returnToMenu();
     }

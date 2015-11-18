@@ -2,12 +2,6 @@
 #include "Engine.h"
 
 void Object::display() {
-    updateCenter();
-    SDL_Rect clip;
-    clip.x = 0;
-    clip.y = 0;
-    clip.w = obj_width;
-    clip.h = obj_height;
     rectangle.x = pos_x; rectangle.y = pos_y;
     rectangle.w = obj_width; rectangle.h = obj_height;
     if (flip) {
@@ -29,16 +23,18 @@ Object::Object(int x, int y, int width, int height, std::string img_path) {
     cout << "Object created!" << endl;
 }
 
-void Object::updateCenter() {
-    center.x = pos_x + obj_width / 2;
-    center.y = pos_y + obj_height / 2;
-}
-
 Object::~Object() {
     if (texture != nullptr) {
         SDL_DestroyTexture(texture);
     }
     cout << "Object destroyed!" << endl;
+}
+
+SDL_Point Object::getCenter() {
+    SDL_Point center;
+    center.x = pos_x + obj_width / 2;
+    center.y = pos_y + obj_height / 2;
+    return center;
 }
 
 
