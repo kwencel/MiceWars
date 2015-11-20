@@ -142,7 +142,6 @@ void AI::moveToPosition() {
     if (current_mouse->can_move) {
         // If mouse has a clear shot, don't move and shoot.
         if (simulateBulletMovement(enemy_mouse.pointer)) {
-            cout << "First try" << endl;
             current_mouse->can_move = false;
             return;
         }
@@ -159,7 +158,6 @@ void AI::moveToPosition() {
             }
             for (auto enemy : enemies_vector) {
                 if (simulateBulletMovement(enemy.pointer)) {
-                    cout << "FOR auto enemy: enemies_vector" << endl;
                     enemy_mouse = enemy;
                     current_mouse->can_move = false;
                     return;
@@ -168,11 +166,8 @@ void AI::moveToPosition() {
             if (override_movement != stay) {
                 motion_inverter = override_movement;
             }
-//            else if (enemy_mouse.distance < current_mouse->weapon->dmg_range - AI_SAFETY_RADIUS) {
-//                motion_inverter = -1;
-//            }
-            else if (enemy_mouse.distance > current_mouse->weapon->dmg_range + AI_SAFETY_RADIUS) {
-                motion_inverter = 1;
+            else if (enemy_mouse.distance < current_mouse->weapon->dmg_range - AI_SAFETY_RADIUS) {
+                motion_inverter = -1;
             }
             else {
                 motion_inverter = 1;
@@ -215,18 +210,6 @@ void AI::aim(Object* target, bool simulate) {
     y1 = float(current_mouse->weapon->pos_y);
     x2 = float(target->getCenter().x);
     y2 = float(target->pos_y);
-//    if (current_mouse->flip) {
-//        x1 = float(current_mouse->weapon->pos_x);
-//        y1 = float(current_mouse->weapon->pos_y);
-//        x2 = float(target->getCenter().x);
-//        y2 = float(target->getCenter().y);
-//    }
-//    else {
-//        x1 = float(current_mouse->weapon->pos_x);
-//        y1 = float(current_mouse->weapon->pos_y);
-//        x2 = float(target->pos_x + target->getCenter().x);
-//        y2 = float(target->getCenter().y);
-//    }
     a_coefficient = (y1 - y2) / (x1 - x2);
     b_coefficient = y1 - (a_coefficient * x1);
     // CROSSHAIR COORDINATES
@@ -268,10 +251,6 @@ void AI::aim(Object* target, bool simulate) {
             fire();
             return;
         }
-//        else if (simulateBulletMovement(enemy_mouse.pointer)) {
-//            fire();
-//            return;
-//        }
         else if (ranged_weapon_ptr->crosshair->pos_x == ideal_crosshair_x and
                  ranged_weapon_ptr->crosshair->pos_y == ideal_crosshair_y) {
             fire();
