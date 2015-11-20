@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <assert.h>
 #include "Game.h"
 #include "Timer.h"
 #include "RangedWeapon.h"
@@ -17,10 +16,10 @@ Game* Game::Instance() {
 void Game::readKeyboardState() {
     if (current_player != nullptr) {
         if (current_player->is_human) {
-            current_player->handle_keys(keystates);
+            current_player->handleKeys(keystates);
         }
         else {
-            current_player->handle_keys(SDLK_KP_ENTER);
+            current_player->handleKeys(SDLK_KP_ENTER);
         }
     }
     SDL_Event event;
@@ -41,7 +40,7 @@ void Game::readKeyboardState() {
                         (event.key.keysym.sym != SDLK_LEFT or event.key.keysym.sym != SDLK_RIGHT or
                          event.key.keysym.sym != SDLK_UP or event.key.keysym.sym != SDLK_DOWN or
                          event.key.keysym.sym != SDLK_SPACE)) {
-                    current_player->handle_keys(event.key.keysym.sym);
+                    current_player->handleKeys(event.key.keysym.sym);
                 }
                 break;
             }
@@ -419,27 +418,21 @@ bool Game::doesCollideWithPoint(Object* object, int coll_x, int coll_y, int x_of
     return false;
 }
 
-std::vector<Mouse*> Game::checkMiceCollision(int coll_x, int coll_y, int x_offset, int y_offset) {
+bool Game::doesObjectsOverlap(Object* object1, Object* object2) {
+    return (object1->pos_x < object2->pos_x + object2->obj_width && object1->pos_x + object1->obj_width > object2->pos_x &&
+            object1->pos_y < object2->pos_y + object2->obj_height && object1->pos_y + object1->obj_height > object2->pos_y);
+}
+
+std::vector<Mouse*> Game::checkMiceCollisionRect(Object* object) {
     std::vector<Mouse*> affectedMice;
     for (auto player : player_vector) {
         for (auto mouse: player->mice_vector) {
-            if (doesCollideWithPoint(mouse, coll_x, coll_y, x_offset, y_offset)) {
+            if (doesObjectsOverlap(mouse, object)) {
                 affectedMice.push_back(mouse);
             }
         }
     }
     return affectedMice;
-}
-
-Mouse* Game::checkMouseCollision(int coll_x, int coll_y, int x_offset, int y_offset) {
-    for (auto player : player_vector) {
-        for (auto mouse: player->mice_vector) {
-            if (doesCollideWithPoint(mouse, coll_x, coll_y, x_offset, y_offset)) {
-                return mouse;
-            }
-        }
-    }
-    return nullptr;
 }
 
 bool Game::checkMiceCollisionBool(int coll_x, int coll_y, int x_offset, int y_offset) {
@@ -525,7 +518,6 @@ void Game::changePlayer() {
         current_player_vecpos = 0;
     }
     else {
-        assert(not Game::player_vector.empty());
         if (current_player_vecpos < player_vector.size() - 1) {
             current_player = player_vector[++current_player_vecpos];
         }

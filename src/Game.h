@@ -32,7 +32,7 @@ public:
     std::vector<std::vector<char>> world_map;
     std::vector<Player*> player_vector;
     std::deque<NotificationBox*> notification_queue;
-    int players_count = 2;
+    int players_count = 3;
     int win_width = 800;
     int win_height = 600;
     bool quit = false;
@@ -70,13 +70,12 @@ public:
     void capFPS();
     void removePersistentNotifications();
     bool checkMiceCollisionBool(int coll_x, int coll_y, int x_offset = 0, int y_offset = 0);
-    std::vector<Mouse *> checkMiceCollision(int coll_x, int coll_y, int x_offset = 0, int y_offset = 0);
     void checkMiceCollisionRef(int coll_x, int coll_y, std::vector<Mouse*> *affectedMice, int x_offset = 0, int y_offset = 0);
     void checkWinLoseConditions();
     void controlMenu();
     void displayMenu();
-
-    Mouse *checkMouseCollision(int coll_x, int coll_y, int x_offset, int y_offset);
+    bool doesObjectsOverlap(Object *object1, Object *object2);
+    std::vector<Mouse *> checkMiceCollisionRect(Object *object);
 };
 
 
