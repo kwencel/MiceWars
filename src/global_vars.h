@@ -38,7 +38,7 @@ enum {  gravity = 0,
 #define GRAVITY_MUL             400 // previously 150
 #define HILL_OVERCOME_PIXELS    20
 
-#define AI_STUCK_COUNT          20
+#define AI_STUCK_COUNT          5
 #define AI_MAX_STUCK_TIMES      10
 #define AI_SAFETY_RADIUS        5
 

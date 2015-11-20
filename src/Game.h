@@ -75,6 +75,8 @@ public:
     void checkWinLoseConditions();
     void controlMenu();
     void displayMenu();
+
+    Mouse *checkMouseCollision(int coll_x, int coll_y, int x_offset, int y_offset);
 };
 
 

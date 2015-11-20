@@ -6,8 +6,8 @@ int main(int argc, char** argv) {
     Engine::Instance()->getReady(Game::Instance()->getWindowWidth(), Game::Instance()->getWindowHeigth());
     Timer::Instance()->setFPS(60);
     Game::Instance()->generateTerrain();
-    Game::Instance()->createPlayer("Daktyl", false, 100, 0);
-    Game::Instance()->createPlayer("Aleker", false, 100, 0);
+    Game::Instance()->createPlayer("Daktyl", true, 2, 0);
+    Game::Instance()->createPlayer("Aleker", false, 4, 0);
     //Game::Instance()->createPlayer("Lazarz", false, 1, 0);
     Game::Instance()->placeMice();
     Game::Instance()->changePlayer();

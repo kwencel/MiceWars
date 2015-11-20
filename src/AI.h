@@ -41,9 +41,7 @@ public:
             : Player(name, is_human, mouse_amount, colour) { cout << "AI created!" << endl; }
     ~AI();
     void makeTurn() override;
-
     bool simulateBulletMovement(Object* target);
-
     void got_stuck_workaround();
 };
 

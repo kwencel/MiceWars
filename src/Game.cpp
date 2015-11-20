@@ -431,6 +431,17 @@ std::vector<Mouse*> Game::checkMiceCollision(int coll_x, int coll_y, int x_offse
     return affectedMice;
 }
 
+Mouse* Game::checkMouseCollision(int coll_x, int coll_y, int x_offset, int y_offset) {
+    for (auto player : player_vector) {
+        for (auto mouse: player->mice_vector) {
+            if (doesCollideWithPoint(mouse, coll_x, coll_y, x_offset, y_offset)) {
+                return mouse;
+            }
+        }
+    }
+    return nullptr;
+}
+
 bool Game::checkMiceCollisionBool(int coll_x, int coll_y, int x_offset, int y_offset) {
     for (auto player : player_vector) {
         for (auto mouse: player->mice_vector) {

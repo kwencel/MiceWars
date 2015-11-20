@@ -27,8 +27,11 @@ void AI::makeTurn() {
 }
 
 bool AI::simulateBulletMovement(Object* target) {
-    Object* test_bullet = new Object(current_mouse->weapon->getCenter().x, current_mouse->weapon->getCenter().y, BULLET_WIDTH, BULLET_HEIGHT);
+    Object *test_bullet = new Object(current_mouse->weapon->getCenter().x, current_mouse->weapon->getCenter().y,
+                                     BULLET_WIDTH, BULLET_HEIGHT);
     aim(target, true);
+//    int offset_x = 0;
+//    int offset_y = 0;
     int offset_x = -1;
     int offset_y = -1;
     if (current_mouse->weapon->flip) {
@@ -37,15 +40,65 @@ bool AI::simulateBulletMovement(Object* target) {
     if (a_coefficient) {
         offset_y = 1;
     }
+    std::vector<Mouse *> affectedMice;
     while (Game::Instance()->isInsideWindowBorders(test_bullet, offset_x, offset_y)) {
         if (Game::Instance()->doesCollide(test_bullet, offset_x, offset_y)) {
             delete test_bullet;
             return false;
         }
-        if (Game::Instance()->checkMiceCollisionBool(test_bullet->pos_x, test_bullet->pos_y)) {
-            delete test_bullet;
-            return true;
+        // Save the mouse that was hit by test bullet to the vector
+//        affectedMice.clear();
+//        affectedMice = Game::Instance()->checkMiceCollision(test_bullet->getCenter().x, test_bullet->getCenter().y, offset_x, offset_y);
+//        if (not affectedMice.empty()) {
+//            // For each mouse that got hurt by the test bullet
+//            for (auto affected : affectedMice) {
+//                // Check if it's one of the enemy mice
+//                for (int i = 0; i < enemies_vector.size(); ++i) {
+//                    // If it's one of the enemies, return true
+//                    if (affected != enemies_vector[i].pointer) {
+//                        delete test_bullet;
+//                        return true;
+//                    }
+//                }
+//            }
+//            // If it's your own mouse, stop and move until you find a clear position to shoot
+//            delete test_bullet;
+//            return false;
+//        }
+
+        Mouse *affected = Game::Instance()->checkMouseCollision(test_bullet->pos_x, test_bullet->pos_y,
+                                                                offset_x, offset_y);
+        if (affected != nullptr) {
+            for (int i = 0; i < enemies_vector.size(); ++i) {
+                // If it's one of the enemies, return true
+                if (affected == enemies_vector[i].pointer) {
+                    delete test_bullet;
+                    return true;
+                }
+//                else {
+//                    return false;
+//                }
+            }
+            // If it's your own mouse, stop and move until you find a clear position to shoot
+//            delete test_bullet;
+//            return false;
         }
+
+
+
+//            // The hit mouse was found in the enemies vector (enemy mouse got hit - very good!)
+//            if (std::find (enemies_vector.begin(), enemies_vector.end(), mouse) != enemies_vector.end()) {
+//                delete test_bullet;
+//                return true;
+//            }
+//            else {  // The hit mouse is not an enemy so you've hit your ally. Return false.
+//                delete test_bullet;
+//                return false;
+//            }
+//        if (std::find (affectedMice.begin(), affectedMice.end(), enemy_mouse.pointer) != affectedMice.end()) {
+//            delete test_bullet;
+//            return true;
+//        }
         if (current_mouse->weapon->flip == 0) {
             test_bullet->pos_x -= 1;
         }
@@ -87,12 +140,12 @@ void AI::chooseTarget() {
     if (vulnerable_enemies.size() == 1) {
         enemy_mouse = vulnerable_enemies[0];
     }
-        // If there are many, choose the weakest one
+    // If there are many, choose the weakest one
     else if (vulnerable_enemies.size() > 1) {
         sort(vulnerable_enemies.begin(), vulnerable_enemies.end(), compareHPIncreasing);
         enemy_mouse = vulnerable_enemies[0];
     }
-        // There are not vulnerable mice. Choose the closest one
+    // There are no vulnerable mice. Choose the closest one
     else {
         sort(enemies_vector.begin(), enemies_vector.end(), compareDistanceIncreasing);
         enemy_mouse = enemies_vector[0];
@@ -167,6 +220,12 @@ void AI::chooseWeapon() {
 }
 
 void AI::aim(Object* target, bool simulate) {
+    if (enemy_mouse.direction == right) {
+        current_mouse->flip = true;
+    }
+    else {
+        current_mouse->flip = false;
+    }
     RangedWeapon *ranged_weapon_ptr = dynamic_cast<RangedWeapon *>(current_mouse->weapon);
     RangedWeapon TestWeapon(current_mouse->pos_x + WEAPON_X_OFFSET, current_mouse->pos_y + WEAPON_Y_OFFSET,
                             WEAPON_WIDTH,
@@ -175,9 +234,21 @@ void AI::aim(Object* target, bool simulate) {
     // CALCULATING TRAJECTORY
     float x1, y1, x2, y2;
     x1 = float(current_mouse->weapon->getCenter().x);
-    y1 = float(current_mouse->weapon->getCenter().y - BULLET_HEIGHT);
+    y1 = float(current_mouse->weapon->getCenter().y);
     x2 = float(target->getCenter().x);
     y2 = float(target->getCenter().y);
+//    if (current_mouse->flip) {
+//        x1 = float(current_mouse->weapon->pos_x + current_mouse->weapon->obj_width);
+//        y1 = float(current_mouse->weapon->pos_y + current_mouse->weapon->obj_height);
+//        x2 = float(target->getCenter().x);
+//        y2 = float(target->getCenter().y);
+//    }
+//    else {
+//        x1 = float(current_mouse->weapon->pos_x);
+//        y1 = float(current_mouse->weapon->pos_y + current_mouse->weapon->obj_height);
+//        x2 = float(target->getCenter().x);
+//        y2 = float(target->getCenter().y);
+//    }
     a_coefficient = (y1 - y2) / (x1 - x2);
     b_coefficient = y1 - (a_coefficient * x1);
     // CROSSHAIR COORDINATES
@@ -198,14 +269,31 @@ void AI::aim(Object* target, bool simulate) {
         else if (enemy_mouse.pointer->pos_y > current_mouse->pos_y) {  // Enemy is higher than you
             current_mouse->weapon->wants_to_move_crosshair = down;
         }
+
+        int old_crosshair_x = -1;
+        int old_crosshair_y = -1;
+        if (ranged_weapon_ptr->crosshair != nullptr) {
+            old_crosshair_x = ranged_weapon_ptr->crosshair->pos_x;
+            old_crosshair_y = ranged_weapon_ptr->crosshair->pos_y;
+        }
+
         current_mouse->weapon->prepare();
+        if (old_crosshair_x == ranged_weapon_ptr->crosshair->pos_x and old_crosshair_y == ranged_weapon_ptr->crosshair->pos_y) {
+            ++stuck_count;
+        }
+
         if ((ranged_weapon_ptr->it == ranged_weapon_ptr->semicircle_vector.begin()) or (ranged_weapon_ptr->it == ranged_weapon_ptr->semicircle_vector.end() - 1)) {
             fire();
+            return;
         }
-        else if (simulateBulletMovement(enemy_mouse.pointer) and
-        (ranged_weapon_ptr->crosshair->pos_x == ideal_crosshair_center_x and
-            ranged_weapon_ptr->crosshair->pos_y == ideal_crosshair_center_y)) {
-                fire();
+        else if (ranged_weapon_ptr->crosshair->pos_x == ideal_crosshair_center_x and
+                ranged_weapon_ptr->crosshair->pos_y == ideal_crosshair_center_y) {
+            fire();
+            return;
+        }
+        else if (stuck_count >= AI_STUCK_COUNT) {
+            fire();
+            return;
         }
     }
 }
