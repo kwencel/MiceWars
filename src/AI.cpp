@@ -66,8 +66,16 @@ bool AI::simulateBulletMovement(Object* target) {
 //            return false;
 //        }
 
-        Mouse *affected = Game::Instance()->checkMouseCollision(test_bullet->pos_x, test_bullet->pos_y,
-                                                                offset_x, offset_y);
+        Mouse* affected;
+
+//        if (enemy_mouse.direction == true) {
+//            affected = Game::Instance()->checkMouseCollision(test_bullet->pos_x, test_bullet->pos_y, offset_x, offset_y);
+//        }
+//        else {
+//            affected = Game::Instance()->checkMouseCollision(test_bullet->getCenter().x + test_bullet->obj_width, test_bullet->pos_y, offset_x, offset_y);
+//        }
+
+        affected = Game::Instance()->checkMouseCollision(test_bullet->getCenter().x, test_bullet->pos_y + test_bullet->obj_height, offset_x, offset_y);
         if (affected != nullptr) {
             for (int i = 0; i < enemies_vector.size(); ++i) {
                 // If it's one of the enemies, return true
@@ -75,9 +83,9 @@ bool AI::simulateBulletMovement(Object* target) {
                     delete test_bullet;
                     return true;
                 }
-//                else {
-//                    return false;
-//                }
+                else {
+                    return false;
+                }
             }
             // If it's your own mouse, stop and move until you find a clear position to shoot
 //            delete test_bullet;
@@ -170,6 +178,7 @@ void AI::moveToPosition() {
         // If mouse has a clear shot, don't move and shoot.
         if (enemy_mouse.vulnerable or simulateBulletMovement(enemy_mouse.pointer)) {
             current_mouse->can_move = false;
+            return;
         }
         else {
             if (stuck_count > AI_STUCK_COUNT) {
@@ -181,6 +190,13 @@ void AI::moveToPosition() {
                 stuck_count = 0;
                 got_stuck_workaround();
                 return;
+            }
+            for (auto enemy : enemies_vector) {
+                if (simulateBulletMovement(enemy.pointer)) {
+                    enemy_mouse = enemy;
+                    current_mouse->can_move = false;
+                    return;
+                }
             }
             if (override_movement != stay) {
                 motion_inverter = override_movement;
@@ -194,6 +210,7 @@ void AI::moveToPosition() {
             else {
                 if (simulateBulletMovement(enemy_mouse.pointer)) {
                     current_mouse->can_move = false;
+                    return;
                 }
                 else {
                     motion_inverter = 1;
