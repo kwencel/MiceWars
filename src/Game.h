@@ -19,7 +19,7 @@ class Game {
 private:
     std::random_device rd;
     std::mt19937 mt;
-    bool state = gameplay;
+    bool state = !gameplay;
     bool fullscreen = 0;
     std::pair<int,int> findNext(int x, int y, int max_height, int distance, int river_height);
     bool checkCollision(int x, int y);

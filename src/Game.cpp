@@ -736,9 +736,14 @@ void Game::searchForButton(std::pair<int,int> pair) {
     Object* point_where_mouse = new Object(pair.first, pair.second, 1, 1);
     for (auto button: buttons_vector) {
         if (Game::Instance()->doesObjectsOverlap(button, point_where_mouse)) {
-            cout << "Button click\n";
-            button->click();
-            break;
+            if (button == buttons_vector[B_NEW_GAME] and new_game) {
+                continue;
+            }
+            else {
+                cout << "Button click\n";
+                button->click();
+                break;
+            }
         }
     }
 }
@@ -765,7 +770,6 @@ void Game::controlMenu() {
             }
             case SDL_MOUSEBUTTONDOWN: {
                 if (event.button.button == SDL_BUTTON_LEFT) {
-                    cout << "Mouse click\n";
                     searchForButton(Engine::Instance()->getCursorPosition());
                 }
             }
@@ -784,6 +788,10 @@ void Game::creatingButtonsImagesVector() {
     buttons_images.push_back("img/b_AI1.png");
     buttons_images.push_back("img/b_AI1.png");
     buttons_images.push_back("img/b_AI1.png");
+    buttons_images.push_back("");
+    buttons_images.push_back("");
+    buttons_images.push_back("");
+    buttons_images.push_back("");
     buttons_images.push_back("img/p_daktyl.png");
     buttons_images.push_back("img/p_miki.png");
     buttons_images.push_back("img/p_lazarz.png");
@@ -800,11 +808,21 @@ void Game::creatingButtonsImagesVector() {
     buttons_images.push_back("img/b_Human1.png");
     buttons_images.push_back("img/b_Human1.png");
     buttons_images.push_back("img/b_Human1.png");
+    buttons_images.push_back("");
+    buttons_images.push_back("");
+    buttons_images.push_back("");
+    buttons_images.push_back("");
     buttons_images.push_back("img/p_daktyl2.png");
     buttons_images.push_back("img/p_miki2.png");
     buttons_images.push_back("img/p_lazarz2.png");
     buttons_images.push_back("img/p_ziomek2.png");
-
+    buttons_images.push_back("img/1.png"); // nr.36
+    buttons_images.push_back("img/2.png");
+    buttons_images.push_back("img/3.png");
+    buttons_images.push_back("img/4.png");
+    buttons_images.push_back("img/5.png");
+    buttons_images.push_back("img/6.png");
+    buttons_images.push_back("img/7.png");
 
 }
 
@@ -814,7 +832,7 @@ void Game::redrawMenu() {
     // CREATING NOTIFICATIONS
     Object* n_menu = new Object(20, 25, 206, 100, "img/n_menu.png");
     n_menu->display();
-    Object* n_option = new Object(230, 25, 206, 100, "img/n_option.png");
+    Object* n_option = new Object(397, 25, 206, 100, "img/n_option.png");
     n_option->display();
     if (buttons_vector.empty()) {   // every button's state is true
         // CREATING VECTOR OF PATHS TO IMAGES AND THEIR ALTERNATIVES
@@ -828,9 +846,9 @@ void Game::redrawMenu() {
         buttons_vector.push_back(b_load_game);
         Button* b_quit_game = new Button(25, 480, 150, 70, "img/b_Quit.png");
         buttons_vector.push_back(b_quit_game);
-        Button* b_new_game = new Button(230, 150, 150, 70, "img/b_NewGame.png");
+        Button* b_new_game = new Button(425, 150, 150, 70, "img/b_NewGame.png");
         buttons_vector.push_back(b_new_game);
-        Button* b_start = new Button(230, 150, 150, 70, "img/b_Start.png");
+        Button* b_start = new Button(425, 150, 150, 70, "img/b_Start.png");
         buttons_vector.push_back(b_start);
         // CREATING PLAYERS' BUTTONS
         Button* b_ai_d = new Button(300, 330, 100, 46, "img/b_AI1.png");
@@ -841,6 +859,14 @@ void Game::redrawMenu() {
         buttons_vector.push_back(b_ai_l);
         Button* b_ai_z = new Button(570, 480, 100, 46, "img/b_AI1.png");
         buttons_vector.push_back(b_ai_z);
+        Button* b_num_d = new Button(340, 270, 60, 60, "img/1.png");
+        buttons_vector.push_back(b_num_d);
+        Button* b_num_m = new Button(610, 270, 60, 60, "img/1.png");
+        buttons_vector.push_back(b_num_m);
+        Button* b_num_l = new Button(340, 420, 60, 60, "img/1.png");
+        buttons_vector.push_back(b_num_l);
+        Button* b_num_z = new Button(610, 420, 60, 60, "img/1.png");
+        buttons_vector.push_back(b_num_z);
         // CREATING BUTTONS OF PLAYERS
         Button* p_daktyl = new Button(230, 245, 270, 150, "img/p_daktyl.png");
         buttons_vector.push_back(p_daktyl);
@@ -863,6 +889,8 @@ void Game::redrawMenu() {
     }
         // IN PAUSE STATE BUT NO NEW GAME
     else if (!world_map.empty() and !new_game) {
+        buttons_vector[B_RESUME_GAME]->state = true;
+        buttons_vector[B_SAVE_GAME]->state = true;
         buttons_vector[B_START]->state = false;
         buttons_vector[P_DAKTYL]->state = false;
         buttons_vector[P_MIKI]->state = false;
@@ -882,16 +910,16 @@ void Game::redrawMenu() {
     // first players
     for (int i = P_DAKTYL; i <= P_ZIOMEK; i++ ) {
         if (!buttons_vector[i]->state) {
-            buttons_vector[i]->texture = Engine::Instance()->makeTexture(buttons_images[i+ALL_IN_B_VECTOR].c_str());
+            buttons_vector[i]->texture = Engine::Instance()->makeTexture(buttons_images[i + ALL_IN_B_VECTOR].c_str());
         }
         else {
             buttons_vector[i]->texture = Engine::Instance()->makeTexture(buttons_images[i].c_str());
         }
         buttons_vector[i]->display();
     }
-    for (int i = 0; i < P_DAKTYL; i++) {
+    for (int i = 0; i < B_NUM_D; i++) {
         if (!buttons_vector[i]->state) {
-            buttons_vector[i]->texture = Engine::Instance()->makeTexture(buttons_images[i+ALL_IN_B_VECTOR].c_str());
+            buttons_vector[i]->texture = Engine::Instance()->makeTexture(buttons_images[i + ALL_IN_B_VECTOR].c_str());
         }
         else {
             buttons_vector[i]->texture = Engine::Instance()->makeTexture(buttons_images[i].c_str());
@@ -900,18 +928,18 @@ void Game::redrawMenu() {
             buttons_vector[i]->display();
         }
     }
-
+    for (int i = B_NUM_D; i <= B_NUM_Z; i++) {
+        buttons_vector[i]->texture = Engine::Instance()->makeTexture(buttons_images[buttons_vector[i]->amount + 35].c_str());
+        buttons_vector[i]->display();
+    }
     // TODO delete from memory
     n_menu->~Object();
     n_option->~Object();
 }
 
 void Game::displayMenu() {
-    //SDL_SetRenderDrawColor(Engine::Instance()->renderer, 0, 0, 255, 255 );
-    //Engine::Instance()->clearRenderer();
     if (menu_need_redraw) {
         redrawMenu();
         menu_need_redraw = false;
     }
-
 }

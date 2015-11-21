@@ -97,7 +97,7 @@ enum {  gravity = 0,
 #define RED_COLOUR              4
 
 // BUTTONS
-#define ALL_IN_B_VECTOR         14
+#define ALL_IN_B_VECTOR         18
 #define B_RESUME_GAME           0
 #define B_SAVE_GAME             1
 #define B_LOAD_GAME             2
@@ -108,10 +108,14 @@ enum {  gravity = 0,
 #define B_AI_HUMAN_M            7
 #define B_AI_HUMAN_L            8
 #define B_AI_HUMAN_Z            9
-#define P_DAKTYL                10
-#define P_MIKI                  11
-#define P_LAZARZ                12
-#define P_ZIOMEK                13
+#define B_NUM_D                 10
+#define B_NUM_M                 11
+#define B_NUM_L                 12
+#define B_NUM_Z                 13
+#define P_DAKTYL                14
+#define P_MIKI                  15
+#define P_LAZARZ                16
+#define P_ZIOMEK                17
 
 
 #define SAVED_GAME              "saved_game.dat"

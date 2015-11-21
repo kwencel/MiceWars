@@ -33,7 +33,7 @@ void Button::click() {
     else if (this == Game::Instance()->buttons_vector[B_QUIT_GAME]) {
         Game::Instance()->quit = true;
     }
-    else if (this == Game::Instance()->buttons_vector[B_NEW_GAME]) {
+    else if (this == Game::Instance()->buttons_vector[B_NEW_GAME] and !Game::Instance()->new_game) {
         Game::Instance()->new_game = true;
         Game::Instance()->buttons_vector[P_DAKTYL]->state = true;
         Game::Instance()->buttons_vector[P_MIKI]->state = true;
@@ -41,6 +41,16 @@ void Button::click() {
         Game::Instance()->menu_need_redraw = true;
     }
     else if (this == Game::Instance()->buttons_vector[B_START] and this->state) {
+        // TODO read players
+        Game::Instance()->generateTerrain();
+        Game::Instance()->createPlayer(GREEN_MOUSE, true, 2, 0);
+        Game::Instance()->createPlayer(PINK_MOUSE, true, 2, 0);
+        Game::Instance()->createPlayer(BLUE_MOUSE, true, 2, 0);
+        Game::Instance()->players_count = Game::Instance()->player_vector.size();
+        Game::Instance()->placeMice();
+        Game::Instance()->changePlayer();
+
+        Game::Instance()->pause();
         // load new_game
     }
     else if ((this == Game::Instance()->buttons_vector[B_AI_HUMAN_D]
@@ -49,6 +59,17 @@ void Button::click() {
               or this == Game::Instance()->buttons_vector[B_AI_HUMAN_Z]) and Game::Instance()->new_game) {
         this->state = !this->state;
         // TODO change in player if AI or HUMAN
+        Game::Instance()->menu_need_redraw = true;
+    }
+    else if ((this == Game::Instance()->buttons_vector[B_NUM_D]
+              or this == Game::Instance()->buttons_vector[B_NUM_M]
+              or this == Game::Instance()->buttons_vector[B_NUM_L]
+              or this == Game::Instance()->buttons_vector[B_NUM_Z]) and Game::Instance()->new_game) {
+        if (this->amount == 7) {
+            this->amount = 1;
+        } else {
+            this->amount++;
+        }
         Game::Instance()->menu_need_redraw = true;
     }
     else if ((this == Game::Instance()->buttons_vector[P_DAKTYL]
