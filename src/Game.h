@@ -84,7 +84,7 @@ public:
     void displayMenu();
     void redrawMenu();
     bool doesObjectsOverlap(Object* object1, Object* object2);
-    void searchForButton(std::pair<int,int> pair)
+    void searchForButton(std::pair<int,int> pair);
 };
 
 

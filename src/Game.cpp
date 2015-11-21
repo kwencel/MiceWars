@@ -133,9 +133,6 @@ void Game::loadGame(std::string fileName) {
                             NOTIFICATION_HP_WIDTH, NOTIFICATION_HP_HEIGHT, false);
             }
         }
-        //displayArrayOfValues();
-        //Engine::Instance()->getReady(Game::Instance()->getWindowWidth(), Game::Instance()->getWindowHeigth());
-        //Timer::Instance()->setFPS(60);
         drawBackground();
         cout << "File is loaded";
         read_game_file.close();
@@ -764,7 +761,7 @@ void Game::controlMenu() {
             case SDL_MOUSEBUTTONDOWN: {
                 if (event.button.button == SDL_BUTTON_LEFT) {
                     cout << "Mouse click\n";
-                    searchForButton(Engine::Instance()->readCursorPosition());
+                    searchForButton(Engine::Instance()->getCursorPosition());
                 }
             }
             default:break;
