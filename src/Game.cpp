@@ -613,8 +613,13 @@ void Game::changePlayer() {
 }
 
 void Game::pause() {
-    menu_need_redraw = true;
     state = !state;
+    if (state != gameplay) {
+        menu_need_redraw = true;
+    }
+    else {
+        new_game = false;
+    }
 }
 
 int Game::getRandomIntBetween(int min, int max) {
@@ -768,6 +773,40 @@ void Game::controlMenu() {
         }
     }
 }
+void Game::creatingButtonsImagesVector() {
+    buttons_images.push_back("img/b_ResumeGame.png");
+    buttons_images.push_back("img/b_SaveGame.png");
+    buttons_images.push_back("img/b_LoadGame.png");
+    buttons_images.push_back("img/b_Quit.png");
+    buttons_images.push_back("img/b_NewGame.png");
+    buttons_images.push_back("img/b_Start.png");
+    buttons_images.push_back("img/b_AI1.png");
+    buttons_images.push_back("img/b_AI1.png");
+    buttons_images.push_back("img/b_AI1.png");
+    buttons_images.push_back("img/b_AI1.png");
+    buttons_images.push_back("img/p_daktyl.png");
+    buttons_images.push_back("img/p_miki.png");
+    buttons_images.push_back("img/p_lazarz.png");
+    buttons_images.push_back("img/p_ziomek.png");
+
+    // alternative
+    buttons_images.push_back("img/b_ResumeGame2.png");
+    buttons_images.push_back("img/b_SaveGame2.png");
+    buttons_images.push_back("img/b_LoadGame2.png");
+    buttons_images.push_back("img/b_Quit2.png");
+    buttons_images.push_back("img/b_NewGame2.png");
+    buttons_images.push_back("img/b_Start2.png");
+    buttons_images.push_back("img/b_Human1.png");
+    buttons_images.push_back("img/b_Human1.png");
+    buttons_images.push_back("img/b_Human1.png");
+    buttons_images.push_back("img/b_Human1.png");
+    buttons_images.push_back("img/p_daktyl2.png");
+    buttons_images.push_back("img/p_miki2.png");
+    buttons_images.push_back("img/p_lazarz2.png");
+    buttons_images.push_back("img/p_ziomek2.png");
+
+
+}
 
 void Game::redrawMenu() {
     SDL_SetRenderDrawColor(Engine::Instance()->renderer, 255, 255, 51, 255 );
@@ -775,46 +814,93 @@ void Game::redrawMenu() {
     // CREATING NOTIFICATIONS
     Object* n_menu = new Object(20, 25, 206, 100, "img/n_menu.png");
     n_menu->display();
-    Object* n_option = new Object(231, 25, 206, 100, "img/n_option.png");
+    Object* n_option = new Object(230, 25, 206, 100, "img/n_option.png");
     n_option->display();
-    if (buttons_vector.empty()) {
+    if (buttons_vector.empty()) {   // every button's state is true
+        // CREATING VECTOR OF PATHS TO IMAGES AND THEIR ALTERNATIVES
+        creatingButtonsImagesVector();
         // CREATING BUTTONS
         Button* b_resume_game = new Button(25, 150, 150, 70, "img/b_ResumeGame.png");
-        Button* b_save_game = new Button(25, 245, 150, 70, "img/b_SaveGame.png");
-        if (world_map.empty()) {
-            b_resume_game->texture = Engine::Instance()->makeTexture("img/b_ResumeGame2.png");
-            b_save_game->texture = Engine::Instance()->makeTexture("img/b_SaveGame2.png");
-        }
         buttons_vector.push_back(b_resume_game);
+        Button* b_save_game = new Button(25, 245, 150, 70, "img/b_SaveGame.png");
         buttons_vector.push_back(b_save_game);
         Button* b_load_game = new Button(25, 340, 150, 70, "img/b_LoadGame.png");
         buttons_vector.push_back(b_load_game);
         Button* b_quit_game = new Button(25, 480, 150, 70, "img/b_Quit.png");
         buttons_vector.push_back(b_quit_game);
-        Button* b_new_game = new Button(231, 150, 150, 70, "img/b_NewGame.png");
+        Button* b_new_game = new Button(230, 150, 150, 70, "img/b_NewGame.png");
         buttons_vector.push_back(b_new_game);
-        Button* b_start = new Button(501, 150, 150, 70, "img/b_Start2.png");
-        // CREATING PLAYERS BUTTONS
-        Button* p_daktyl = new Button(231, 245, 270, 150, "img/p_daktyl2.png");
-        Button* p_miki = new Button(501, 245, 270, 150, "img/p_miki2.png");
-        Button* p_lazarz = new Button(231, 395, 270, 150, "img/p_lazarz2.png");
-        Button* p_ziomek = new Button(501, 395, 270, 150, "img/p_ziomek2.png");
-        if (new_game) {
-            b_start->texture = Engine::Instance()->makeTexture("img/b_Start.png");
-            p_daktyl->texture = Engine::Instance()->makeTexture("img/p_daktyl.png");
-            p_miki->texture = Engine::Instance()->makeTexture("img/p_miki.png");
-            p_lazarz->texture = Engine::Instance()->makeTexture("img/p_lazarz.png");
-            p_ziomek->texture = Engine::Instance()->makeTexture("img/p_ziomek.png");
-        }
+        Button* b_start = new Button(230, 150, 150, 70, "img/b_Start.png");
         buttons_vector.push_back(b_start);
+        // CREATING PLAYERS' BUTTONS
+        Button* b_ai_d = new Button(300, 330, 100, 46, "img/b_AI1.png");
+        buttons_vector.push_back(b_ai_d);
+        Button* b_ai_m = new Button(570, 330, 100, 46, "img/b_AI1.png");
+        buttons_vector.push_back(b_ai_m);
+        Button* b_ai_l = new Button(300, 480, 100, 46, "img/b_AI1.png");
+        buttons_vector.push_back(b_ai_l);
+        Button* b_ai_z = new Button(570, 480, 100, 46, "img/b_AI1.png");
+        buttons_vector.push_back(b_ai_z);
+        // CREATING BUTTONS OF PLAYERS
+        Button* p_daktyl = new Button(230, 245, 270, 150, "img/p_daktyl.png");
         buttons_vector.push_back(p_daktyl);
+        Button* p_miki = new Button(500, 245, 270, 150, "img/p_miki.png");
         buttons_vector.push_back(p_miki);
+        Button* p_lazarz = new Button(230, 395, 270, 150, "img/p_lazarz.png");
         buttons_vector.push_back(p_lazarz);
+        Button* p_ziomek = new Button(500, 395, 270, 150, "img/p_ziomek.png");
         buttons_vector.push_back(p_ziomek);
     }
-    for (auto button: Game::Instance()->buttons_vector) {
-        button->display();
+        // AT THE BEGINNING OF GAME
+    if (world_map.empty() and !new_game) {
+        buttons_vector[B_RESUME_GAME]->state = false;
+        buttons_vector[B_SAVE_GAME]->state = false;
+        buttons_vector[B_START]->state = false;
+        buttons_vector[P_DAKTYL]->state = false;
+        buttons_vector[P_MIKI]->state = false;
+        buttons_vector[P_LAZARZ]->state = false;
+        buttons_vector[P_ZIOMEK]->state = false;
     }
+        // IN PAUSE STATE BUT NO NEW GAME
+    else if (!world_map.empty() and !new_game) {
+        buttons_vector[B_START]->state = false;
+        buttons_vector[P_DAKTYL]->state = false;
+        buttons_vector[P_MIKI]->state = false;
+        buttons_vector[P_LAZARZ]->state = false;
+        buttons_vector[P_ZIOMEK]->state = false;
+    }
+        // NEW GAME
+    if (new_game) {
+        if (menu_active_players >= 2) {
+            buttons_vector[B_START]->state = true;
+        }
+        else {
+            buttons_vector[B_START]->state = false;
+        }
+    }
+    // CHANGING IMAGE BASING ON THE STATE OF BUTTON AND DISPLAYING
+    // first players
+    for (int i = P_DAKTYL; i <= P_ZIOMEK; i++ ) {
+        if (!buttons_vector[i]->state) {
+            buttons_vector[i]->texture = Engine::Instance()->makeTexture(buttons_images[i+ALL_IN_B_VECTOR].c_str());
+        }
+        else {
+            buttons_vector[i]->texture = Engine::Instance()->makeTexture(buttons_images[i].c_str());
+        }
+        buttons_vector[i]->display();
+    }
+    for (int i = 0; i < P_DAKTYL; i++) {
+        if (!buttons_vector[i]->state) {
+            buttons_vector[i]->texture = Engine::Instance()->makeTexture(buttons_images[i+ALL_IN_B_VECTOR].c_str());
+        }
+        else {
+            buttons_vector[i]->texture = Engine::Instance()->makeTexture(buttons_images[i].c_str());
+        }
+        if ((!new_game and i != B_START) or (new_game and i != B_NEW_GAME)) {
+            buttons_vector[i]->display();
+        }
+    }
+
     // TODO delete from memory
     n_menu->~Object();
     n_option->~Object();

@@ -7,8 +7,8 @@ class Button: public Object {
 public:
     bool state;
 
-    Button(int x, int y, int width, int height, std::string img_path)
-            : Object(x, y, width, height, img_path) { cout << "Button created!" << endl; }
+    Button(int x, int y, int width, int height, std::string img_path, bool state = true)
+            : Object(x, y, width, height, img_path), state(state)  { cout << "Button created!" << endl; }
     ~Button();
     Button(bool state = false) : state(state)  { }
     void click();

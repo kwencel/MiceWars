@@ -37,6 +37,8 @@ public:
     std::vector<std::vector<char>> world_map;
     std::vector<Player*> player_vector;
     std::vector<Button*> buttons_vector;
+    std::vector<std::string> buttons_images;
+    short menu_active_players = 0;
     bool menu_need_redraw = false;
     bool new_game = false;
     std::deque<NotificationBox*> notification_queue;
@@ -85,6 +87,7 @@ public:
     void redrawMenu();
     bool doesObjectsOverlap(Object* object1, Object* object2);
     void searchForButton(std::pair<int,int> pair);
+    void creatingButtonsImagesVector();
 };
 
 
