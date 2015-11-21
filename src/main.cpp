@@ -7,7 +7,7 @@ int main(int argc, char** argv) {
     Timer::Instance()->setFPS(60);
     Game::Instance()->generateTerrain();
     Game::Instance()->createPlayer("Daktyl", true, 4, 0);
-    Game::Instance()->createPlayer("Aleker", false, 4, 0);
+    Game::Instance()->createPlayer("Aleker", true, 4, 0);
 //    Game::Instance()->createPlayer("Lazarz", false, 4, 0);
     Game::Instance()->placeMice();
     Game::Instance()->changePlayer();

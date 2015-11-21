@@ -379,7 +379,7 @@ void Game::generateTerrain() {
 }
 
 inline bool Game::checkCollision(int x, int y) {
-    return (world_map[x][y] > 0);
+    return (world_map[x][y] == 1);
 }
 
 bool Game::doesCollide(Object* object, int x_offset, int y_offset) {
@@ -460,6 +460,7 @@ void Game::checkMiceCollisionRef(int coll_x, int coll_y, std::vector<Mouse *> *a
 }
 
 void Game::applyGravity() {
+    std::vector<Mouse*> affected_mice;
     for (auto player : player_vector) {
         for (auto mouse: player->mice_vector) {
             int steps = static_cast<int>(GRAVITY_MUL * Timer::Instance()->getDelta());
@@ -469,6 +470,10 @@ void Game::applyGravity() {
             for (int pixel = 0; pixel < steps; ++pixel) {
                 if (not doesCollide(mouse, 0, 1)) {
                     mouse->pos_y++;
+                    if (not isInsideWindowBorders(mouse, 0, 1)) {
+                        affected_mice.push_back(mouse);
+                        break;
+                    }
                 }
                 else {
                     break;
@@ -482,6 +487,14 @@ void Game::applyGravity() {
                 }
             }
         }
+    }
+    // Delete mice that got killed by the water
+    if (not affected_mice.empty()) {
+        while (not affected_mice.empty()) {
+            delete affected_mice[0];
+            affected_mice.erase(affected_mice.begin());
+        }
+        Game::Instance()->checkWinLoseConditions();
     }
 }
 
