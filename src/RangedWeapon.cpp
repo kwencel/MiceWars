@@ -55,7 +55,10 @@ void RangedWeapon::sortVector() {
 
 void RangedWeapon::markSemicircle() {
     semicircle_vector.clear();
-    std::pair<int,int> pair;
+    std::pair<int, int> pair;
+    int left_boundary =
+            Game::Instance()->current_player->current_mouse->getCenter().x - CROSSHAIR_WIDTH - CROSSHAIR_BOUNDARY;
+    int right_boundary = Game::Instance()->current_player->current_mouse->getCenter().x + CROSSHAIR_BOUNDARY;
     int x0 = Game::Instance()->current_player->current_mouse->pos_x;
     int y0 = Game::Instance()->current_player->current_mouse->pos_y;
     int x = RADIUS_CROSSHAIR;
@@ -71,29 +74,33 @@ void RangedWeapon::markSemicircle() {
 
     // DRAW SEMICIRCLE
     while (y <= x) {
-        if ((coefficient*y + x0) >= 0 && (coefficient*y + x0) <= Game::Instance()->win_width && (x + y0) >= 0
-                && (x + y0) <= Game::Instance()->win_height){
-            pair.first = coefficient*y + x0;               // Octant 3/2
+        if ((coefficient * y + x0) >= 0 && (coefficient * y + x0) <= Game::Instance()->win_width && (x + y0) >= 0
+            && (x + y0) <= Game::Instance()->win_height) {
+            pair.first = coefficient * y + x0;               // Octant 3/2
             pair.second = x + y0;
-            semicircle_vector.push_back(pair);
+            if (!gravity or (gravity and (pair.first >= right_boundary or pair.first <= left_boundary)))
+                semicircle_vector.push_back(pair);
         }
-        if ((coefficient*x + x0) >= 0 && (coefficient*x + x0) <= Game::Instance()->win_width && (y + y0) >= 0
-                && (y + y0) <= Game::Instance()->win_height) {
-            pair.first = coefficient*x + x0;               // Octant 4/1
+        if ((coefficient * x + x0) >= 0 && (coefficient * x + x0) <= Game::Instance()->win_width && (y + y0) >= 0
+            && (y + y0) <= Game::Instance()->win_height) {
+            pair.first = coefficient * x + x0;               // Octant 4/1
             pair.second = y + y0;
-            semicircle_vector.push_back(pair);
+            if (!gravity or (gravity and (pair.first >= right_boundary or pair.first <= left_boundary)))
+                semicircle_vector.push_back(pair);
         }
-        if ((coefficient*x + x0) >= 0 && (coefficient*x + x0) <= Game::Instance()->win_width && (-y + y0) >= 0
-                && (-y + y0) <= Game::Instance()->win_height) {
-            pair.first = coefficient*x + x0;               // Octant 5/8
+        if ((coefficient * x + x0) >= 0 && (coefficient * x + x0) <= Game::Instance()->win_width && (-y + y0) >= 0
+            && (-y + y0) <= Game::Instance()->win_height) {
+            pair.first = coefficient * x + x0;               // Octant 5/8
             pair.second = -y + y0;
-            semicircle_vector.push_back(pair);
+            if (!gravity or (gravity and (pair.first >= right_boundary or pair.first <= left_boundary)))
+                semicircle_vector.push_back(pair);
         }
-        if ((coefficient*y + x0) >= 0 && (coefficient*y + x0) <= Game::Instance()->win_width && (-x + y0) >= 0
-                && (-x + y0) <= Game::Instance()->win_height) {
-            pair.first = coefficient*y + x0;               // Octant 6/7
+        if ((coefficient * y + x0) >= 0 && (coefficient * y + x0) <= Game::Instance()->win_width && (-x + y0) >= 0
+            && (-x + y0) <= Game::Instance()->win_height) {
+            pair.first = coefficient * y + x0;               // Octant 6/7
             pair.second = -x + y0;
-            semicircle_vector.push_back(pair);
+            if (!gravity or (gravity and (pair.first >= right_boundary or pair.first <= left_boundary)))
+                semicircle_vector.push_back(pair);
         }
         y++;
         if (decisionOver2 <= 0) {

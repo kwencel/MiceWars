@@ -475,25 +475,10 @@ void Game::applyGravity() {
                 }
             }
             if (RangedWeapon* ranged_weapon = dynamic_cast<RangedWeapon*>(mouse->weapon)) {
-//                steps = static_cast<int>(WEAPON_GRAVITY_MUL * ranged_weapon->in_air_counter * Timer::Instance()->getDelta());
-//                for (int pixel = 0; pixel < steps; ++pixel) {
-//                    if (ranged_weapon->bullet != nullptr and not doesCollide(ranged_weapon->bullet, 0, 1)) {
-//                        ranged_weapon->bullet->pos_y++;
-//                    }
-//                    else {
-//                        break;
-//                    }
-//                }
                 if (ranged_weapon->gravity and ranged_weapon->bullet != nullptr) {
                     double a_decrement = pow(ranged_weapon->in_air_counter, 1/8.0)/ranged_weapon->weight;
                     cout << ranged_weapon->in_air_counter << ", " << a_decrement << endl;
                     ranged_weapon->a_coefficient += a_decrement;
-//                    if (current_player->current_mouse->flip) {
-//                        ranged_weapon->bullet->angle += 100 * a_decrement;
-//                    }
-//                    else {
-//                        ranged_weapon->bullet->angle -= 100 * a_decrement;
-//                    }
                 }
             }
         }

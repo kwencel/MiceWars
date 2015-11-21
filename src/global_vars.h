@@ -30,6 +30,7 @@ enum {  gravity = 0,
 #define CROSSHAIR_IMG           "img/Crosshair.png"
 #define CROSSHAIR_SPEED_MUL     150
 #define CROSSHAIR_SIM_TOLERANCE 5
+#define CROSSHAIR_BOUNDARY      50
 
 #define MOUSE_IMG               "img/Mouse(30x37)"
 #define MOUSE_IMG_EXTENSION     ".png"
@@ -42,7 +43,7 @@ enum {  gravity = 0,
 #define AI_MAX_STUCK_TIMES      10
 #define AI_SAFETY_RADIUS        5
 
-// NOTICATIONS' SPECIFICATIONS
+// NOTIFICATIONS' SPECIFICATIONS
 #define NOTIFICATION_HP_OFFSET  20
 #define NOTIFICATION_HP_WIDTH   25
 #define NOTIFICATION_HP_HEIGHT  20
@@ -78,7 +79,7 @@ enum {  gravity = 0,
 #define GRENADE_RANGE           40
 #define GRENADE_WIDTH           15
 #define GRENADE_HEIGHT          18
-#define GRENADE_WEIGHT          2000
+#define GRENADE_WEIGHT          250
 #define GRENADE_TIMER           5
 
 #define CHEESE_IMG              "img/Grenade.png"
