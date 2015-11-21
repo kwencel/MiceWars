@@ -140,6 +140,12 @@ void Player::save(std::ofstream &file) {
 void Player::load(std::ifstream &file) {
     weapon_amount.clear();
     file.read((char*)&colour, sizeof(int));
+    // SETTING NAME
+    if (colour == 1) name = GREEN_MOUSE;
+    else if (colour == 2) name = PINK_MOUSE;
+    else if (colour == 3) name = BLUE_MOUSE;
+    else if (colour == 4) name = RED_MOUSE;
+    //
     file.read((char*)&current_mouse_vecpos, sizeof(int));
     file.read((char*)&mice_amount, sizeof(int));
     unsigned long weapon_amount_size;

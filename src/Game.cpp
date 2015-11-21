@@ -6,6 +6,7 @@
 #include "Timer.h"
 #include "RangedWeapon.h"
 #include "AI.h"
+#include "Button.h"
 
 Game* Game::m_pInstance = nullptr;
 
@@ -133,6 +134,8 @@ void Game::loadGame(std::string fileName) {
             }
         }
         //displayArrayOfValues();
+        //Engine::Instance()->getReady(Game::Instance()->getWindowWidth(), Game::Instance()->getWindowHeigth());
+        //Timer::Instance()->setFPS(60);
         drawBackground();
         cout << "File is loaded";
         read_game_file.close();
@@ -184,10 +187,6 @@ void Game::drawBackground() {
     Engine::Instance()->background_texture = SDL_CreateTextureFromSurface(Engine::Instance()->renderer, Engine::Instance()->background);
 }
 
-void Game::displayMenu() {
-    SDL_SetRenderDrawColor(Engine::Instance()->renderer, 0, 0, 255, 255 );
-    Engine::Instance()->clearRenderer();
-}
 
 void Game::displayBackground() {
     SDL_RenderCopy(Engine::Instance()->renderer, Engine::Instance()->background_texture, NULL, NULL);
@@ -557,8 +556,16 @@ void Game::applyGravity() {
 void Game::placeMice() {
     for (int player_id = 0; player_id < players_count; ++player_id) { // For each player
         for (int i = 0; i < player_vector[player_id]->mice_amount; ++i) {    // Place their mice
+            if (player_vector[player_id]->name == GREEN_MOUSE)
+                player_vector[player_id]->colour = GREEN_COLOUR;
+            else if (player_vector[player_id]->name == PINK_MOUSE)
+                player_vector[player_id]->colour = PINK_COLOUR;
+            else if (player_vector[player_id]->name == BLUE_MOUSE)
+                player_vector[player_id]->colour = BLUE_COLOUR;
+            else if (player_vector[player_id]->name == RED_MOUSE)
+                player_vector[player_id]->colour = RED_COLOUR;
             std::stringstream mouse_img;
-            mouse_img << MOUSE_IMG << player_id + 1 << MOUSE_IMG_EXTENSION;
+            mouse_img << MOUSE_IMG << player_vector[player_id]->colour << MOUSE_IMG_EXTENSION;
             Mouse* mouse = new Mouse(getRandomIntBetween(0, win_width - MICE_WIDTH), getRandomIntBetween(0, win_height/3), MICE_WIDTH, MICE_HEIGHT, mouse_img.str());
             mouse->changeWeapon(shotgun);
             mouse->notification_hp = createNotification("",
@@ -609,6 +616,7 @@ void Game::changePlayer() {
 }
 
 void Game::pause() {
+    menu_need_redraw = true;
     state = !state;
 }
 
@@ -716,6 +724,23 @@ void Game::checkWinLoseConditions() {
     }
 }
 
+bool Game::doesObjectsOverlap(Object* object1, Object* object2) {
+    return (object1->pos_x < object2->pos_x + object2->obj_width && object1->pos_x + object1->obj_width > object2->pos_x &&
+            object1->pos_y < object2->pos_y + object2->obj_height && object1->pos_y + object1->obj_height > object2->pos_y);
+}
+
+void Game::searchForButton(std::pair<int,int> pair) {
+    Engine::Instance()->readCursorPosition();
+    Object* point_where_mouse = new Object(pair.first, pair.second, 1, 1);
+    for (auto button: buttons_vector) {
+        if (Game::Instance()->doesObjectsOverlap(button, point_where_mouse)) {
+            cout << "Button click\n";
+            button->click();
+            break;
+        }
+    }
+}
+
 void Game::controlMenu() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
@@ -736,7 +761,74 @@ void Game::controlMenu() {
                 Engine::Instance()->readCursorPosition();
                 break;
             }
+            case SDL_MOUSEBUTTONDOWN: {
+                if (event.button.button == SDL_BUTTON_LEFT) {
+                    cout << "Mouse click\n";
+                    searchForButton(Engine::Instance()->readCursorPosition());
+                }
+            }
             default:break;
         }
     }
+}
+
+void Game::redrawMenu() {
+    SDL_SetRenderDrawColor(Engine::Instance()->renderer, 255, 255, 51, 255 );
+    Engine::Instance()->clearRenderer();
+    // CREATING NOTIFICATIONS
+    Object* n_menu = new Object(20, 25, 206, 100, "img/n_menu.png");
+    n_menu->display();
+    Object* n_option = new Object(231, 25, 206, 100, "img/n_option.png");
+    n_option->display();
+    if (buttons_vector.empty()) {
+        // CREATING BUTTONS
+        Button* b_resume_game = new Button(25, 150, 150, 70, "img/b_ResumeGame.png");
+        Button* b_save_game = new Button(25, 245, 150, 70, "img/b_SaveGame.png");
+        if (world_map.empty()) {
+            b_resume_game->texture = Engine::Instance()->makeTexture("img/b_ResumeGame2.png");
+            b_save_game->texture = Engine::Instance()->makeTexture("img/b_SaveGame2.png");
+        }
+        buttons_vector.push_back(b_resume_game);
+        buttons_vector.push_back(b_save_game);
+        Button* b_load_game = new Button(25, 340, 150, 70, "img/b_LoadGame.png");
+        buttons_vector.push_back(b_load_game);
+        Button* b_quit_game = new Button(25, 480, 150, 70, "img/b_Quit.png");
+        buttons_vector.push_back(b_quit_game);
+        Button* b_new_game = new Button(231, 150, 150, 70, "img/b_NewGame.png");
+        buttons_vector.push_back(b_new_game);
+        Button* b_start = new Button(501, 150, 150, 70, "img/b_Start2.png");
+        // CREATING PLAYERS BUTTONS
+        Button* p_daktyl = new Button(231, 245, 270, 150, "img/p_daktyl2.png");
+        Button* p_miki = new Button(501, 245, 270, 150, "img/p_miki2.png");
+        Button* p_lazarz = new Button(231, 395, 270, 150, "img/p_lazarz2.png");
+        Button* p_ziomek = new Button(501, 395, 270, 150, "img/p_ziomek2.png");
+        if (new_game) {
+            b_start->texture = Engine::Instance()->makeTexture("img/b_Start.png");
+            p_daktyl->texture = Engine::Instance()->makeTexture("img/p_daktyl.png");
+            p_miki->texture = Engine::Instance()->makeTexture("img/p_miki.png");
+            p_lazarz->texture = Engine::Instance()->makeTexture("img/p_lazarz.png");
+            p_ziomek->texture = Engine::Instance()->makeTexture("img/p_ziomek.png");
+        }
+        buttons_vector.push_back(b_start);
+        buttons_vector.push_back(p_daktyl);
+        buttons_vector.push_back(p_miki);
+        buttons_vector.push_back(p_lazarz);
+        buttons_vector.push_back(p_ziomek);
+    }
+    for (auto button: Game::Instance()->buttons_vector) {
+        button->display();
+    }
+    // TODO delete from memory
+    n_menu->~Object();
+    n_option->~Object();
+}
+
+void Game::displayMenu() {
+    //SDL_SetRenderDrawColor(Engine::Instance()->renderer, 0, 0, 255, 255 );
+    //Engine::Instance()->clearRenderer();
+    if (menu_need_redraw) {
+        redrawMenu();
+        menu_need_redraw = false;
+    }
+
 }

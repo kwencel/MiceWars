@@ -13,6 +13,7 @@
 #include <bits/stl_queue.h>
 #include "Player.h"
 #include "NotificationBox.h"
+#include "Button.h"
 
 class Game {
 private:
@@ -30,11 +31,14 @@ private:
 
 public:
     int win_width = 800;
-    int win_height = 600;
+    int win_height =600;
     int players_count = 0;
     const Uint8* keystates = SDL_GetKeyboardState(NULL);
     std::vector<std::vector<char>> world_map;
     std::vector<Player*> player_vector;
+    std::vector<Button*> buttons_vector;
+    bool menu_need_redraw = false;
+    bool new_game = false;
     std::deque<NotificationBox*> notification_queue;
     int current_player_vecpos = 0;
 
@@ -78,6 +82,9 @@ public:
     void checkWinLoseConditions();
     void controlMenu();
     void displayMenu();
+    void redrawMenu();
+    bool doesObjectsOverlap(Object* object1, Object* object2);
+    void searchForButton(std::pair<int,int> pair)
 };
 
 

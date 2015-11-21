@@ -7,11 +7,11 @@ class Button: public Object {
 public:
     bool state;
 
-    Button(int x, int y, int width, int height)
-            : Object(x, y, width, height) { cout << "Button created!" << endl; }
+    Button(int x, int y, int width, int height, std::string img_path)
+            : Object(x, y, width, height, img_path) { cout << "Button created!" << endl; }
     ~Button();
     Button(bool state = false) : state(state)  { }
-    void click() { state = !state; };
+    void click();
     void save(std::ofstream& file) override;
     void load(std::ifstream& file) override;
 

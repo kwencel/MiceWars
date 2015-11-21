@@ -160,7 +160,7 @@ Mouse::~Mouse() {
                 Game::Instance()->player_vector[player_id]->mice_vector[mouse_id] = nullptr;
                 Game::Instance()->player_vector[player_id]->mice_vector.erase(Game::Instance()->player_vector[player_id]->mice_vector.begin() + mouse_id);
                 Game::Instance()->player_vector[player_id]->mice_vector.shrink_to_fit();
-                Game::Instance()->current_player[player_id].mice_amount--;
+                Game::Instance()->player_vector[player_id]->mice_amount--;
                 break;
             }
         }

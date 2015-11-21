@@ -7,12 +7,13 @@
 
 class Player {
 private:
-    std::string name;
-    int colour;
+
     int current_mouse_vecpos = 0;
     std::vector<int> weapon_amount;
 
 public:
+    std::string name;
+    int colour;
     std::vector<Mouse*> mice_vector;
     int player_vecpos = 0;
     int mice_amount;
