@@ -54,31 +54,39 @@ enum {  gravity = 0,
 #define WEAPON_Y_OFFSET         7
 #define WEAPON_WIDTH            20
 #define WEAPON_HEIGHT           15
+#define WEAPON_GRAVITY_MUL      25
 
-#define BULLET_IMG              "img/Bullet.png"
-#define BULLET_WIDTH            10
-#define BULLET_HEIGHT           5
-#define BULLET_SPEED_MUL        100
+#define BULLET_SPEED_MUL        200
 
 #define SHOTGUN_IMG             "img/Shotgun.png"
 #define SHOTGUN_DAMAGE          30
 #define SHOTGUN_RANGE           25
+#define SHOTGUN_BULLET_IMG      "img/Shotgun_bullet.png"
+#define SHOTGUN_BULLET_WIDTH    10
+#define SHOTGUN_BULLET_HEIGHT   5
 
 #define BAZOOKA_IMG             "img/Bazooka.png"
 #define BAZOOKA_DAMAGE          40
-#define BAZOOKA_RANGE           40
-#define BAZOOKA_WEIGHT          15
+#define BAZOOKA_RANGE           50
+#define BAZOOKA_WEIGHT          1500
+#define BAZOOKA_BULLET_IMG      "img/Bazooka_bullet.png"
+#define BAZOOKA_BULLET_WIDTH    15
+#define BAZOOKA_BULLET_HEIGHT   5
 
 #define GRENADE_IMG             "img/Granade.png"
-#define GRENADE_DAMAGE          30
+#define GRENADE_DAMAGE          40
 #define GRENADE_RANGE           40
-#define GRENADE_WEIGHT          10
+#define GRENADE_WIDTH           15
+#define GRENADE_HEIGHT          18
+#define GRENADE_WEIGHT          2000
 #define GRENADE_TIMER           5
 
-#define CHEESE_IMG              "img/Bazooka.png"
+#define CHEESE_IMG              "img/Grenade.png"
 #define CHEESE_DAMAGE           20
 #define CHEESE_RANGE            70
-#define CHEESE_WEIGHT           15
+#define CHEESE_WIDTH            15
+#define CHEESE_HEIGHT           15
+#define CHEESE_WEIGHT           1000
 #define CHEESE_TIMER            5
 
 #define MOUSE_TRAP_IMG          "img/Bazooka.png"

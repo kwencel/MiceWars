@@ -162,7 +162,7 @@ void RangedWeapon::shoot() {
     wants_to_move_crosshair = stay;
     // CREATING BULLET
     if (bullet == nullptr) {
-        bullet = new Object(this->getCenter().x, this->getCenter().y, BULLET_WIDTH, BULLET_HEIGHT, BULLET_IMG);
+        bullet = new Object(this->getCenter().x, this->getCenter().y, bullet_width, bullet_height, bullet_img);
         bullet->flip = this->flip;
         bullet->angle = this->angle;
     }
@@ -209,6 +209,9 @@ void RangedWeapon::moveBullet() {
     if (steps == 0) {
         steps = 1;
     }
+//    double alpha = atan(a_coefficient);
+//    int add_x = static_cast<int>(steps * sin(alpha));
+//    int add_y = static_cast<int>(steps * cos(alpha));
     for (int pixel = 0; pixel < steps; ++pixel) {
         int offset_x = -1, offset_y = -1;
         if (flip) {
@@ -243,6 +246,9 @@ void RangedWeapon::moveBullet() {
                 break;
             }
             else {
+                if (gravity) {
+                    ++in_air_counter;
+                }
                 if (bullet->flip == 0) {
                     bullet->pos_x -= 1;
                 }
@@ -250,6 +256,24 @@ void RangedWeapon::moveBullet() {
                     bullet->pos_x += 1;
                 }
                 bullet->pos_y = int(ceil((a_coefficient * bullet->pos_x) + b_coefficient));
+//                if (add_x > 0) {
+//                    if (bullet->flip) {
+//                        bullet->pos_x += 1;
+//                    }
+//                    else {
+//                        bullet->pos_x -= 1;
+//                    }
+//                    --add_x;
+//                }
+//                if (add_y > 0) {
+//                    if (a_coefficient > 0) {
+//                        bullet->pos_y -= 1;
+//                    }
+//                    else if (a_coefficient < 0) {
+//                        bullet->pos_y += 1;
+//                    }
+//                    --add_y;
+//                }
             }
         }
         else {   // outside the windowBorders

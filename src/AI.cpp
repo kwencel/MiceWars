@@ -28,7 +28,7 @@ void AI::makeTurn() {
 
 bool AI::simulateBulletMovement(Object* target) {
     Object* test_bullet = new Object(current_mouse->weapon->getCenter().x, current_mouse->weapon->getCenter().y,
-                                     BULLET_WIDTH, BULLET_HEIGHT);
+                                     SHOTGUN_BULLET_WIDTH, SHOTGUN_BULLET_HEIGHT);
     aim(target, true);  // Set crosshair at approximately correct position
     int offset_x = -1;
     int offset_y = -1;

@@ -18,7 +18,6 @@ public:
             : Object(x, y, width, height, img_path) { cout << "Mouse created!" << endl; }
     ~Mouse();
     void move();
-    void jump();
     void changeWeapon(short index);
     bool overcomeHill(int direction);
     void display();

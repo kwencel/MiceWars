@@ -7,8 +7,12 @@ class AI;
 
 class RangedWeapon: public Weapon {
 public:
-    bool gravity;
-    int weight;
+    bool gravity = false;
+    int weight = 0;
+    int in_air_counter = 0;
+    std::string bullet_img;
+    int bullet_width = 0;
+    int bullet_height = 0;
     Object* bullet = nullptr;
     Object* crosshair = nullptr;
     bool bullet_fired = false;
