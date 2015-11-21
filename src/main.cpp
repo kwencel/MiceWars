@@ -1,10 +1,11 @@
 #include "Game.h"
 #include "Timer.h"
+#include "ConfigFile.h"
 
 int main(int argc, char** argv) {
 
-    Engine::Instance()->getReady(Game::Instance()->getWindowWidth(), Game::Instance()->getWindowHeigth());
-    Timer::Instance()->setFPS(60);
+    ConfigFile::Instance()->loadConfig(CONFIG_FILE_PATH);
+    Engine::Instance()->getReady();
     Game::Instance()->generateTerrain();
     Game::Instance()->createPlayer("Daktyl", true, 4, 0);
     Game::Instance()->createPlayer("Aleker", true, 4, 0);

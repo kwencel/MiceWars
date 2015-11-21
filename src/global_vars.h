@@ -16,6 +16,10 @@ enum {  gravity = 0,
         gameplay = 0,
         menu = 1    };
 
+#define CONFIG_FILE_PATH        "config.ini"
+#define DEFAULT_WIN_WIDTH       800
+#define DEFAULT_WIN_HEIGHT      600
+
 #define BLACK                   0x000000
 #define GREEN                   0x95C355
 #define BLUE                    0x3885E7

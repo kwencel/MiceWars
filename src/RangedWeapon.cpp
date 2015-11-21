@@ -54,6 +54,8 @@ void RangedWeapon::sortVector() {
 }
 
 void RangedWeapon::markSemicircle() {
+    int win_width = Engine::Instance()->getWindowWidth();
+    int win_height = Engine::Instance()->getWindowHeight();
     semicircle_vector.clear();
     std::pair<int, int> pair;
     int left_boundary =
@@ -74,29 +76,29 @@ void RangedWeapon::markSemicircle() {
 
     // DRAW SEMICIRCLE
     while (y <= x) {
-        if ((coefficient * y + x0) >= 0 && (coefficient * y + x0) <= Game::Instance()->win_width && (x + y0) >= 0
-            && (x + y0) <= Game::Instance()->win_height) {
+        if ((coefficient * y + x0) >= 0 && (coefficient * y + x0) <= win_width && (x + y0) >= 0
+            && (x + y0) <= win_height) {
             pair.first = coefficient * y + x0;               // Octant 3/2
             pair.second = x + y0;
             if (!gravity or (gravity and (pair.first >= right_boundary or pair.first <= left_boundary)))
                 semicircle_vector.push_back(pair);
         }
-        if ((coefficient * x + x0) >= 0 && (coefficient * x + x0) <= Game::Instance()->win_width && (y + y0) >= 0
-            && (y + y0) <= Game::Instance()->win_height) {
+        if ((coefficient * x + x0) >= 0 && (coefficient * x + x0) <= win_width && (y + y0) >= 0
+            && (y + y0) <= win_height) {
             pair.first = coefficient * x + x0;               // Octant 4/1
             pair.second = y + y0;
             if (!gravity or (gravity and (pair.first >= right_boundary or pair.first <= left_boundary)))
                 semicircle_vector.push_back(pair);
         }
-        if ((coefficient * x + x0) >= 0 && (coefficient * x + x0) <= Game::Instance()->win_width && (-y + y0) >= 0
-            && (-y + y0) <= Game::Instance()->win_height) {
+        if ((coefficient * x + x0) >= 0 && (coefficient * x + x0) <= win_width && (-y + y0) >= 0
+            && (-y + y0) <= win_height) {
             pair.first = coefficient * x + x0;               // Octant 5/8
             pair.second = -y + y0;
             if (!gravity or (gravity and (pair.first >= right_boundary or pair.first <= left_boundary)))
                 semicircle_vector.push_back(pair);
         }
-        if ((coefficient * y + x0) >= 0 && (coefficient * y + x0) <= Game::Instance()->win_width && (-x + y0) >= 0
-            && (-x + y0) <= Game::Instance()->win_height) {
+        if ((coefficient * y + x0) >= 0 && (coefficient * y + x0) <= win_width && (-x + y0) >= 0
+            && (-x + y0) <= win_height) {
             pair.first = coefficient * y + x0;               // Octant 6/7
             pair.second = -x + y0;
             if (!gravity or (gravity and (pair.first >= right_boundary or pair.first <= left_boundary)))

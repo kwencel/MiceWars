@@ -4,15 +4,17 @@
 #include <iostream>
 #include <SDL.h>
 #include <SDL_image.h>
+#include "global_vars.h"
 using std::cout;
+using std::cerr;
 using std::endl;
 
 // Singleton design pattern
 class Engine {
 private:
     static Engine* m_pInstance;
-    int win_width;
-    int win_height;
+    int win_width = DEFAULT_WIN_WIDTH;
+    int win_height = DEFAULT_WIN_HEIGHT;
     std::pair<int,int> cursor_pos;
 
     int init();
@@ -29,7 +31,7 @@ public:
     SDL_Surface* background = nullptr;
     SDL_Texture* background_texture = nullptr;
 
-    int getReady(int win_width, int win_height);
+    int getReady();
     void readCursorPosition();
     void setCursorPosition(int x, int y);
     int createBackground();
@@ -40,6 +42,10 @@ public:
     static Engine* Instance();
     std::pair<int,int> getCursorPosition() { return cursor_pos; };
     void setWindowTitle();
+    int getWindowWidth() { return win_width; }
+    int getWindowHeight() { return win_height; }
+    int setWindowWidth(int width);
+    int setWindowHeight(int height);
 };
 
 

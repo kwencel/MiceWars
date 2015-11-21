@@ -83,8 +83,8 @@ void Game::drawBackground() {
         SDL_DestroyTexture(Engine::Instance()->background_texture);
     }
     SDL_LockSurface(Engine::Instance()->background);
-    for (int x = 0; x < win_width; ++x) {
-        for (int y = 0; y < win_height; ++y) {
+    for (int x = 0; x < Engine::Instance()->getWindowWidth(); ++x) {
+        for (int y = 0; y < Engine::Instance()->getWindowHeight(); ++y) {
             switch(world_map[x][y]) {
                 case 0:
                     Engine::Instance()->colorPixel(Engine::Instance()->background, x, y, BLACK);
@@ -154,8 +154,8 @@ void Game::redraw() {
 void Game::displayArrayOfValues() {
     // displaying content of vector
     cout << endl << "CONTENT OF VECTOR" << endl;
-    for (int j = win_width; j >= 0; j-- ) {
-        for (int i = 0; i < win_height; i++ ) {
+    for (int j = Engine::Instance()->getWindowWidth(); j >= 0; j-- ) {
+        for (int i = 0; i < Engine::Instance()->getWindowHeight(); i++ ) {
             cout << world_map[j][i] + '0' - 48;
         }
         cout << endl;
@@ -163,6 +163,8 @@ void Game::displayArrayOfValues() {
 }
 
 std::pair<int,int> Game::findNext(int x, int y, int max_height, int distance, int river_height) {
+    int win_width = Engine::Instance()->getWindowWidth();
+    int win_height = Engine::Instance()->getWindowHeight();
     std::pair<int,int> point_coordinates;
     int x_2, y_2;
 
@@ -191,6 +193,8 @@ std::pair<int,int> Game::findNext(int x, int y, int max_height, int distance, in
 }
 
 void Game::connectPoints(std::vector<std::pair<int, int>> points_vector, int river_height) {
+    int win_width = Engine::Instance()->getWindowWidth();
+    int win_height = Engine::Instance()->getWindowHeight();
     // CONNECTING POINTS
     std::vector<std::pair<int,int>>::iterator current;
     int x1, y1, x2, y2, a, b;
@@ -240,6 +244,8 @@ void Game::connectPoints(std::vector<std::pair<int, int>> points_vector, int riv
 }
 
 void Game::createHoles(int x0, int y0, int radius, std::vector<Mouse*> *affectedMice) {
+    int win_width = Engine::Instance()->getWindowWidth();
+    int win_height = Engine::Instance()->getWindowHeight();
     for (int i = radius; i >= 1; i--) {
         int x = i;
         int y = 0;
@@ -323,6 +329,8 @@ void Game::createHoles(int x0, int y0, int radius, std::vector<Mouse*> *affected
 }
 
 void Game::generateTerrain() {
+    int win_width = Engine::Instance()->getWindowWidth();
+    int win_height = Engine::Instance()->getWindowHeight();
     world_map.resize(win_width + 1);
     std::vector<std::pair<int, int>> points_vector;
     std::pair<int, int> point_coordinates;            // respectively x and y
@@ -503,7 +511,8 @@ void Game::placeMice() {
         for (int i = 0; i < player_vector[player_id]->mice_amount; ++i) {    // Place their mice
             std::stringstream mouse_img;
             mouse_img << MOUSE_IMG << player_id + 1 << MOUSE_IMG_EXTENSION;
-            Mouse* mouse = new Mouse(getRandomIntBetween(0, win_width - MICE_WIDTH), getRandomIntBetween(0, win_height/3), MICE_WIDTH, MICE_HEIGHT, mouse_img.str());
+            Mouse* mouse = new Mouse(getRandomIntBetween(0, Engine::Instance()->getWindowWidth() - MICE_WIDTH),
+                                     getRandomIntBetween(0, Engine::Instance()->getWindowHeight()/3), MICE_WIDTH, MICE_HEIGHT, mouse_img.str());
             mouse->changeWeapon(shotgun);
             mouse->notification_hp = createNotification("",
                                                         &mouse->hp,
@@ -560,10 +569,6 @@ int Game::getRandomIntBetween(int min, int max) {
     return distribution(mt);
 }
 
-void Game::readConfigFile() {
-
-}
-
 void Game::applyMovement() {
     if (current_player == nullptr) {
         return;
@@ -580,11 +585,13 @@ void Game::applyMovement() {
 }
 
 bool Game::isInsideWindowBorders(Object* object, int x_offset, int y_offset) {
-    return ((object->pos_x + x_offset >= 0) and (object->pos_x + x_offset + object->obj_width <= win_width) and
-            (object->pos_y + y_offset >= 0) and (object->pos_y + y_offset + object->obj_height <= win_height));
+    return ((object->pos_x + x_offset >= 0) and (object->pos_x + x_offset + object->obj_width <= Engine::Instance()->getWindowWidth()) and
+            (object->pos_y + y_offset >= 0) and (object->pos_y + y_offset + object->obj_height <= Engine::Instance()->getWindowHeight()));
 }
 
 void Game::createNotification(std::string message, float timer, int x, int y, int width, int height) {
+    int win_width = Engine::Instance()->getWindowWidth();
+    int win_height = Engine::Instance()->getWindowHeight();
     int message_length = message.length();
     if (x == -1) { x = (win_width / 2) - message_length * 5; };
     if (y == -1) { y = win_height / 16; };
@@ -596,6 +603,8 @@ void Game::createNotification(std::string message, float timer, int x, int y, in
 }
 
 NotificationBox* Game::createNotification(std::string message, int* number_ptr, float timer, int x, int y, int width, int height, bool push_to_queue) {
+    int win_width = Engine::Instance()->getWindowWidth();
+    int win_height = Engine::Instance()->getWindowHeight();
     int message_length = message.length() + 1;
     if (x == -1) { x = (win_width / 2) - message_length * 5; };
     if (y == -1) { y = win_height / 16; };

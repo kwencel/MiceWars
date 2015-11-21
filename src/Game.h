@@ -33,14 +33,11 @@ public:
     std::vector<Player*> player_vector;
     std::deque<NotificationBox*> notification_queue;
     int players_count = 2;
-    int win_width = 800;
-    int win_height = 600;
     bool quit = false;
     bool background_need_redraw = true;
     Player* current_player = nullptr;
 
     void createHoles(int x0, int y0, int radius, std::vector<Mouse*> *affectedMice = nullptr);
-    void readConfigFile();
     void saveGame(std::string file_name);
     void loadGame(std::string file_name);
     void returnToMenu();
@@ -51,8 +48,6 @@ public:
     void createPlayer(std::string name, bool is_human, int mouse_amount, int colour);
     void changePlayer();
     void pause();
-    int getWindowWidth()    { return win_width; };
-    int getWindowHeigth()   { return win_height; };
     bool getState()         { return state; };
     int getRandomIntBetween(int min, int max);
     void drawBackground();
