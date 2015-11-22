@@ -18,7 +18,7 @@ void Button::load(std::ifstream &file) {
 
 void Button::click() {
     //state = !state;
-    if (this == Game::Instance()->buttons_vector[B_RESUME_GAME]) {
+    if (this == Game::Instance()->buttons_vector[B_RESUME_GAME] and this->state) {
         Game::Instance()->pause();
     }
     else if (this == Game::Instance()->buttons_vector[B_SAVE_GAME] and this->state) {
@@ -41,15 +41,53 @@ void Button::click() {
         Game::Instance()->menu_need_redraw = true;
     }
     else if (this == Game::Instance()->buttons_vector[B_START] and this->state) {
-        // TODO read players
+        Game::Instance()->world_map.clear();
+        if (!Game::Instance()->player_vector.empty()) {
+            while (!Game::Instance()->player_vector.empty()) {
+                delete Game::Instance()->player_vector[0];
+            }
+        }
+        Game::Instance()->current_player = nullptr;
+        Game::Instance()->current_player_vecpos = 0;
+        Game::Instance()->players_count = 0;
+        // Reading and generating
         Game::Instance()->generateTerrain();
-        Game::Instance()->createPlayer(GREEN_MOUSE, true, 2, 0);
-        Game::Instance()->createPlayer(PINK_MOUSE, true, 2, 0);
-        Game::Instance()->createPlayer(BLUE_MOUSE, true, 2, 0);
+        for (int i = 0; i <= 3; i++) {
+            if (Game::Instance()->buttons_vector[i + P_DAKTYL]->state) {
+                std::stringstream name;
+                bool human;
+                int mouse_amount;
+                switch (i + P_DAKTYL) {
+                    case P_DAKTYL: {
+                        name << GREEN_MOUSE;
+                        break;
+                    }
+                    case P_MIKI: {
+                        name << PINK_MOUSE;
+                        break;
+                    }
+                    case P_LAZARZ: {
+                        name << BLUE_MOUSE;
+                        break;
+                    }
+                    case P_ZIOMEK: {
+                        name << RED_MOUSE;
+                        break;
+                    }
+                    default: {
+                        name << "";
+                        break;
+                    }
+                }
+                human = Game::Instance()->buttons_vector[i + B_AI_HUMAN_D]->state;
+                mouse_amount = Game::Instance()->buttons_vector[i + B_NUM_D]->amount;
+                Game::Instance()->createPlayer(name.str(), human, mouse_amount, 0);
+            }
+        }
         Game::Instance()->players_count = Game::Instance()->player_vector.size();
         Game::Instance()->placeMice();
         Game::Instance()->changePlayer();
-
+        Game::Instance()->background_need_redraw = true;
         Game::Instance()->pause();
         // load new_game
     }
@@ -58,7 +96,6 @@ void Button::click() {
               or this == Game::Instance()->buttons_vector[B_AI_HUMAN_L]
               or this == Game::Instance()->buttons_vector[B_AI_HUMAN_Z]) and Game::Instance()->new_game) {
         this->state = !this->state;
-        // TODO change in player if AI or HUMAN
         Game::Instance()->menu_need_redraw = true;
     }
     else if ((this == Game::Instance()->buttons_vector[B_NUM_D]
@@ -78,11 +115,9 @@ void Button::click() {
               or this == Game::Instance()->buttons_vector[P_ZIOMEK]) and Game::Instance()->new_game) {
         this->state = !this->state;
         if (this->state) {
-            // TODO adding player to vector?
             Game::Instance()->menu_active_players++;
         }
         else {
-            // TODO deleting player from vector
             Game::Instance()->menu_active_players--;
         }
         Game::Instance()->menu_need_redraw = true;

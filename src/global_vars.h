@@ -91,7 +91,7 @@ enum {  gravity = 0,
 #define GREEN_COLOUR            1
 #define PINK_MOUSE              "Miki"
 #define PINK_COLOUR             2
-#define BLUE_MOUSE              "Łazarz"
+#define BLUE_MOUSE              "Lazarz"
 #define BLUE_COLOUR             3
 #define RED_MOUSE               "Ziomek"
 #define RED_COLOUR              4
@@ -108,14 +108,15 @@ enum {  gravity = 0,
 #define B_AI_HUMAN_M            7
 #define B_AI_HUMAN_L            8
 #define B_AI_HUMAN_Z            9
-#define B_NUM_D                 10
-#define B_NUM_M                 11
-#define B_NUM_L                 12
-#define B_NUM_Z                 13
 #define P_DAKTYL                14
 #define P_MIKI                  15
 #define P_LAZARZ                16
 #define P_ZIOMEK                17
+#define B_NUM_D                 10
+#define B_NUM_M                 11
+#define B_NUM_L                 12
+#define B_NUM_Z                 13
+
 
 
 #define SAVED_GAME              "saved_game.dat"
