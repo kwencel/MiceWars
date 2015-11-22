@@ -19,7 +19,6 @@ public:
     Mouse() {}; // needed to reload game
     ~Mouse();
     void move();
-    void jump();
     void changeWeapon(short index);
     bool overcomeHill(int direction);
     void display();

@@ -54,6 +54,8 @@ void RangedWeapon::sortVector() {
 }
 
 void RangedWeapon::markSemicircle() {
+    int win_width = Engine::Instance()->getWindowWidth();
+    int win_height = Engine::Instance()->getWindowHeight();
     semicircle_vector.clear();
     std::pair<int,int> pair;
     int left_boundary = Game::Instance()->current_player->current_mouse->getCenter().x -CROSSHAIR_WIDTH - CROSSHAIR_BOUNDARY;
@@ -73,30 +75,30 @@ void RangedWeapon::markSemicircle() {
 
     // DRAW SEMICIRCLE
     while (y <= x) {
-        if ((coefficient*y + x0) >= 0 && (coefficient*y + x0) <= Game::Instance()->win_width && (x + y0) >= 0
-                && (x + y0) <= Game::Instance()->win_height){
-            pair.first = coefficient*y + x0;               // Octant 3/2
+        if ((coefficient * y + x0) >= 0 && (coefficient * y + x0) <= win_width && (x + y0) >= 0
+            && (x + y0) <= win_height) {
+            pair.first = coefficient * y + x0;               // Octant 3/2
             pair.second = x + y0;
             if (!gravity or (gravity and (pair.first >= right_boundary or pair.first <= left_boundary)))
                 semicircle_vector.push_back(pair);
         }
-        if ((coefficient*x + x0) >= 0 && (coefficient*x + x0) <= Game::Instance()->win_width && (y + y0) >= 0
-                && (y + y0) <= Game::Instance()->win_height) {
-            pair.first = coefficient*x + x0;               // Octant 4/1
+        if ((coefficient * x + x0) >= 0 && (coefficient * x + x0) <= win_width && (y + y0) >= 0
+            && (y + y0) <= win_height) {
+            pair.first = coefficient * x + x0;               // Octant 4/1
             pair.second = y + y0;
             if (!gravity or (gravity and (pair.first >= right_boundary or pair.first <= left_boundary)))
                 semicircle_vector.push_back(pair);
         }
-        if ((coefficient*x + x0) >= 0 && (coefficient*x + x0) <= Game::Instance()->win_width && (-y + y0) >= 0
-                && (-y + y0) <= Game::Instance()->win_height) {
-            pair.first = coefficient*x + x0;               // Octant 5/8
+        if ((coefficient * x + x0) >= 0 && (coefficient * x + x0) <= win_width && (-y + y0) >= 0
+            && (-y + y0) <= win_height) {
+            pair.first = coefficient * x + x0;               // Octant 5/8
             pair.second = -y + y0;
             if (!gravity or (gravity and (pair.first >= right_boundary or pair.first <= left_boundary)))
                 semicircle_vector.push_back(pair);
         }
-        if ((coefficient*y + x0) >= 0 && (coefficient*y + x0) <= Game::Instance()->win_width && (-x + y0) >= 0
-                && (-x + y0) <= Game::Instance()->win_height) {
-            pair.first = coefficient*y + x0;               // Octant 6/7
+        if ((coefficient * y + x0) >= 0 && (coefficient * y + x0) <= win_width && (-x + y0) >= 0
+            && (-x + y0) <= win_height) {
+            pair.first = coefficient * y + x0;               // Octant 6/7
             pair.second = -x + y0;
             if (!gravity or (gravity and (pair.first >= right_boundary or pair.first <= left_boundary)))
                 semicircle_vector.push_back(pair);
@@ -168,7 +170,7 @@ void RangedWeapon::shoot() {
     wants_to_move_crosshair = stay;
     // CREATING BULLET
     if (bullet == nullptr) {
-        bullet = new Object(this->getCenter().x, this->getCenter().y, BULLET_WIDTH, BULLET_HEIGHT, BULLET_IMG);
+        bullet = new Object(this->getCenter().x, this->getCenter().y, bullet_width, bullet_height, bullet_img);
         bullet->flip = this->flip;
         bullet->angle = this->angle;
     }
@@ -249,6 +251,9 @@ void RangedWeapon::moveBullet() {
                 break;
             }
             else {
+                if (gravity) {
+                    ++in_air_counter;
+                }
                 if (bullet->flip == 0) {
                     bullet->pos_x -= 1;
                 }

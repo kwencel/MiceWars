@@ -70,11 +70,10 @@ int Engine::initializeFontTTF() {
         cout << "TTF_Init Error: " << TTF_GetError() << endl;
         return 1;
     }
+    return 0;
 }
 
-int Engine::getReady(int win_width, int win_height) {
-    this->win_width = win_width;
-    this->win_height = win_height;
+int Engine::getReady() {
     if ((init()) or
         (createWindow(win_width, win_height)) or
         (createRenderer()) or
@@ -115,4 +114,22 @@ void Engine::setWindowTitle() {
     window_title << "Frametime: " << Timer::Instance()->getTimeFromLastDelta() << " Cursor " << cursor_pos.first << " " << cursor_pos.second;
     window_title.str().c_str();
     SDL_SetWindowTitle(window, window_title.str().c_str());
+}
+
+int Engine::setWindowWidth(int width) {
+    if (renderer == nullptr) {
+        win_width = width;
+        return 0;
+    }
+    cerr << "[ERROR] Can't modify resolution settings while gameplay. Change it in the config.ini file" << endl;
+    return -1;
+}
+
+int Engine::setWindowHeight(int height) {
+    if (renderer == nullptr) {
+        win_height = height;
+        return 0;
+    }
+    cerr << "[ERROR] Can't modify resolution settings while gameplay. Change it in the config.ini file" << endl;
+    return -1;
 }

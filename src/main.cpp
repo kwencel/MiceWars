@@ -1,10 +1,10 @@
 #include "Game.h"
 #include "Timer.h"
+#include "ConfigFile.h"
 
 int main(int argc, char** argv) {
-
-    Engine::Instance()->getReady(Game::Instance()->getWindowWidth(), Game::Instance()->getWindowHeigth());
-    Timer::Instance()->setFPS(60);
+    ConfigFile::Instance()->loadConfig(CONFIG_FILE_PATH);
+    Engine::Instance()->getReady();
     Timer::Instance()->getNewDelta();
     Game::Instance()->menu_need_redraw = true;
 
@@ -23,5 +23,4 @@ int main(int argc, char** argv) {
         Timer::Instance()->getNewDelta();
     }
     Game::Instance()->exit();
-
 }

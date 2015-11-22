@@ -21,8 +21,8 @@ private:
     int stuck_count = 0;
     int stuck_times = 0;
     bool has_shot = false;
-    int ideal_crosshair_center_x = -1;
-    int ideal_crosshair_center_y = -1;
+    int ideal_crosshair_x = -1;
+    int ideal_crosshair_y = -1;
     float a_coefficient = -1;
     float b_coefficient = -1;
     short override_movement = stay;
@@ -31,20 +31,18 @@ private:
 
     void chooseTarget();
     void moveToPosition();
+    bool simulateBulletMovement(Object* target);
+    void gotStuckWorkaround();
     void chooseWeapon();
     void aim(Object* target, bool simulate);
     void fire();
-    void handle_keys(SDL_Keycode keycode) override;
+    void handleKeys(SDL_Keycode keycode) override;
 
 public:
     AI(std::string name, bool is_human, int mouse_amount, int colour)
             : Player(name, is_human, mouse_amount, colour) { cout << "AI created!" << endl; }
     ~AI();
     void makeTurn() override;
-
-    bool simulateBulletMovement(Object* target);
-
-    void got_stuck_workaround();
 };
 
 

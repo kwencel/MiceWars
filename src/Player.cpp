@@ -33,7 +33,7 @@ int Player::getColour() {
     return colour;
 }
 
-void Player::handle_keys(const Uint8* keystates) {
+void Player::handleKeys(const Uint8 *keystates) {
     if (keystates[SDL_SCANCODE_LEFT]) {
         if (current_mouse->can_move) {
             current_mouse->wants_to_move_direction = -1;
@@ -64,7 +64,7 @@ void Player::handle_keys(const Uint8* keystates) {
     }
 }
 
-void Player::handle_keys(SDL_Keycode keycode) {
+void Player::handleKeys(SDL_Keycode keycode) {
     switch (keycode) {
         case SDLK_SPACE:
             if (current_mouse->can_move) {

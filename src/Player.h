@@ -27,8 +27,8 @@ public:
     Player() {};   // needed to reload game
     virtual ~Player();
     virtual void makeTurn();    // Selects the current mouse to make turn, control is provided by readKeyboardState() in Game class
-    void handle_keys(const Uint8* keystates);
-    virtual void handle_keys(SDL_Keycode keycode);
+    void handleKeys(const Uint8 *keystates);
+    virtual void handleKeys(SDL_Keycode keycode);
     std::string getName();
     int getColour();
     void save(std::ofstream& file);

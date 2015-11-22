@@ -19,7 +19,7 @@ class Game {
 private:
     std::random_device rd;
     std::mt19937 mt;
-    bool state = !gameplay;
+    bool state = not gameplay;
     bool fullscreen = 0;
     std::pair<int,int> findNext(int x, int y, int max_height, int distance, int river_height);
     bool checkCollision(int x, int y);
@@ -31,7 +31,7 @@ private:
 
 public:
     int win_width = 800;
-    int win_height =600;
+    int win_height = 600;
     int players_count = 0;
     const Uint8* keystates = SDL_GetKeyboardState(NULL);
     std::vector<std::vector<char>> world_map;
@@ -49,7 +49,6 @@ public:
     Player* current_player = nullptr;
 
     void createHoles(int x0, int y0, int radius, std::vector<Mouse*> *affectedMice = nullptr);
-    void readConfigFile();
     void saveGame(std::string file_name);
     void loadGame(std::string file_name);
     void returnToMenu();
@@ -60,8 +59,6 @@ public:
     void createPlayer(std::string name, bool is_human, int mouse_amount, int colour);
     void changePlayer();
     void pause();
-    int getWindowWidth()    { return win_width; };
-    int getWindowHeigth()   { return win_height; };
     bool getState()         { return state; };
     int getRandomIntBetween(int min, int max);
     void drawBackground();
@@ -79,7 +76,6 @@ public:
     void capFPS();
     void removePersistentNotifications();
     bool checkMiceCollisionBool(int coll_x, int coll_y, int x_offset = 0, int y_offset = 0);
-    std::vector<Mouse *> checkMiceCollision(int coll_x, int coll_y, int x_offset = 0, int y_offset = 0);
     void checkMiceCollisionRef(int coll_x, int coll_y, std::vector<Mouse*> *affectedMice, int x_offset = 0, int y_offset = 0);
     void checkWinLoseConditions();
     void controlMenu();
@@ -88,6 +84,8 @@ public:
     bool doesObjectsOverlap(Object* object1, Object* object2);
     void searchForButton(std::pair<int,int> pair);
     void creatingButtonsImagesVector();
+    bool doesObjectsOverlap(Object *object1, Object *object2);
+    std::vector<Mouse *> checkMiceCollisionRect(Object *object);
 };
 
 

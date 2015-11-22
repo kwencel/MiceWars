@@ -1,10 +1,8 @@
-#include <assert.h>
 #include "Mouse.h"
 #include "Timer.h"
 #include "Game.h"
 #include "RangedWeapon.h"
 #include "ThrownWeapon.h"
-#include "PlacedWeapon.h"
 
 bool Mouse::overcomeHill(int direction) {
     int hill_pixels_used = 0;
@@ -73,6 +71,9 @@ void Mouse::changeWeapon(short index) {
                                                     WEAPON_HEIGHT, SHOTGUN_IMG);
             shotgun->damage = SHOTGUN_DAMAGE;
             shotgun->dmg_range = SHOTGUN_RANGE;
+            shotgun->bullet_img = SHOTGUN_BULLET_IMG;
+            shotgun->bullet_width = SHOTGUN_BULLET_WIDTH;
+            shotgun->bullet_height = SHOTGUN_BULLET_HEIGHT;
             shotgun->gravity = false;
             shotgun->weight = 0;
             shotgun->flip = this->flip;
@@ -84,6 +85,9 @@ void Mouse::changeWeapon(short index) {
                                                         WEAPON_HEIGHT, BAZOOKA_IMG);
             bazooka->damage = BAZOOKA_DAMAGE;
             bazooka->dmg_range = BAZOOKA_RANGE;
+            bazooka->bullet_img = BAZOOKA_BULLET_IMG;
+            bazooka->bullet_width = BAZOOKA_BULLET_WIDTH;
+            bazooka->bullet_height = BAZOOKA_BULLET_HEIGHT;
             bazooka->gravity = true;
             bazooka->weight = BAZOOKA_WEIGHT;
             bazooka->flip = this->flip;
@@ -92,10 +96,13 @@ void Mouse::changeWeapon(short index) {
 
         }
         case grenade: {
-            ThrownWeapon* grenade = new ThrownWeapon(pos_x + WEAPON_X_OFFSET, pos_y + WEAPON_Y_OFFSET, WEAPON_WIDTH,
-                                                        WEAPON_HEIGHT, GRENADE_IMG);
+            ThrownWeapon* grenade = new ThrownWeapon(pos_x + WEAPON_X_OFFSET, pos_y + WEAPON_Y_OFFSET, GRENADE_WIDTH,
+                                                        GRENADE_HEIGHT, GRENADE_IMG);
             grenade->damage = GRENADE_DAMAGE;
             grenade->dmg_range = GRENADE_RANGE;
+            grenade->bullet_img = GRENADE_IMG;
+            grenade->bullet_width = GRENADE_WIDTH;
+            grenade->bullet_height = GRENADE_HEIGHT;
             grenade->gravity = true;
             grenade->weight = GRENADE_WEIGHT;
             grenade->timer = GRENADE_TIMER;
@@ -109,6 +116,9 @@ void Mouse::changeWeapon(short index) {
                                                         WEAPON_HEIGHT, CHEESE_IMG);
             cheesebomb->damage = CHEESE_DAMAGE;
             cheesebomb->dmg_range = CHEESE_RANGE;
+            cheesebomb->bullet_img = CHEESE_IMG;
+            cheesebomb->bullet_width = WEAPON_WIDTH;
+            cheesebomb->bullet_height = WEAPON_HEIGHT;
             cheesebomb->gravity = true;
             cheesebomb->weight = CHEESE_WEIGHT;
             cheesebomb->timer = CHEESE_TIMER;
@@ -117,17 +127,16 @@ void Mouse::changeWeapon(short index) {
             break;
 
         }
-        case mousetrap: {
-            PlacedWeapon* mousetrap = new PlacedWeapon(pos_x + WEAPON_X_OFFSET, pos_y + WEAPON_Y_OFFSET, WEAPON_WIDTH,
-                                                        WEAPON_HEIGHT, MOUSE_TRAP_IMG);
-            mousetrap->damage = MOUSE_TRAP_DAMAGE;
-            mousetrap->dmg_range = MOUSE_TRAP_RANGE;
-            mousetrap->trig_range = MOUSE_TRAP_TRIG_RANGE;
-            mousetrap->flip = this->flip;
-
-            weapon = mousetrap;
-            break;
-        }
+//        case mousetrap: {
+//            PlacedWeapon* mousetrap = new PlacedWeapon(pos_x + WEAPON_X_OFFSET, pos_y + WEAPON_Y_OFFSET, WEAPON_WIDTH,
+//                                                        WEAPON_HEIGHT, MOUSE_TRAP_IMG);
+//            mousetrap->damage = MOUSE_TRAP_DAMAGE;
+//            mousetrap->dmg_range = MOUSE_TRAP_RANGE;
+//            mousetrap->trig_range = MOUSE_TRAP_TRIG_RANGE;
+//            mousetrap->flip = this->flip;
+//            weapon = mousetrap;
+//            break;
+//        }
         default:break;
     }
 }
@@ -146,17 +155,11 @@ void Mouse::display() {
     }
 }
 
-void Mouse::jump() {
-
-}
-
 Mouse::~Mouse() {
-    bool found_itself = false;
     // Remove itself from the mice_vector
     for (int player_id = 0; player_id < Game::Instance()->player_vector.size(); ++player_id) {
         for (int mouse_id = 0; mouse_id < Game::Instance()->player_vector[player_id]->mice_vector.size(); ++mouse_id) {
             if (Game::Instance()->player_vector[player_id]->mice_vector[mouse_id] == this) {
-                found_itself = true;
                 Game::Instance()->player_vector[player_id]->mice_vector[mouse_id] = nullptr;
                 Game::Instance()->player_vector[player_id]->mice_vector.erase(Game::Instance()->player_vector[player_id]->mice_vector.begin() + mouse_id);
                 Game::Instance()->player_vector[player_id]->mice_vector.shrink_to_fit();
@@ -165,7 +168,6 @@ Mouse::~Mouse() {
             }
         }
     }
-    assert(found_itself);
     delete weapon;
     weapon = nullptr;
     delete notification_hp;
