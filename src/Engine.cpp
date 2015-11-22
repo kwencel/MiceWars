@@ -105,10 +105,6 @@ void Engine::readCursorPosition() {
     SDL_GetMouseState(&cursor_pos.first, &cursor_pos.second);
 }
 
-void Engine::setCursorPosition(int x, int y) {
-
-}
-
 void Engine::setWindowTitle() {
     std::stringstream window_title;
     window_title << "Frametime: " << Timer::Instance()->getTimeFromLastDelta() << " Cursor " << cursor_pos.first << " " << cursor_pos.second;

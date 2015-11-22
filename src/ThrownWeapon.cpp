@@ -2,6 +2,9 @@
 #include "Game.h"
 
 void ThrownWeapon::shoot() {
+    if (crosshair == nullptr) {
+        return;
+    }
     wants_to_move_crosshair = stay;
     // CREATING BULLET
     if (bullet == nullptr) {
@@ -22,8 +25,12 @@ void ThrownWeapon::shoot() {
     y2 = (crosshair->getCenter().y);
 
     a_coefficient = (y1 - y2) / (x1 - x2);
+    if (not flip and a_coefficient > 1.0) {
+        if ((a_coefficient = 1.0/a_coefficient) > 0.5) {
+            a_coefficient = 0.5;
+        }
+    }
     b_coefficient = y1 - (a_coefficient * x1);
-    std::cout << "SHOOOOOOOOOOOOOOOOT!!!" << endl;
     Game::Instance()->current_player->end_turn = true;
 }
 

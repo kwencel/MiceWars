@@ -172,7 +172,7 @@ Mouse::~Mouse() {
     weapon = nullptr;
     delete notification_hp;
     notification_hp = nullptr;
-    cout << "Mouse destroyed!" << endl;
+    //cout << "Mouse destroyed!" << endl;
 }
 
 void Mouse::save(std::ofstream &file) {

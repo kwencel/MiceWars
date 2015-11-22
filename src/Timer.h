@@ -26,8 +26,6 @@ public:
     double getDelta();
     double getTimeFromLastDelta();
     std::chrono::time_point<std::chrono::system_clock> getTime() { return std::chrono::high_resolution_clock::now(); }
-    void start() { time_prev = std::chrono::high_resolution_clock::now(); }
-//    void restart();
     void setFPS(float FPS);
     static Timer* Instance();
     float getFPS();

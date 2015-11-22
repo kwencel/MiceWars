@@ -20,14 +20,14 @@ Object::Object(int x, int y, int width, int height, std::string img_path) {
     if (img_path != "") {
         texture = Engine::Instance()->makeTexture(img_path.c_str());
     }
-    cout << "Object created!" << endl;
+    //cout << "Object created!" << endl;
 }
 
 Object::~Object() {
     if (texture != nullptr) {
         SDL_DestroyTexture(texture);
     }
-    cout << "Object destroyed!" << endl;
+    //cout << "Object destroyed!" << endl;
 }
 
 SDL_Point Object::getCenter() {

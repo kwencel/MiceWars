@@ -24,7 +24,6 @@ private:
     std::pair<int,int> findNext(int x, int y, int max_height, int distance, int river_height);
     bool checkCollision(int x, int y);
     void connectPoints(std::vector<std::pair<int, int>> points_vector, int river_height);
-    void displayArrayOfValues();
 
     static Game* m_pInstance;
     Game() { mt.seed(rd()); cout << "Game created!" << endl; };
@@ -43,7 +42,6 @@ public:
     bool new_game = false;
     std::deque<NotificationBox*> notification_queue;
     int current_player_vecpos = 0;
-
     bool quit = false;
     bool background_need_redraw = true;
     Player* current_player = nullptr;
@@ -51,7 +49,7 @@ public:
     void createHoles(int x0, int y0, int radius, std::vector<Mouse*> *affectedMice = nullptr);
     void saveGame(std::string file_name);
     void loadGame(std::string file_name);
-    void returnToMenu();
+    void returnToMenu(std::string winning_string = "");
     void exit();
     void redraw();
     void generateTerrain();
@@ -67,7 +65,7 @@ public:
     void applyGravity();
     static Game* Instance();
     void applyMovement();
-    void createNotification(std::string message, float timer = -1.0, int x = -1, int y = -1, int width = -1, int height = -1);
+    void createNotification(std::string message, float timer = -1.0, SDL_Color colour = {255,255,255}, int x = -1, int y = -1, int width = -1, int height = -1);
     NotificationBox* createNotification(std::string message, int* number_ptr, float timer = -1.0, int x = -1,
                                         int y = -1, int width = -1, int height = -1, bool push_to_vector = true);
     bool isInsideWindowBorders(Object* object, int x_offset = 0, int y_offset = 0);

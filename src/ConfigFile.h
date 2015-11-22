@@ -12,7 +12,6 @@ struct stack_node {
 class ConfigFile {
 private:
     static ConfigFile* m_pInstance;
-    stack_node config_stack;
 
 // Writes setting name and value to the stack_node (name - setting name, value - seting value).
     void push(char* name, char* value);

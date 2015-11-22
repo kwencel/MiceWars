@@ -28,7 +28,9 @@ void Button::click() {
     }
     else if (this == Game::Instance()->buttons_vector[B_LOAD_GAME] and this->state) {
         Game::Instance()->loadGame(SAVED_GAME);
-        Game::Instance()->pause();
+        if (not Game::Instance()->world_map.empty()) {
+            Game::Instance()->pause();
+        }
     }
     else if (this == Game::Instance()->buttons_vector[B_QUIT_GAME]) {
         Game::Instance()->quit = true;

@@ -29,12 +29,8 @@ std::string Player::getName() {
     return name;
 }
 
-int Player::getColour() {
-    return colour;
-}
-
 void Player::handleKeys(const Uint8 *keystates) {
-    if (keystates[SDL_SCANCODE_LEFT]) {
+    if (keystates[SDL_SCANCODE_LEFT] and not end_turn) {
         if (current_mouse->can_move) {
             current_mouse->wants_to_move_direction = -1;
             current_mouse->weapon->flip = false;
@@ -43,7 +39,7 @@ void Player::handleKeys(const Uint8 *keystates) {
             current_mouse->flip = false;
         }
     }
-    else if (keystates[SDL_SCANCODE_RIGHT]) {
+    else if (keystates[SDL_SCANCODE_RIGHT] and not end_turn) {
         if (current_mouse->can_move) {
             current_mouse->wants_to_move_direction = 1;
             current_mouse->weapon->flip = true;
@@ -52,13 +48,13 @@ void Player::handleKeys(const Uint8 *keystates) {
             current_mouse->flip = true;
         }
     }
-    if (keystates[SDL_SCANCODE_UP]) {
-        if (not current_mouse->can_move and not end_turn) {
+    if (keystates[SDL_SCANCODE_UP] and not end_turn) {
+        if (not current_mouse->can_move) {
             current_mouse->weapon->wants_to_move_crosshair = -1;
         }
     }
-    else if (keystates[SDL_SCANCODE_DOWN]) {
-        if (not current_mouse->can_move and not end_turn) {
+    else if (keystates[SDL_SCANCODE_DOWN] and not end_turn) {
+        if (not current_mouse->can_move) {
             current_mouse->weapon->wants_to_move_crosshair = 1;
         }
     }
@@ -78,20 +74,30 @@ void Player::handleKeys(SDL_Keycode keycode) {
             }
             break;
         case SDLK_1:
-            current_mouse->changeWeapon(shotgun);
+            if (not end_turn) {
+                current_mouse->changeWeapon(shotgun);
+            }
             break;
         case SDLK_2:
-            current_mouse->changeWeapon(bazooka);
+            if (not end_turn) {
+                current_mouse->changeWeapon(bazooka);
+            }
             break;
         case SDLK_3:
-            current_mouse->changeWeapon(grenade);
+            if (not end_turn) {
+                current_mouse->changeWeapon(grenade);
+            }
             break;
         case SDLK_4:
-            current_mouse->changeWeapon(cheesebomb);
+            if (not end_turn) {
+                current_mouse->changeWeapon(cheesebomb);
+            }
             break;
-        case SDLK_5:
-            current_mouse->changeWeapon(mousetrap);
-            break;
+//        case SDLK_5:
+//            if (not end_turn) {
+//                current_mouse->changeWeapon(mousetrap);
+//            }
+//            break;
         default:break;
     }
 }
@@ -113,7 +119,7 @@ Player::~Player() {
         Game::Instance()->player_vector[i]->player_vecpos = i;
     }
     Game::Instance()->players_count--;
-    cout << "Player destroyed!" << endl;
+    //cout << "Player destroyed!" << endl;
 }
 
 void Player::save(std::ofstream &file) {
@@ -150,7 +156,6 @@ void Player::load(std::ifstream &file) {
     file.read((char*)&mice_amount, sizeof(int));
     unsigned long weapon_amount_size;
     file.read((char*)&weapon_amount_size, sizeof(unsigned long));
-    // TODO weapon amount size
     if (weapon_amount_size > 0) {
         for (int i = 0; i < int(weapon_amount_size); i++) {
             int number;

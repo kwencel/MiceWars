@@ -1,5 +1,4 @@
 #include "NotificationBox.h"
-#include "Timer.h"
 
 void NotificationBox::display() {
     if (number_ptr != nullptr) {

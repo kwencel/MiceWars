@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <assert.h>
 #include <iostream>
 #include <fstream>
 #include "Game.h"
@@ -141,7 +140,7 @@ void Game::loadGame(std::string fileName) {
 
 }
 
-void Game::returnToMenu() {
+void Game::returnToMenu(std::string winning_string) {
     removePersistentNotifications();
     while (not player_vector.empty()) {
         delete player_vector[0];
@@ -151,7 +150,9 @@ void Game::returnToMenu() {
     current_player_vecpos = 0;
     current_player = nullptr;
     background_need_redraw = true;
+    menu_need_redraw = true;
     state = menu;
+    createNotification(winning_string, 5, {0, 0, 0}, 300, 0);
 }
 
 void Game::exit() {
@@ -227,17 +228,6 @@ void Game::redraw() {
     SDL_RenderPresent(Engine::Instance()->renderer);
 }
 
-void Game::displayArrayOfValues() {
-    // displaying content of vector
-    cout << endl << "CONTENT OF VECTOR" << endl;
-    for (int j = Engine::Instance()->getWindowWidth(); j >= 0; j-- ) {
-        for (int i = 0; i < Engine::Instance()->getWindowHeight(); i++ ) {
-            cout << world_map[j][i] + '0' - 48;
-        }
-        cout << endl;
-    }
-}
-
 std::pair<int,int> Game::findNext(int x, int y, int max_height, int distance, int river_height) {
     int win_width = Engine::Instance()->getWindowWidth();
     int win_height = Engine::Instance()->getWindowHeight();
@@ -269,7 +259,6 @@ std::pair<int,int> Game::findNext(int x, int y, int max_height, int distance, in
 }
 
 void Game::connectPoints(std::vector<std::pair<int, int>> points_vector, int river_height) {
-    int win_width = Engine::Instance()->getWindowWidth();
     int win_height = Engine::Instance()->getWindowHeight();
     // CONNECTING POINTS
     std::vector<std::pair<int,int>>::iterator current;
@@ -561,8 +550,12 @@ void Game::applyGravity() {
             if (RangedWeapon* ranged_weapon = dynamic_cast<RangedWeapon*>(mouse->weapon)) {
                 if (ranged_weapon->gravity and ranged_weapon->bullet != nullptr) {
                     double a_decrement = pow(ranged_weapon->in_air_counter, 1/8.0)/ranged_weapon->weight;
-                    cout << ranged_weapon->in_air_counter << ", " << a_decrement << endl;
-                    ranged_weapon->a_coefficient += a_decrement;
+                    if (ranged_weapon->flip) {
+                        ranged_weapon->a_coefficient += a_decrement;
+                    }
+                    else {
+                        ranged_weapon->a_coefficient -= a_decrement;
+                    }
                 }
             }
         }
@@ -674,7 +667,7 @@ bool Game::isInsideWindowBorders(Object* object, int x_offset, int y_offset) {
             (object->pos_y + y_offset >= 0) and (object->pos_y + y_offset + object->obj_height <= Engine::Instance()->getWindowHeight()));
 }
 
-void Game::createNotification(std::string message, float timer, int x, int y, int width, int height) {
+void Game::createNotification(std::string message, float timer, SDL_Color colour, int x, int y, int width, int height) {
     int win_width = Engine::Instance()->getWindowWidth();
     int win_height = Engine::Instance()->getWindowHeight();
     int message_length = message.length();
@@ -683,6 +676,7 @@ void Game::createNotification(std::string message, float timer, int x, int y, in
     if (width == -1) { width = (message_length * 10); }
     if (height == -1) { height = NOTIFICATIONBOX_FONTSIZE; };
     NotificationBox* message_box = new NotificationBox(message, timer, x, y, width, height);
+    message_box->colour = colour;
     message_box->refresh();
     notification_queue.push_back(message_box);
 }
@@ -741,12 +735,12 @@ void Game::checkWinLoseConditions() {
     if (player_vector.size() == 1) {
         std::stringstream ss;
         ss << "Player " << player_vector[0]->getName() << " has won!";
-        cout << "[INFO] Player " << player_vector[0]->getName() << " has won!!!" << endl;
-        createNotification(ss.str(), 1);
-        returnToMenu();
+        cout << "[INFO] Player " << player_vector[0]->getName() << " has won!" << endl;
+        returnToMenu(ss.str());
     }
     else if (player_vector.empty()) {
         returnToMenu();
+        changePlayer();
     }
     else {
         changePlayer();
@@ -785,7 +779,9 @@ void Game::controlMenu() {
             }
             case SDL_KEYDOWN: {
                 if (event.key.keysym.sym == SDLK_ESCAPE) {
-                    pause();
+                    if (not world_map.empty()) {
+                        pause();
+                    }
                 }
                 else if (event.key.keysym.sym == SDLK_q) {
                     quit = true;

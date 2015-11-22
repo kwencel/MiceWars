@@ -15,7 +15,6 @@ public:
     int bullet_height = 0;
     Object* bullet = nullptr;
     Object* crosshair = nullptr;
-    bool bullet_fired = false;
     std::vector<std::pair<int, int>> semicircle_vector;
     std::vector<std::pair<int,int>>::iterator it;
     float a_coefficient;

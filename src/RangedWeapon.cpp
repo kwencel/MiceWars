@@ -167,6 +167,9 @@ void RangedWeapon::prepare() {
 }
 
 void RangedWeapon::shoot() {
+    if (crosshair == nullptr) {
+        return;
+    }
     wants_to_move_crosshair = stay;
     // CREATING BULLET
     if (bullet == nullptr) {
@@ -183,7 +186,6 @@ void RangedWeapon::shoot() {
 
     a_coefficient = (y2-y1)/(x2-x1);
     b_coefficient = y1 - (a_coefficient * x1);
-    std::cout << "SHOOOOOOOOOOOOOOOOT!!!" << endl;
     Game::Instance()->current_player->end_turn = true;
 }
 
@@ -278,7 +280,7 @@ void RangedWeapon::moveBullet() {
 RangedWeapon::~RangedWeapon() {
     delete crosshair;
     delete bullet;
-    cout << "RangedWeapon destroyed!" << endl;
+    //cout << "RangedWeapon destroyed!" << endl;
 }
 
 void RangedWeapon::save(std::ofstream &file) {
