@@ -14,19 +14,19 @@ ConfigFile* ConfigFile::Instance() {
     return m_pInstance;
 }
 
-struct stack_node * root = 0;
+struct StackNode * root = 0;
 
 void ConfigFile::push(char* name, char* value) {
-    stack_node * node;
-    node = new stack_node;
+    StackNode * node;
+    node = new StackNode;
     node->next = root;
     node->name = name;
     node->value = value;
     root = node;
 }
 
-stack_node* ConfigFile::pop() {
-    struct stack_node *val;
+StackNode * ConfigFile::pop() {
+    struct StackNode *val;
     val = root;
     if (root)
         root = root->next;
@@ -95,7 +95,7 @@ void ConfigFile::loadConfig(const char* filepath) {
 }
 
 void ConfigFile::processConfig() {
-    struct stack_node *sett;
+    struct StackNode *sett;
     printf("[INFO] Loading configuration...\n");
     for (sett = pop(); sett != NULL; sett = pop()) {
         printf("[CONFIG] %s = %s\n", sett->name, sett->value);

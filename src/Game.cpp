@@ -56,13 +56,15 @@ void Game::readKeyboardState() {
 }
 
 void Game::saveGame(std::string fileName) {
+    int win_width = Engine::Instance()->getWindowWidth();
+    int win_height = Engine::Instance()->getWindowHeight();
     std::ofstream save_game_file;
     save_game_file.open(fileName, std::ios::out | std::ios::trunc | std::ios::binary); // output operations, replace content, in binary mode
     if (save_game_file.is_open()) {
         save_game_file.write((char*)&current_player_vecpos, sizeof(int));
         save_game_file.write((char*)&win_width, sizeof(int));
         save_game_file.write((char*)&win_height, sizeof(int));
-        save_game_file.write((char*)&background_need_redraw, sizeof(bool));
+        save_game_file.write((char*)&background_needs_redraw, sizeof(bool));
         for (auto column: world_map) {
             for (auto pixel: column) {
                 save_game_file.write(&pixel, sizeof(char));
@@ -94,10 +96,17 @@ void Game::loadGame(std::string fileName) {
     std::ifstream read_game_file;
     read_game_file.open(fileName, std::ios::in | std::ios::binary); // output operations, replace content, in binary mode
     if (read_game_file.is_open()) {
+        int win_width;
+        int win_height;
         read_game_file.read((char*)&current_player_vecpos, sizeof(int));
         read_game_file.read((char*)&win_width, sizeof(int));
         read_game_file.read((char*)&win_height, sizeof(int));
-        read_game_file.read((char*)&background_need_redraw, sizeof(bool));
+        read_game_file.read((char*)&background_needs_redraw, sizeof(bool));
+        if (win_width != Engine::Instance()->getWindowWidth() or win_height != Engine::Instance()->getWindowHeight()) {
+            cerr << "[ERROR] You can't load game that was played in a different resolution." << endl;
+            cerr << "[INFO] Please change the resolution in config.ini to: " << win_width << "x" << win_height << "." << endl;
+            return;
+        }
         for (int i = 0; i <= win_width; i++) {
             std::vector<char> pixel_vector;
             for (int j = 0; j < win_height; j++) {
@@ -149,8 +158,8 @@ void Game::returnToMenu(std::string winning_string) {
     notification_queue.clear();
     current_player_vecpos = 0;
     current_player = nullptr;
-    background_need_redraw = true;
-    menu_need_redraw = true;
+    background_needs_redraw = true;
+    menu_needs_redraw = true;
     state = menu;
     createNotification(winning_string, 5, {0, 0, 0}, 300, 0);
 }
@@ -192,9 +201,9 @@ void Game::displayBackground() {
 void Game::redraw() {
     if (state == gameplay) {
         // Draw background
-        if (background_need_redraw) {
+        if (background_needs_redraw) {
             drawBackground();
-            background_need_redraw = false;
+            background_needs_redraw = false;
         }
         displayBackground();
         for (auto player : player_vector) {
@@ -228,7 +237,7 @@ void Game::redraw() {
     SDL_RenderPresent(Engine::Instance()->renderer);
 }
 
-std::pair<int,int> Game::findNext(int x, int y, int max_height, int distance, int river_height) {
+std::pair<int,int> Game::findNextPoint(int x, int y, int max_height, int distance, int river_height) {
     int win_width = Engine::Instance()->getWindowWidth();
     int win_height = Engine::Instance()->getWindowHeight();
     std::pair<int,int> point_coordinates;
@@ -414,7 +423,7 @@ void Game::generateTerrain() {
 
     // creating and adding the rest of points
     while (cur_x != (win_width)) {
-        point_coordinates = findNext(cur_x, cur_y, max_height, distance, river_height);
+        point_coordinates = findNextPoint(cur_x, cur_y, max_height, distance, river_height);
         //cout << "x = " << point_coordinates.first << ", y = " << point_coordinates.second << endl;
         cur_x = point_coordinates.first;
         cur_y = point_coordinates.second;
@@ -628,14 +637,14 @@ void Game::changePlayer() {
         }
     }
     current_player->makeTurn();
-    createNotification(current_player->getName(), 1);
+    createNotification(current_player->name, 1);
     createNotification("Movepoints remaining: ", &Game::Instance()->current_player->current_mouse->movepoints, -1.0);
 }
 
 void Game::pause() {
     state = !state;
     if (state != gameplay) {
-        menu_need_redraw = true;
+        menu_needs_redraw = true;
     }
     else {
         new_game = false;
@@ -722,7 +731,7 @@ void Game::checkWinLoseConditions() {
     for (auto player : player_vector) {
         if (player->mice_vector.empty()) {
             std::stringstream ss;
-            ss << "Player " << player->getName() << " has lost!";
+            ss << "Player " << player->name << " has lost!";
             createNotification(ss.str(), 3);
             players_to_delete.push_back(player);
         }
@@ -734,8 +743,8 @@ void Game::checkWinLoseConditions() {
     }
     if (player_vector.size() == 1) {
         std::stringstream ss;
-        ss << "Player " << player_vector[0]->getName() << " has won!";
-        cout << "[INFO] Player " << player_vector[0]->getName() << " has won!" << endl;
+        ss << "Player " << player_vector[0]->name << " has won!";
+        cout << "[INFO] Player " << player_vector[0]->name << " has won!" << endl;
         returnToMenu(ss.str());
     }
     else if (player_vector.empty()) {
@@ -761,7 +770,7 @@ void Game::searchForButton(std::pair<int,int> pair) {
                 continue;
             }
             else {
-                //cout << "Button click\n";
+                //cout << "Button click" << endl;
                 button->click();
                 break;
             }
@@ -800,7 +809,7 @@ void Game::controlMenu() {
         }
     }
 }
-void Game::creatingButtonsImagesVector() {
+void Game::createButtonsImagesVector() {
     buttons_images.push_back("img/b_ResumeGame.png");
     buttons_images.push_back("img/b_SaveGame.png");
     buttons_images.push_back("img/b_LoadGame.png");
@@ -846,8 +855,6 @@ void Game::creatingButtonsImagesVector() {
     buttons_images.push_back("img/5.png");
     buttons_images.push_back("img/6.png");
     buttons_images.push_back("img/7.png");
-
-
 }
 
 void Game::redrawMenu() {
@@ -860,7 +867,7 @@ void Game::redrawMenu() {
     n_option->display();
     if (buttons_vector.empty()) {   // every button's state is true
         // CREATING VECTOR OF PATHS TO IMAGES AND THEIR ALTERNATIVES
-        creatingButtonsImagesVector();
+        createButtonsImagesVector();
         // CREATING BUTTONS
         Button* b_resume_game = new Button(25, 150, 150, 70, "img/b_ResumeGame.png");
         buttons_vector.push_back(b_resume_game);
@@ -883,7 +890,6 @@ void Game::redrawMenu() {
         buttons_vector.push_back(b_ai_l);
         Button* b_ai_z = new Button(570, 480, 100, 46, "img/b_Human1.png");
         buttons_vector.push_back(b_ai_z);
-        //
         Button* b_num_d = new Button(340, 270, 60, 60, "img/1.png");
         buttons_vector.push_back(b_num_d);
         Button* b_num_m = new Button(610, 270, 60, 60, "img/1.png");
@@ -963,8 +969,8 @@ void Game::redrawMenu() {
 }
 
 void Game::displayMenu() {
-    if (menu_need_redraw) {
+    if (menu_needs_redraw) {
         redrawMenu();
-        menu_need_redraw = false;
+        menu_needs_redraw = false;
     }
 }

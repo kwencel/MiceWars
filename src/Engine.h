@@ -34,7 +34,7 @@ public:
     int getReady();
     void readCursorPosition();
     int createBackground();
-    void colorPixel(SDL_Surface *surface, int x, int y, Uint32 color);
+    void colorPixel(SDL_Surface *surface, int x, int y, Uint32 colour);
     SDL_Texture* makeTexture(const char *img_path);
     void clearRenderer();
     void destroy();

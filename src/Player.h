@@ -7,7 +7,6 @@
 
 class Player {
 private:
-
     int current_mouse_vecpos = 0;
     std::vector<int> weapon_amount;
 
@@ -29,10 +28,8 @@ public:
     virtual void makeTurn();    // Selects the current mouse to make turn, control is provided by readKeyboardState() in Game class
     void handleKeys(const Uint8 *keystates);
     virtual void handleKeys(SDL_Keycode keycode);
-    std::string getName();
     void save(std::ofstream& file);
     void load(std::ifstream& file);
-    //void test();
 
 };
 

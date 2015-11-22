@@ -15,7 +15,6 @@ struct EnemyTarget {
 
 class AI: public Player {
 private:
-    int calculateDistanceBetweenObjects(Object* base_obj, Object* distant_obj);
     std::vector<EnemyTarget> enemies_vector;
     EnemyTarget enemy_mouse;
     int stuck_count = 0;
@@ -37,6 +36,7 @@ private:
     void aim(Object* target, bool simulate);
     void fire();
     void handleKeys(SDL_Keycode keycode) override;
+    int calculateDistanceBetweenObjects(Object* base_obj, Object* distant_obj);
 
 public:
     AI(std::string name, bool is_human, int mouse_amount, int colour)

@@ -25,10 +25,6 @@ void Player::makeTurn() {
     current_mouse->weapon->angle = 0;
 }
 
-std::string Player::getName() {
-    return name;
-}
-
 void Player::handleKeys(const Uint8 *keystates) {
     if (keystates[SDL_SCANCODE_LEFT] and not end_turn) {
         if (current_mouse->can_move) {

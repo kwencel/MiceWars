@@ -9,10 +9,12 @@
 #include "Engine.h"
 
 class NotificationBox: public Object {
-public:
-    std::string text = "";
-    int* number_ptr = nullptr;
+private:
     int number;
+    std::string text = "";
+
+public:
+    int* number_ptr = nullptr;
     float timer;
     bool is_being_displayed = false;
     TTF_Font* font = TTF_OpenFont(NOTIFICATIONBOX_FONT, NOTIFICATIONBOX_FONTSIZE);

@@ -16,12 +16,12 @@ public:
 
     Mouse(int x, int y, int width, int height, std::string img_path)
             : Object(x, y, width, height, img_path) { /* cout << "Mouse created!" << endl; */ }
-    Mouse() {}; // needed to reload game
+    Mouse() {}; // Needed to reload game
     ~Mouse();
     void move();
     void changeWeapon(short index);
     bool overcomeHill(int direction);
-    void display();
+    void display() override;
     void save(std::ofstream& file) override;
     void load(std::ifstream& file) override;
 };

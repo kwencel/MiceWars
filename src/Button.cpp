@@ -23,7 +23,7 @@ void Button::click() {
     }
     else if (this == Game::Instance()->buttons_vector[B_SAVE_GAME] and this->state) {
         Game::Instance()->saveGame(SAVED_GAME);
-        Game::Instance()->menu_need_redraw = true;
+        Game::Instance()->menu_needs_redraw = true;
         // TODO display "Game is saved"
     }
     else if (this == Game::Instance()->buttons_vector[B_LOAD_GAME] and this->state) {
@@ -40,7 +40,7 @@ void Button::click() {
         Game::Instance()->buttons_vector[P_DAKTYL]->state = true;
         Game::Instance()->buttons_vector[P_MIKI]->state = true;
         Game::Instance()->menu_active_players = 2;
-        Game::Instance()->menu_need_redraw = true;
+        Game::Instance()->menu_needs_redraw = true;
     }
     else if (this == Game::Instance()->buttons_vector[B_START] and this->state) {
         Game::Instance()->world_map.clear();
@@ -89,7 +89,7 @@ void Button::click() {
         Game::Instance()->players_count = Game::Instance()->player_vector.size();
         Game::Instance()->placeMice();
         Game::Instance()->changePlayer();
-        Game::Instance()->background_need_redraw = true;
+        Game::Instance()->background_needs_redraw = true;
         Game::Instance()->pause();
         // load new_game
     }
@@ -98,7 +98,7 @@ void Button::click() {
               or this == Game::Instance()->buttons_vector[B_AI_HUMAN_L]
               or this == Game::Instance()->buttons_vector[B_AI_HUMAN_Z]) and Game::Instance()->new_game) {
         this->state = !this->state;
-        Game::Instance()->menu_need_redraw = true;
+        Game::Instance()->menu_needs_redraw = true;
     }
     else if ((this == Game::Instance()->buttons_vector[B_NUM_D]
               or this == Game::Instance()->buttons_vector[B_NUM_M]
@@ -109,7 +109,7 @@ void Button::click() {
         } else {
             this->amount++;
         }
-        Game::Instance()->menu_need_redraw = true;
+        Game::Instance()->menu_needs_redraw = true;
     }
     else if ((this == Game::Instance()->buttons_vector[P_DAKTYL]
               or this == Game::Instance()->buttons_vector[P_MIKI]
@@ -122,6 +122,6 @@ void Button::click() {
         else {
             Game::Instance()->menu_active_players--;
         }
-        Game::Instance()->menu_need_redraw = true;
+        Game::Instance()->menu_needs_redraw = true;
     }
 }

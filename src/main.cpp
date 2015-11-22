@@ -6,7 +6,7 @@ int main(int argc, char** argv) {
     ConfigFile::Instance()->loadConfig(CONFIG_FILE_PATH);
     Engine::Instance()->getReady();
     Timer::Instance()->getNewDelta();
-    Game::Instance()->menu_need_redraw = true;
+    Game::Instance()->menu_needs_redraw = true;
 
     while (not Game::Instance()->quit) {
         if (Game::Instance()->getState() == gameplay) {

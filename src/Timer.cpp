@@ -38,10 +38,6 @@ void Timer::setFPS(float FPS) {
     this->target_frametime = 1.0/FPS;
 }
 
-float Timer::getFPS() {
-    return FPS;
-}
-
 double Timer::getTargetFrametime() {
     return target_frametime;
 }

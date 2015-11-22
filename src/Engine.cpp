@@ -39,10 +39,10 @@ int Engine::createBackground() {
 }
 
 
-void Engine::colorPixel(SDL_Surface* surface, int x, int y, Uint32 color) {
+void Engine::colorPixel(SDL_Surface* surface, int x, int y, Uint32 colour) {
     Uint8* pixel = (Uint8*)surface->pixels;
     pixel += (y * surface->pitch) + (x * sizeof(Uint32));
-    *((Uint32*)pixel) = color;
+    *((Uint32*)pixel) = colour;
 }
 
 int Engine::init() {

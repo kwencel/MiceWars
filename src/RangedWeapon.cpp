@@ -248,7 +248,7 @@ void RangedWeapon::moveBullet() {
                     delete crosshair;
                     crosshair = nullptr;
                 }
-                Game::Instance()->background_need_redraw = true;
+                Game::Instance()->background_needs_redraw = true;
                 Game::Instance()->checkWinLoseConditions();
                 break;
             }

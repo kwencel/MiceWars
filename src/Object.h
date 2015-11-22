@@ -10,9 +10,8 @@ using std::cout;
 using std::endl;
 
 class Object {
-protected:
-//    vector<SDL_Surface*> bitmap_vector;
-//    int current_bitmap;
+private:
+    SDL_Rect rectangle;
 
 public:
     int pos_x;
@@ -20,7 +19,7 @@ public:
     int obj_width;
     int obj_height;
     SDL_Texture* texture = nullptr;
-    SDL_Rect rectangle;
+
     bool flip = false;
     double angle = 0;
 
