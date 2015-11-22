@@ -22,7 +22,7 @@ public:
     float b_coefficient;
 
     RangedWeapon(int x, int y, int width, int height, std::string img_path )
-            : Weapon(x, y, width, height, img_path) { cout << "RangedWeapon created!" << endl; }
+            : Weapon(x, y, width, height, img_path) { /* cout << "RangedWeapon created!" << endl; */ }
     ~RangedWeapon();
     virtual void prepare();
     virtual void shoot();

@@ -34,7 +34,7 @@ enum {  gravity = 0,
 #define CROSSHAIR_IMG           "img/Crosshair.png"
 #define CROSSHAIR_SPEED_MUL     150
 #define CROSSHAIR_SIM_TOLERANCE 5
-#define CROSSHAIR_BOUNDARY      50
+#define CROSSHAIR_BOUNDARY      35
 
 #define MOUSE_IMG               "img/Mouse(30x37)"
 #define MOUSE_IMG_EXTENSION     ".png"

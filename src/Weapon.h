@@ -10,9 +10,9 @@ public:
     short wants_to_move_crosshair = stay;
 
     Weapon(int x, int y, int width, int height, std::string img_path)
-            : Object(x, y, width, height, img_path) { cout << "Weapon created!" << endl; }
+            : Object(x, y, width, height, img_path) { /* cout << "Weapon created!" << endl; */ }
     Weapon() {} // needed to reload game
-    virtual ~Weapon() { cout << "Weapon destroyed!" << endl; }
+    virtual ~Weapon() { /* cout << "Weapon destroyed!" << endl; */ }
     virtual void prepare() = 0;
     virtual void shoot() = 0;
     void save(std::ofstream& file) override;

@@ -181,7 +181,7 @@ void RangedWeapon::shoot() {
     x2 = (crosshair->getCenter().x);
     y2 = (crosshair->getCenter().y);
 
-    a_coefficient = (y1-y2)/(x1-x2);
+    a_coefficient = (y2-y1)/(x2-x1);
     b_coefficient = y1 - (a_coefficient * x1);
     std::cout << "SHOOOOOOOOOOOOOOOOT!!!" << endl;
     Game::Instance()->current_player->end_turn = true;
@@ -254,7 +254,7 @@ void RangedWeapon::moveBullet() {
                 if (gravity) {
                     ++in_air_counter;
                 }
-                if (bullet->flip == 0) {
+                if (not bullet->flip) {
                     bullet->pos_x -= 1;
                 }
                 else {

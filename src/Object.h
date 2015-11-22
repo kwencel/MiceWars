@@ -24,7 +24,7 @@ public:
     bool flip = false;
     double angle = 0;
 
-    Object() { cout << "Created temp object!" << endl; };
+    Object() { /* cout << "Created temp object!" << endl; */ };
     Object(int x, int y, int width, int height, std::string img_path = "");
     virtual ~Object();
     SDL_Point getCenter();

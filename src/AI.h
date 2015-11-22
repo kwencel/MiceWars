@@ -40,7 +40,7 @@ private:
 
 public:
     AI(std::string name, bool is_human, int mouse_amount, int colour)
-            : Player(name, is_human, mouse_amount, colour) { cout << "AI created!" << endl; }
+            : Player(name, is_human, mouse_amount, colour) { /* cout << "AI created!" << endl; */ }
     ~AI();
     void makeTurn() override;
 };

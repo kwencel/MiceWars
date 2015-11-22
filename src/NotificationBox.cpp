@@ -30,18 +30,18 @@ void NotificationBox::refresh() {
 
 NotificationBox::NotificationBox(int& message, float timer, int x, int y, int width, int height)
         : Object(x, y, width, height), timer(timer) {
-    cout << "NotificationBox created!" << endl;
+    //cout << "NotificationBox created!" << endl;
 }
 
 NotificationBox::NotificationBox(std::string message, float timer, int x, int y, int width, int height)
         : Object(x, y, width, height), timer(timer), text(message) {
-    cout << "NotificationBox created!" << endl;
+    //cout << "NotificationBox created!" << endl;
 }
 
 NotificationBox::~NotificationBox() {
     number_ptr = nullptr;
     TTF_CloseFont(font);
-    cout << "NotificationBox destroyed!" << endl;
+    //cout << "NotificationBox destroyed!" << endl;
 }
 
 void NotificationBox::save(std::ofstream &file) {

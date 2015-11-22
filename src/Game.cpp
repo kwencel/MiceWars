@@ -502,11 +502,6 @@ bool Game::doesCollideWithPoint(Object* object, int coll_x, int coll_y, int x_of
     return false;
 }
 
-bool Game::doesObjectsOverlap(Object* object1, Object* object2) {
-    return (object1->pos_x < object2->pos_x + object2->obj_width && object1->pos_x + object1->obj_width > object2->pos_x &&
-            object1->pos_y < object2->pos_y + object2->obj_height && object1->pos_y + object1->obj_height > object2->pos_y);
-}
-
 std::vector<Mouse*> Game::checkMiceCollisionRect(Object* object) {
     std::vector<Mouse*> affectedMice;
     for (auto player : player_vector) {

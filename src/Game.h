@@ -84,7 +84,6 @@ public:
     bool doesObjectsOverlap(Object* object1, Object* object2);
     void searchForButton(std::pair<int,int> pair);
     void creatingButtonsImagesVector();
-    bool doesObjectsOverlap(Object *object1, Object *object2);
     std::vector<Mouse *> checkMiceCollisionRect(Object *object);
 };
 
