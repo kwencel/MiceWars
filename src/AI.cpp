@@ -3,11 +3,11 @@
 #include "Game.h"
 #include "RangedWeapon.h"
 
-bool compareHPIncreasing(const EnemyTarget &a, const EnemyTarget &b) {
+bool compareHPIncreasing(const EnemyTarget& a, const EnemyTarget& b) {
     return a.hp < b.hp;
 }
 
-bool compareDistanceIncreasing(const EnemyTarget &a, const EnemyTarget &b) {
+bool compareDistanceIncreasing(const EnemyTarget& a, const EnemyTarget& b) {
     return a.distance < b.distance;
 }
 
@@ -199,7 +199,7 @@ void AI::aim(Object* target, bool simulate) {
     else {
         current_mouse->flip = false;
     }
-    RangedWeapon *ranged_weapon_ptr = dynamic_cast<RangedWeapon *>(current_mouse->weapon);
+    RangedWeapon* ranged_weapon_ptr = dynamic_cast<RangedWeapon*>(current_mouse->weapon);
     RangedWeapon TestWeapon(current_mouse->pos_x + WEAPON_X_OFFSET, current_mouse->pos_y + WEAPON_Y_OFFSET,
                             WEAPON_WIDTH,
                             WEAPON_HEIGHT, SHOTGUN_IMG);
@@ -289,7 +289,7 @@ void AI::handleKeys(SDL_Keycode keycode) {
 int AI::calculateDistanceBetweenObjects(Object* base_obj, Object* distant_obj) {
     int dist_x = abs(distant_obj->getCenter().x - base_obj->getCenter().x);
     int dist_y = abs(distant_obj->getCenter().y - base_obj->getCenter().y);
-    int distance = static_cast<int>(sqrt( (dist_x * dist_x) + (dist_y * dist_y)) );
+    int distance = static_cast<int>(sqrt((dist_x * dist_x) + (dist_y * dist_y)));
     return distance;
 }
 

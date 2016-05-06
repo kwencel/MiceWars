@@ -3,17 +3,22 @@
 
 #include "Object.h"
 
-class Button: public Object {
+class Button : public Object {
 public:
     bool state;
     int amount = 1;
 
     Button(int x, int y, int width, int height, std::string img_path, bool state = true)
-            : Object(x, y, width, height, img_path), state(state)  { /* cout << "Button created!" << endl; */ }
+            : Object(x, y, width, height, img_path), state(state) { /* cout << "Button created!" << endl; */ }
+
     ~Button();
-    Button(bool state = false) : state(state)  { }
+
+    Button(bool state = false) : state(state) { }
+
     void click();
+
     void save(std::ofstream& file) override;
+
     void load(std::ifstream& file) override;
 
 };

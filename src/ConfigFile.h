@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 struct StackNode {
-    StackNode * next;
+    StackNode* next;
     char* name;
     char* value;
 };
@@ -17,14 +17,14 @@ private:
     void push(char* name, char* value);
 
 // Reads and deletes setting name and value from the StackNode
-    StackNode * pop();
+    StackNode* pop();
 
 // Reads the configuration settings from the StackNode and applies them to the game.
 // Writes error on the stderr if encountered an error in parsing the config file.
     void processConfig();
 
 // Writes the default config file if it wasn't found in the game directory. Returns -1 on fail.
-    int writeDefaultConfig(FILE *fp);
+    int writeDefaultConfig(FILE* fp);
 
     ConfigFile() { printf("ConfigFile instance created!\n"); };
 

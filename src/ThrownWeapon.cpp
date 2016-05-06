@@ -26,7 +26,7 @@ void ThrownWeapon::shoot() {
 
     a_coefficient = (y1 - y2) / (x1 - x2);
     if (not flip and a_coefficient > 1.0) {
-        if ((a_coefficient = 1.0/a_coefficient) > 0.5) {
+        if ((a_coefficient = 1.0 / a_coefficient) > 0.5) {
             a_coefficient = 0.5;
         }
     }
@@ -35,16 +35,16 @@ void ThrownWeapon::shoot() {
 }
 
 void ThrownWeapon::prepare() {
-  RangedWeapon::prepare();
+    RangedWeapon::prepare();
 }
 
-void ThrownWeapon::save(std::ofstream &file) {
-  RangedWeapon::save(file);
-  file.write((char*)&timer, sizeof(timer));
+void ThrownWeapon::save(std::ofstream& file) {
+    RangedWeapon::save(file);
+    file.write((char*) &timer, sizeof(timer));
 
 }
 
-void ThrownWeapon::load(std::ifstream &file) {
-  RangedWeapon::load(file);
-  file.read((char*)&timer, sizeof(timer));
+void ThrownWeapon::load(std::ifstream& file) {
+    RangedWeapon::load(file);
+    file.read((char*) &timer, sizeof(timer));
 }

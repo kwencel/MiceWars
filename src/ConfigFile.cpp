@@ -14,10 +14,10 @@ ConfigFile* ConfigFile::Instance() {
     return m_pInstance;
 }
 
-struct StackNode * root = 0;
+struct StackNode* root = 0;
 
 void ConfigFile::push(char* name, char* value) {
-    StackNode * node;
+    StackNode* node;
     node = new StackNode;
     node->next = root;
     node->name = name;
@@ -25,8 +25,8 @@ void ConfigFile::push(char* name, char* value) {
     root = node;
 }
 
-StackNode * ConfigFile::pop() {
-    struct StackNode *val;
+StackNode* ConfigFile::pop() {
+    struct StackNode* val;
     val = root;
     if (root)
         root = root->next;
@@ -39,8 +39,8 @@ int ConfigFile::writeDefaultConfig(FILE* fp) {
         fprintf(fp, "[Gameplay]\n");
         fprintf(fp, "FPS=60\n");
         fprintf(fp, "[Resolution]\n");
-        fprintf(fp, "Width=%d\n",DEFAULT_WIN_WIDTH);
-        fprintf(fp, "Height=%d\n",DEFAULT_WIN_HEIGHT);
+        fprintf(fp, "Width=%d\n", DEFAULT_WIN_WIDTH);
+        fprintf(fp, "Height=%d\n", DEFAULT_WIN_HEIGHT);
         fclose(fp);
         printf(" OK.\n");
         return 0;
@@ -95,7 +95,7 @@ void ConfigFile::loadConfig(const char* filepath) {
 }
 
 void ConfigFile::processConfig() {
-    struct StackNode *sett;
+    struct StackNode* sett;
     printf("[INFO] Loading configuration...\n");
     for (sett = pop(); sett != NULL; sett = pop()) {
         printf("[CONFIG] %s = %s\n", sett->name, sett->value);
@@ -108,9 +108,7 @@ void ConfigFile::processConfig() {
         else if ((strcmp(sett->name, "Height") == 0)) {
             Engine::Instance()->setWindowHeight(atoi(sett->value));
         }
-//        free(sett->name);
-//        free(sett->value);
-//        free(sett);
+        delete sett;
     }
     printf("[INFO] Configuration loaded.\n");
 }

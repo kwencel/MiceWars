@@ -13,7 +13,8 @@ enum {
     cheesebomb = 3,
     mousetrap = 4,
     gameplay = 0,
-    menu = 1    };
+    menu = 1
+};
 
 #define CONFIG_FILE_PATH        "config.ini"
 #define DEFAULT_WIN_WIDTH       800
@@ -127,7 +128,6 @@ enum {
 #define B_NUM_M                 11
 #define B_NUM_L                 12
 #define B_NUM_Z                 13
-
 
 
 #define SAVED_GAME              "saved_game.dat"

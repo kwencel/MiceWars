@@ -6,14 +6,15 @@
 Button::~Button() {
     cout << "Button destroyed!" << endl;
 }
-void Button::save(std::ofstream &file) {
+
+void Button::save(std::ofstream& file) {
     Object::save(file);
-    file.write((char*)&state, sizeof(state));
+    file.write((char*) &state, sizeof(state));
 }
 
-void Button::load(std::ifstream &file) {
+void Button::load(std::ifstream& file) {
     Object::load(file);
-    file.read((char*)&state, sizeof(state));
+    file.read((char*) &state, sizeof(state));
 }
 
 void Button::click() {

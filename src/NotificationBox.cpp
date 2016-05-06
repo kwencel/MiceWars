@@ -43,18 +43,18 @@ NotificationBox::~NotificationBox() {
     //cout << "NotificationBox destroyed!" << endl;
 }
 
-void NotificationBox::save(std::ofstream &file) {
+void NotificationBox::save(std::ofstream& file) {
     Object::save(file);
-    file.write((char*)&text, sizeof(text));
-    file.write((char*)&number, sizeof(number));
-    file.write((char*)&timer, sizeof(timer));
-    file.write((char*)&is_being_displayed, sizeof(is_being_displayed));
+    file.write((char*) &text, sizeof(text));
+    file.write((char*) &number, sizeof(number));
+    file.write((char*) &timer, sizeof(timer));
+    file.write((char*) &is_being_displayed, sizeof(is_being_displayed));
 }
 
-void NotificationBox::load(std::ifstream &file) {
+void NotificationBox::load(std::ifstream& file) {
     Object::load(file);
-    file.read((char*)&text, sizeof(text));
-    file.read((char*)&number, sizeof(number));
-    file.read((char*)&timer, sizeof(timer));
-    file.read((char*)&is_being_displayed, sizeof(is_being_displayed));
+    file.read((char*) &text, sizeof(text));
+    file.read((char*) &number, sizeof(number));
+    file.read((char*) &timer, sizeof(timer));
+    file.read((char*) &is_being_displayed, sizeof(is_being_displayed));
 }

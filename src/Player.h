@@ -22,13 +22,22 @@ public:
 
 
     Player(std::string name, bool is_human, int mouse_amount, int colour)
-            : name(name), is_human(is_human), mice_amount(mouse_amount), colour(colour) { /* cout << "Player created!" << endl; */ };
-    Player() {};   // needed to reload game
+            : name(name), is_human(is_human), mice_amount(mouse_amount),
+              colour(colour) { /* cout << "Player created!" << endl; */ };
+
+    Player() { };   // needed to reload game
+
     virtual ~Player();
-    virtual void makeTurn();    // Selects the current mouse to make turn, control is provided by readKeyboardState() in Game class
-    void handleKeys(const Uint8 *keystates);
+
+    // Selects the current mouse to make turn, control is provided by readKeyboardState() in Game class
+    virtual void makeTurn();
+
+    void handleKeys(const Uint8* keystates);
+
     virtual void handleKeys(SDL_Keycode keycode);
+
     void save(std::ofstream& file);
+
     void load(std::ifstream& file);
 
 };

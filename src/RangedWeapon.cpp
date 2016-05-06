@@ -3,23 +3,23 @@
 #include "Game.h"
 #include "Timer.h"
 
-bool compareXIncreasing(const std::pair<int, int> &a, const std::pair<int, int> &b) {
+bool compareXIncreasing(const std::pair<int, int>& a, const std::pair<int, int>& b) {
     return a.first < b.first;
 }
 
-bool compareXDecreasing(const std::pair<int, int> &a, const std::pair<int, int> &b) {
+bool compareXDecreasing(const std::pair<int, int>& a, const std::pair<int, int>& b) {
     return a.first > b.first;
 }
 
-bool compareY (const std::pair<int,int>& a, const std::pair<int,int>& b) {
+bool compareY(const std::pair<int, int>& a, const std::pair<int, int>& b) {
     return a.second < b.second;
 }
 
-bool equalX (const std::pair<int,int>& a, const std::pair<int,int>& b) {
+bool equalX(const std::pair<int, int>& a, const std::pair<int, int>& b) {
     return (a.first == b.first);
 }
 
-bool equalY (const std::pair<int,int>& a, const std::pair<int,int>& b) {
+bool equalY(const std::pair<int, int>& a, const std::pair<int, int>& b) {
     return (a.second == b.second);
 }
 
@@ -28,22 +28,24 @@ void RangedWeapon::sortVector() {
     sort(semicircle_vector.begin(), semicircle_vector.end(), compareY);
     // REMOVING EXACTLY THE SAME POINTS FROM VECTOR:
     semicircle_vector.erase(std::unique(semicircle_vector.begin(), semicircle_vector.end()), semicircle_vector.end());
-    std::vector<std::pair<int,int>>::iterator it_startY = semicircle_vector.begin();        // start iterator
-    std::vector<std::pair<int,int>>::iterator it_endY;                                      // end iterator
-    std::vector<std::pair<int,int>>::iterator it_currentY;                                  // current iterator
+    std::vector<std::pair<int, int>>::iterator it_startY = semicircle_vector.begin();        // start iterator
+    std::vector<std::pair<int, int>>::iterator it_endY;                                      // end iterator
+    std::vector<std::pair<int, int>>::iterator it_currentY;                                  // current iterator
 
     for (it_currentY = semicircle_vector.begin() + 1; it_currentY <= semicircle_vector.end() + 1; ++it_currentY) {
         if (it_currentY->second != it_startY->second) {
             it_endY = it_currentY;
             // LEFT
             if (Game::Instance()->current_player->current_mouse->flip == 0) {
-                if (it_startY->second < Game::Instance()->current_player->current_mouse->getCenter().y) // over the center of mouse
+                if (it_startY->second <
+                    Game::Instance()->current_player->current_mouse->getCenter().y) // over the center of mouse
                     sort(it_startY, it_endY, compareXDecreasing);
                 else    // under the center of mouse
                     sort(it_startY, it_endY, compareXIncreasing);
             } // RIGHT
             else {
-                if (it_startY->second < Game::Instance()->current_player->current_mouse->getCenter().y) // over the center of mouse
+                if (it_startY->second <
+                    Game::Instance()->current_player->current_mouse->getCenter().y) // over the center of mouse
                     sort(it_startY, it_endY, compareXIncreasing);
                 else    // under the center of mouse
                     sort(it_startY, it_endY, compareXDecreasing);
@@ -57,8 +59,9 @@ void RangedWeapon::markSemicircle() {
     int win_width = Engine::Instance()->getWindowWidth();
     int win_height = Engine::Instance()->getWindowHeight();
     semicircle_vector.clear();
-    std::pair<int,int> pair;
-    int left_boundary = Game::Instance()->current_player->current_mouse->getCenter().x -CROSSHAIR_WIDTH - CROSSHAIR_BOUNDARY;
+    std::pair<int, int> pair;
+    int left_boundary =
+            Game::Instance()->current_player->current_mouse->getCenter().x - CROSSHAIR_WIDTH - CROSSHAIR_BOUNDARY;
     int right_boundary = Game::Instance()->current_player->current_mouse->getCenter().x + CROSSHAIR_BOUNDARY;
     int x0 = Game::Instance()->current_player->current_mouse->pos_x;
     int y0 = Game::Instance()->current_player->current_mouse->pos_y;
@@ -184,7 +187,7 @@ void RangedWeapon::shoot() {
     x2 = (crosshair->getCenter().x);
     y2 = (crosshair->getCenter().y);
 
-    a_coefficient = (y2-y1)/(x2-x1);
+    a_coefficient = (y2 - y1) / (x2 - x1);
     b_coefficient = y1 - (a_coefficient * x1);
     Game::Instance()->current_player->end_turn = true;
 }
@@ -194,13 +197,15 @@ void RangedWeapon::createCrosshair() {
         int mouse_x = Game::Instance()->current_player->current_mouse->pos_x;
         int mouse_y = Game::Instance()->current_player->current_mouse->pos_y;
         if (Game::Instance()->current_player->current_mouse->flip) {
-            crosshair = new Object(mouse_x + RADIUS_CROSSHAIR, mouse_y, CROSSHAIR_WIDTH, CROSSHAIR_WIDTH, CROSSHAIR_IMG);
+            crosshair = new Object(
+                    mouse_x + RADIUS_CROSSHAIR, mouse_y, CROSSHAIR_WIDTH, CROSSHAIR_WIDTH, CROSSHAIR_IMG);
         }
         else {
-            crosshair = new Object(mouse_x - RADIUS_CROSSHAIR, mouse_y, CROSSHAIR_WIDTH, CROSSHAIR_WIDTH, CROSSHAIR_IMG);
+            crosshair = new Object(
+                    mouse_x - RADIUS_CROSSHAIR, mouse_y, CROSSHAIR_WIDTH, CROSSHAIR_WIDTH, CROSSHAIR_IMG);
         }
         markSemicircle();
-        it = (semicircle_vector.begin() + semicircle_vector.size()/2);
+        it = (semicircle_vector.begin() + semicircle_vector.size() / 2);
     }
 }
 
@@ -228,7 +233,8 @@ void RangedWeapon::moveBullet() {
             offset_y = 1;
         }
         if (Game::Instance()->isInsideWindowBorders(bullet, offset_x, offset_y)) {
-            if (Game::Instance()->doesCollide(bullet, offset_x, offset_y) or Game::Instance()->checkMiceCollisionBool(bullet->getCenter().x, bullet->getCenter().y)) { // checking collision
+            if (Game::Instance()->doesCollide(bullet, offset_x, offset_y) or
+                Game::Instance()->checkMiceCollisionBool(bullet->getCenter().x, bullet->getCenter().y)) { // checking collision
                 std::vector<Mouse*> affectedMice;
                 Game::Instance()->createHoles(bullet->getCenter().x, bullet->getCenter().y, dmg_range, &affectedMice);
                 // APPLY DAMAGE
@@ -283,18 +289,18 @@ RangedWeapon::~RangedWeapon() {
     //cout << "RangedWeapon destroyed!" << endl;
 }
 
-void RangedWeapon::save(std::ofstream &file) {
+void RangedWeapon::save(std::ofstream& file) {
     Weapon::save(file);
-    file.write((char*)&gravity, sizeof(gravity));
-    file.write((char*)&weight, sizeof(weight));
-    file.write((char*)&a_coefficient, sizeof(a_coefficient));
-    file.write((char*)&b_coefficient, sizeof(b_coefficient));
+    file.write((char*) &gravity, sizeof(gravity));
+    file.write((char*) &weight, sizeof(weight));
+    file.write((char*) &a_coefficient, sizeof(a_coefficient));
+    file.write((char*) &b_coefficient, sizeof(b_coefficient));
 }
 
-void RangedWeapon::load(std::ifstream &file) {
+void RangedWeapon::load(std::ifstream& file) {
     Weapon::load(file);
-    file.read((char*)&gravity, sizeof(gravity));
-    file.read((char*)&weight, sizeof(weight));
-    file.read((char*)&a_coefficient, sizeof(a_coefficient));
-    file.read((char*)&b_coefficient, sizeof(b_coefficient));
+    file.read((char*) &gravity, sizeof(gravity));
+    file.read((char*) &weight, sizeof(weight));
+    file.read((char*) &a_coefficient, sizeof(a_coefficient));
+    file.read((char*) &b_coefficient, sizeof(b_coefficient));
 }

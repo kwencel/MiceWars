@@ -40,9 +40,9 @@ int Engine::createBackground() {
 
 
 void Engine::colorPixel(SDL_Surface* surface, int x, int y, Uint32 colour) {
-    Uint8* pixel = (Uint8*)surface->pixels;
+    Uint8* pixel = (Uint8*) surface->pixels;
     pixel += (y * surface->pitch) + (x * sizeof(Uint32));
-    *((Uint32*)pixel) = colour;
+    *((Uint32*) pixel) = colour;
 }
 
 int Engine::init() {
@@ -107,7 +107,8 @@ void Engine::readCursorPosition() {
 
 void Engine::setWindowTitle() {
     std::stringstream window_title;
-    window_title << "Frametime: " << Timer::Instance()->getTimeFromLastDelta() << " Cursor " << cursor_pos.first << " " << cursor_pos.second;
+    window_title << "Frametime: " << Timer::Instance()->getTimeFromLastDelta() << " Cursor " << cursor_pos.first <<
+    " " << cursor_pos.second;
     window_title.str().c_str();
     SDL_SetWindowTitle(window, window_title.str().c_str());
 }

@@ -25,7 +25,7 @@ void Player::makeTurn() {
     current_mouse->weapon->angle = 0;
 }
 
-void Player::handleKeys(const Uint8 *keystates) {
+void Player::handleKeys(const Uint8* keystates) {
     if (keystates[SDL_SCANCODE_LEFT] and not end_turn) {
         if (current_mouse->can_move) {
             current_mouse->wants_to_move_direction = -1;
@@ -94,7 +94,8 @@ void Player::handleKeys(SDL_Keycode keycode) {
 //                current_mouse->changeWeapon(mousetrap);
 //            }
 //            break;
-        default:break;
+        default:
+            break;
     }
 }
 
@@ -118,57 +119,57 @@ Player::~Player() {
     //cout << "Player destroyed!" << endl;
 }
 
-void Player::save(std::ofstream &file) {
-    file.write((char*)&colour, sizeof(int));
-    file.write((char*)&current_mouse_vecpos, sizeof(int));
-    file.write((char*)&mice_amount, sizeof(int));
+void Player::save(std::ofstream& file) {
+    file.write((char*) &colour, sizeof(int));
+    file.write((char*) &current_mouse_vecpos, sizeof(int));
+    file.write((char*) &mice_amount, sizeof(int));
     unsigned long weapon_amount_size = weapon_amount.size();
-    file.write((char*)&weapon_amount_size, sizeof (unsigned long));
+    file.write((char*) &weapon_amount_size, sizeof(unsigned long));
     if (weapon_amount_size > 0) {
         for (auto weapon : weapon_amount) {
-            file.write((char *) &weapon, sizeof(int));
+            file.write((char*) &weapon, sizeof(int));
         }
     }
     if (mice_amount != 0) {
-        for (int i=0; i < mice_amount; i++) {
+        for (int i = 0; i < mice_amount; i++) {
             mice_vector[i]->save(file);
         }
     }
-    file.write((char*)&player_vecpos, sizeof(int));
-    file.write((char*)&is_human, sizeof(bool));
-    file.write((char*)&end_turn, sizeof(bool));
+    file.write((char*) &player_vecpos, sizeof(int));
+    file.write((char*) &is_human, sizeof(bool));
+    file.write((char*) &end_turn, sizeof(bool));
 }
 
-void Player::load(std::ifstream &file) {
+void Player::load(std::ifstream& file) {
     weapon_amount.clear();
-    file.read((char*)&colour, sizeof(int));
+    file.read((char*) &colour, sizeof(int));
     // SETTING NAME
     if (colour == 1) name = GREEN_MOUSE;
     else if (colour == 2) name = PINK_MOUSE;
     else if (colour == 3) name = BLUE_MOUSE;
     else if (colour == 4) name = RED_MOUSE;
     //
-    file.read((char*)&current_mouse_vecpos, sizeof(int));
-    file.read((char*)&mice_amount, sizeof(int));
+    file.read((char*) &current_mouse_vecpos, sizeof(int));
+    file.read((char*) &mice_amount, sizeof(int));
     unsigned long weapon_amount_size;
-    file.read((char*)&weapon_amount_size, sizeof(unsigned long));
+    file.read((char*) &weapon_amount_size, sizeof(unsigned long));
     if (weapon_amount_size > 0) {
         for (int i = 0; i < int(weapon_amount_size); i++) {
             int number;
-            file.read((char*)&number, sizeof(int));
+            file.read((char*) &number, sizeof(int));
             weapon_amount.push_back(number);
         }
     }
     if (mice_amount != 0) {
-        for (int i=0; i< mice_amount; i++) {
+        for (int i = 0; i < mice_amount; i++) {
             Mouse* mouse = new Mouse();
             (*mouse).load(file);
             mice_vector.push_back(mouse);
         }
     }
-    file.read((char*)&player_vecpos, sizeof(int));
-    file.read((char*)&is_human, sizeof(bool));
+    file.read((char*) &player_vecpos, sizeof(int));
+    file.read((char*) &is_human, sizeof(bool));
     current_mouse = mice_vector[current_mouse_vecpos];
-    file.read((char*)&end_turn, sizeof(bool));
+    file.read((char*) &end_turn, sizeof(bool));
 }
 

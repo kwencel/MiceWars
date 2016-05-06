@@ -6,6 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include "global_vars.h"
+
 using std::cout;
 using std::endl;
 
@@ -24,11 +25,17 @@ public:
     double angle = 0;
 
     Object() { /* cout << "Created temp object!" << endl; */ };
+
     Object(int x, int y, int width, int height, std::string img_path = "");
+
     virtual ~Object();
+
     SDL_Point getCenter();
+
     virtual void display();
+
     virtual void save(std::ofstream& file);
+
     virtual void load(std::ifstream& file);
 };
 

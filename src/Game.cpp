@@ -39,9 +39,9 @@ void Game::readKeyboardState() {
                     quit = true;
                 }
                 else if (current_player != nullptr and current_player->is_human and
-                        (event.key.keysym.sym != SDLK_LEFT or event.key.keysym.sym != SDLK_RIGHT or
-                         event.key.keysym.sym != SDLK_UP or event.key.keysym.sym != SDLK_DOWN or
-                         event.key.keysym.sym != SDLK_SPACE)) {
+                         (event.key.keysym.sym != SDLK_LEFT or event.key.keysym.sym != SDLK_RIGHT or
+                          event.key.keysym.sym != SDLK_UP or event.key.keysym.sym != SDLK_DOWN or
+                          event.key.keysym.sym != SDLK_SPACE)) {
                     current_player->handleKeys(event.key.keysym.sym);
                 }
                 break;
@@ -50,7 +50,8 @@ void Game::readKeyboardState() {
                 Engine::Instance()->readCursorPosition();
                 break;
             }
-            default:break;
+            default:
+                break;
         }
     }
 }
@@ -59,12 +60,13 @@ void Game::saveGame(std::string fileName) {
     int win_width = Engine::Instance()->getWindowWidth();
     int win_height = Engine::Instance()->getWindowHeight();
     std::ofstream save_game_file;
-    save_game_file.open(fileName, std::ios::out | std::ios::trunc | std::ios::binary); // output operations, replace content, in binary mode
+    save_game_file.open(fileName, std::ios::out | std::ios::trunc |
+                                  std::ios::binary); // output operations, replace content, in binary mode
     if (save_game_file.is_open()) {
-        save_game_file.write((char*)&current_player_vecpos, sizeof(int));
-        save_game_file.write((char*)&win_width, sizeof(int));
-        save_game_file.write((char*)&win_height, sizeof(int));
-        save_game_file.write((char*)&background_needs_redraw, sizeof(bool));
+        save_game_file.write((char*) &current_player_vecpos, sizeof(int));
+        save_game_file.write((char*) &win_width, sizeof(int));
+        save_game_file.write((char*) &win_height, sizeof(int));
+        save_game_file.write((char*) &background_needs_redraw, sizeof(bool));
         for (auto column: world_map) {
             for (auto pixel: column) {
                 save_game_file.write(&pixel, sizeof(char));
@@ -73,9 +75,9 @@ void Game::saveGame(std::string fileName) {
         // PLAYERS AND MICE
         int players;
         players = int(player_vector.size());
-        save_game_file.write((char*)&players, sizeof(int));
+        save_game_file.write((char*) &players, sizeof(int));
         if (players_count > 0) {
-            for (int i=0; i < players_count; i++) {
+            for (int i = 0; i < players_count; i++) {
                 player_vector[i]->save(save_game_file);
             }
         }
@@ -98,13 +100,14 @@ void Game::loadGame(std::string fileName) {
     if (read_game_file.is_open()) {
         int win_width;
         int win_height;
-        read_game_file.read((char*)&current_player_vecpos, sizeof(int));
-        read_game_file.read((char*)&win_width, sizeof(int));
-        read_game_file.read((char*)&win_height, sizeof(int));
-        read_game_file.read((char*)&background_needs_redraw, sizeof(bool));
+        read_game_file.read((char*) &current_player_vecpos, sizeof(int));
+        read_game_file.read((char*) &win_width, sizeof(int));
+        read_game_file.read((char*) &win_height, sizeof(int));
+        read_game_file.read((char*) &background_needs_redraw, sizeof(bool));
         if (win_width != Engine::Instance()->getWindowWidth() or win_height != Engine::Instance()->getWindowHeight()) {
             cerr << "[ERROR] You can't load game that was played in a different resolution." << endl;
-            cerr << "[INFO] Please change the resolution in config.ini to: " << win_width << "x" << win_height << "." << endl;
+            cerr << "[INFO] Please change the resolution in config.ini to: " << win_width << "x" << win_height << "." <<
+            endl;
             return;
         }
         for (int i = 0; i <= win_width; i++) {
@@ -117,7 +120,7 @@ void Game::loadGame(std::string fileName) {
             world_map.push_back(pixel_vector);
         }
         // PLAYERS AND MICE
-        read_game_file.read((char*)&players_count, sizeof(int));
+        read_game_file.read((char*) &players_count, sizeof(int));
         if (players_count != 0) {
             for (int i = 0; i < players_count; i++) {
                 Player* player = new Player();
@@ -133,11 +136,14 @@ void Game::loadGame(std::string fileName) {
                 mouse_img << MOUSE_IMG << player_id + 1 << MOUSE_IMG_EXTENSION;
                 player_vector[player_id]->mice_vector[i]->texture = Engine::Instance()->makeTexture(mouse_img.str().c_str());
                 player_vector[player_id]->mice_vector[i]->changeWeapon(shotgun);
-                player_vector[player_id]->mice_vector[i]->notification_hp = createNotification("",
-                            &player_vector[player_id]->mice_vector[i]->hp,
-                            -1, player_vector[player_id]->mice_vector[i]->pos_x,
-                            player_vector[player_id]->mice_vector[i]->pos_y - NOTIFICATION_HP_OFFSET,
-                            NOTIFICATION_HP_WIDTH, NOTIFICATION_HP_HEIGHT, false);
+                player_vector[player_id]->mice_vector[i]->notification_hp =
+                        createNotification("",
+                                           &player_vector[player_id]->mice_vector[i]->hp,
+                                           -1, player_vector[player_id]->mice_vector[i]->pos_x,
+                                           player_vector[player_id]->mice_vector[i]->pos_y - NOTIFICATION_HP_OFFSET,
+                                           NOTIFICATION_HP_WIDTH,
+                                           NOTIFICATION_HP_HEIGHT,
+                                           false);
             }
         }
         drawBackground();
@@ -175,7 +181,7 @@ void Game::drawBackground() {
     SDL_LockSurface(Engine::Instance()->background);
     for (int x = 0; x < Engine::Instance()->getWindowWidth(); ++x) {
         for (int y = 0; y < Engine::Instance()->getWindowHeight(); ++y) {
-            switch(world_map[x][y]) {
+            switch (world_map[x][y]) {
                 case 0:
                     Engine::Instance()->colorPixel(Engine::Instance()->background, x, y, BLACK);
                     break;
@@ -185,7 +191,8 @@ void Game::drawBackground() {
                 case 2:
                     Engine::Instance()->colorPixel(Engine::Instance()->background, x, y, BLUE);
                     break;
-                default:break;
+                default:
+                    break;
             }
         }
     }
@@ -224,7 +231,9 @@ void Game::redraw() {
             notification_queue.front()->is_being_displayed = true;
         }
         auto time_notification_created = notification_queue.front()->time_created;
-        float time_difference = std::chrono::duration_cast<std::chrono::milliseconds>(time_now - time_notification_created).count() / 1000.0;
+        float time_difference =
+                std::chrono::duration_cast<std::chrono::milliseconds>(time_now - time_notification_created).count() /
+                1000.0;
         if ((notification_queue.front()->timer != -1) and (time_difference > notification_queue.front()->timer)) {
             delete notification_queue.front();
             notification_queue.pop_front();
@@ -237,10 +246,10 @@ void Game::redraw() {
     SDL_RenderPresent(Engine::Instance()->renderer);
 }
 
-std::pair<int,int> Game::findNextPoint(int x, int y, int max_height, int distance, int river_height) {
+std::pair<int, int> Game::findNextPoint(int x, int y, int max_height, int distance, int river_height) {
     int win_width = Engine::Instance()->getWindowWidth();
     int win_height = Engine::Instance()->getWindowHeight();
-    std::pair<int,int> point_coordinates;
+    std::pair<int, int> point_coordinates;
     int x_2, y_2;
 
     // SEARCHING FOR X
@@ -251,14 +260,14 @@ std::pair<int,int> Game::findNextPoint(int x, int y, int max_height, int distanc
 
     // SEARCHING FOR Y
     if ((y - max_height) > distance) {                          // if not too high
-        if ((win_height - river_height - y) < 3*distance) {    // too low
-            y_2 = getRandomIntBetween(y - 3*distance, win_height - river_height);
+        if ((win_height - river_height - y) < 3 * distance) {    // too low
+            y_2 = getRandomIntBetween(y - 3 * distance, win_height - river_height);
         }
         else
-            y_2 = getRandomIntBetween(y - 3*distance, y + 3*distance);
+            y_2 = getRandomIntBetween(y - 3 * distance, y + 3 * distance);
     }
     else
-        y_2 = getRandomIntBetween(max_height, y + 3*distance);
+        y_2 = getRandomIntBetween(max_height, y + 3 * distance);
 
     // ADDING COORDINATES TO VECTOR
     point_coordinates.first = x_2;
@@ -270,7 +279,7 @@ std::pair<int,int> Game::findNextPoint(int x, int y, int max_height, int distanc
 void Game::connectPoints(std::vector<std::pair<int, int>> points_vector, int river_height) {
     int win_height = Engine::Instance()->getWindowHeight();
     // CONNECTING POINTS
-    std::vector<std::pair<int,int>>::iterator current;
+    std::vector<std::pair<int, int>>::iterator current;
     int x1, y1, x2, y2, a, b;
     current = points_vector.begin();            // iterator at the beginning
 
@@ -280,12 +289,12 @@ void Game::connectPoints(std::vector<std::pair<int, int>> points_vector, int riv
         current++;
         x2 = current->first;
         y2 = current->second;
-        a = (y1-y2)/(x1-x2);
+        a = (y1 - y2) / (x1 - x2);
         b = y1 - (a * x1);
 
         // columns for points between P1 and P2
         for (int x = x1; x < x2; x++) {
-            int y = a*x + b;
+            int y = a * x + b;
             if (x == x1) {      // for the first point P1
                 y = y1;
             }
@@ -317,7 +326,7 @@ void Game::connectPoints(std::vector<std::pair<int, int>> points_vector, int riv
     }
 }
 
-void Game::createHoles(int x0, int y0, int radius, std::vector<Mouse*> *affectedMice) {
+void Game::createHoles(int x0, int y0, int radius, std::vector<Mouse*>* affectedMice) {
     int win_width = Engine::Instance()->getWindowWidth();
     int win_height = Engine::Instance()->getWindowHeight();
     for (int i = radius; i >= 1; i--) {
@@ -326,15 +335,15 @@ void Game::createHoles(int x0, int y0, int radius, std::vector<Mouse*> *affected
         int decisionOver2 = 1 - x;   // Decision criterion divided by 2 evaluated at x=radius, y=0
         // drawing and colouring circle
         while (y <= x) {
-            for (int l = x + x0; l >= x0; l--){
-                if ( l >= 0 && l <= win_width && (y + y0) >= 0 && (y + y0) <= win_height) {
+            for (int l = x + x0; l >= x0; l--) {
+                if (l >= 0 && l <= win_width && (y + y0) >= 0 && (y + y0) <= win_height) {
                     if (affectedMice != nullptr)
                         checkMiceCollisionRef(l, y + y0, affectedMice);
                     if (y + y0 >= (win_height - win_height / RIVER_DIVIDER))
                         world_map[l][y + y0] = 2;
                     else world_map[l][y + y0] = 0;   // Octant 1
                 }
-                if ( l >= 0 && l <= win_width && (-y + y0) >= 0 && (-y + y0) <= win_height) {
+                if (l >= 0 && l <= win_width && (-y + y0) >= 0 && (-y + y0) <= win_height) {
                     if (affectedMice != nullptr)
                         checkMiceCollisionRef(l, -y + y0, affectedMice);
                     if (-y + y0 >= (win_height - win_height / RIVER_DIVIDER))
@@ -342,15 +351,15 @@ void Game::createHoles(int x0, int y0, int radius, std::vector<Mouse*> *affected
                     else world_map[l][-y + y0] = 0;
                 }
             }
-            for (int l = x + y0; l >= y0; l--){
-                if ( (y + x0) >= 0 && (y + x0) <= win_width && l >= 0 && l <= win_height) {
+            for (int l = x + y0; l >= y0; l--) {
+                if ((y + x0) >= 0 && (y + x0) <= win_width && l >= 0 && l <= win_height) {
                     if (affectedMice != nullptr)
                         checkMiceCollisionRef(y + x0, l, affectedMice);
                     if (l >= (win_height - win_height / RIVER_DIVIDER))
                         world_map[y + x0][l] = 2;   // Octant 2
                     else world_map[y + x0][l] = 0;
                 }
-                if ( (-y + x0) >= 0 && (-y + x0) <= win_width && l >= 0 && l <= win_height) {
+                if ((-y + x0) >= 0 && (-y + x0) <= win_width && l >= 0 && l <= win_height) {
                     if (affectedMice != nullptr)
                         checkMiceCollisionRef(-y + x0, l, affectedMice);
                     if (l >= (win_height - win_height / RIVER_DIVIDER))
@@ -358,15 +367,15 @@ void Game::createHoles(int x0, int y0, int radius, std::vector<Mouse*> *affected
                     else world_map[-y + x0][l] = 0;
                 }
             }
-            for (int l = -x + x0; l <= x0; l++){
-                if ( l >= 0 && l <= win_width && (y + y0) >= 0 && (y + y0) <= win_height) {
+            for (int l = -x + x0; l <= x0; l++) {
+                if (l >= 0 && l <= win_width && (y + y0) >= 0 && (y + y0) <= win_height) {
                     if (affectedMice != nullptr)
                         checkMiceCollisionRef(l, y + y0, affectedMice);
                     if (y + y0 >= (win_height - win_height / RIVER_DIVIDER))
                         world_map[l][y + y0] = 2;   //Octant 4
                     else world_map[l][y + y0] = 0;
                 }
-                if ( l >= 0 && l <= win_width && (-y + y0) >= 0 && (-y + y0) <= win_height) {
+                if (l >= 0 && l <= win_width && (-y + y0) >= 0 && (-y + y0) <= win_height) {
                     if (affectedMice != nullptr)
                         checkMiceCollisionRef(l, -y + y0, affectedMice);
                     if (-y + y0 >= (win_height - win_height / RIVER_DIVIDER))
@@ -374,15 +383,15 @@ void Game::createHoles(int x0, int y0, int radius, std::vector<Mouse*> *affected
                     else world_map[l][-y + y0] = 0;
                 }
             }
-            for (int l = -x + y0; l <= y0; l++){
-                if ( (-y + x0) >= 0 && (-y + x0) <= win_width && l >= 0 && l <= win_height) {
+            for (int l = -x + y0; l <= y0; l++) {
+                if ((-y + x0) >= 0 && (-y + x0) <= win_width && l >= 0 && l <= win_height) {
                     if (affectedMice != nullptr)
                         checkMiceCollisionRef(-y + x0, l, affectedMice);
                     if (l >= (win_height - win_height / RIVER_DIVIDER))
                         world_map[-y + x0][l] = 2;  //Octant 6
                     else world_map[-y + x0][l] = 0;
                 }
-                if ( (y + x0) >= 0 && (y + x0) <= win_width && l >= 0 && l <= win_height) {
+                if ((y + x0) >= 0 && (y + x0) <= win_width && l >= 0 && l <= win_height) {
                     if (affectedMice != nullptr)
                         checkMiceCollisionRef(y + x0, l, affectedMice);
                     if (l >= (win_height - win_height / RIVER_DIVIDER))
@@ -408,8 +417,8 @@ void Game::generateTerrain() {
     world_map.resize(win_width + 1);
     std::vector<std::pair<int, int>> points_vector;
     std::pair<int, int> point_coordinates;            // respectively x and y
-    int river_height = win_height/RIVER_DIVIDER;
-    int distance = win_width / (win_width/15); // distance between points
+    int river_height = win_height / RIVER_DIVIDER;
+    int distance = win_width / (win_width / 15);      // distance between points
     int max_height = 2 * win_height / 5;
     int cur_x = 0;
     int cur_y = max_height + distance;
@@ -434,29 +443,29 @@ void Game::generateTerrain() {
     connectPoints(points_vector, river_height);
 
     // ADDING CHEESE HOLES EFFECT
-    for ( int i = 1; i <= AMOUNT_OF_CHEESE_HOLES/6; i++){
-        createHoles(getRandomIntBetween(0,win_width/3),
-                    getRandomIntBetween(win_height/3, 2*win_height/3),
-                    getRandomIntBetween (win_height/40,win_height/10));
-        createHoles(getRandomIntBetween(0,win_width/3),
-                    getRandomIntBetween(2*win_height/3, win_height - river_height - 50),
-                    getRandomIntBetween (win_height/40,win_height/10));
+    for (int i = 1; i <= AMOUNT_OF_CHEESE_HOLES / 6; i++) {
+        createHoles(getRandomIntBetween(0, win_width / 3),
+                    getRandomIntBetween(win_height / 3, 2 * win_height / 3),
+                    getRandomIntBetween(win_height / 40, win_height / 10));
+        createHoles(getRandomIntBetween(0, win_width / 3),
+                    getRandomIntBetween(2 * win_height / 3, win_height - river_height - 50),
+                    getRandomIntBetween(win_height / 40, win_height / 10));
     }
-    for ( int i = 1; i <= AMOUNT_OF_CHEESE_HOLES/6; i++){
-        createHoles(getRandomIntBetween(win_width/3,2*win_width/3),
-                    getRandomIntBetween(win_height/3, 2*win_height/3),
-                    getRandomIntBetween (win_height/40,win_height/10));
-        createHoles(getRandomIntBetween(win_width/3,2*win_width/3),
-                    getRandomIntBetween(2*win_height/3, win_height - river_height - 50),
-                    getRandomIntBetween (win_height/40,win_height/10));
+    for (int i = 1; i <= AMOUNT_OF_CHEESE_HOLES / 6; i++) {
+        createHoles(getRandomIntBetween(win_width / 3, 2 * win_width / 3),
+                    getRandomIntBetween(win_height / 3, 2 * win_height / 3),
+                    getRandomIntBetween(win_height / 40, win_height / 10));
+        createHoles(getRandomIntBetween(win_width / 3, 2 * win_width / 3),
+                    getRandomIntBetween(2 * win_height / 3, win_height - river_height - 50),
+                    getRandomIntBetween(win_height / 40, win_height / 10));
     }
-    for ( int i = 1; i <= AMOUNT_OF_CHEESE_HOLES/6; i++){
-        createHoles(getRandomIntBetween(2*win_width/3,win_width),
-                    getRandomIntBetween(win_height/3, 2*win_height/3),
-                    getRandomIntBetween (win_height/40,win_height/10));
-        createHoles(getRandomIntBetween(2*win_width/3,win_width),
-                    getRandomIntBetween(2*win_height/3, win_height - river_height - 50),
-                    getRandomIntBetween (win_height/40,win_height/10));
+    for (int i = 1; i <= AMOUNT_OF_CHEESE_HOLES / 6; i++) {
+        createHoles(getRandomIntBetween(2 * win_width / 3, win_width),
+                    getRandomIntBetween(win_height / 3, 2 * win_height / 3),
+                    getRandomIntBetween(win_height / 40, win_height / 10));
+        createHoles(getRandomIntBetween(2 * win_width / 3, win_width),
+                    getRandomIntBetween(2 * win_height / 3, win_height - river_height - 50),
+                    getRandomIntBetween(win_height / 40, win_height / 10));
     }
 }
 
@@ -469,16 +478,16 @@ bool Game::doesCollide(Object* object, int x_offset, int y_offset) {
     int y = object->pos_y + y_offset;
     // Upper object rectangle edge check
     for (; x <= object->pos_x + x_offset + object->obj_width; ++x)
-        if (checkCollision(x,y)) { return true; }
+        if (checkCollision(x, y)) { return true; }
     // Right object rectangle edge check
     for (--x; y <= object->pos_y + y_offset + object->obj_height; ++y)
-        if (checkCollision(x,y)) { return true; }
+        if (checkCollision(x, y)) { return true; }
     // Lower object rectangle edge check
     for (--y; x >= object->pos_x + x_offset; --x)
-        if (checkCollision(x,y)) { return true; }
+        if (checkCollision(x, y)) { return true; }
     // Left object rectangle edge check
     for (++x; y >= object->pos_y + y_offset; --y)
-        if (checkCollision(x,y)) { return true; }
+        if (checkCollision(x, y)) { return true; }
     return false;
 }
 
@@ -515,7 +524,8 @@ std::vector<Mouse*> Game::checkMiceCollisionRect(Object* object) {
 bool Game::checkMiceCollisionBool(int coll_x, int coll_y, int x_offset, int y_offset) {
     for (auto player : player_vector) {
         for (auto mouse: player->mice_vector) {
-            if (mouse != current_player->current_mouse and doesCollideWithPoint(mouse, coll_x, coll_y, x_offset, y_offset)) {
+            if (mouse != current_player->current_mouse and
+                doesCollideWithPoint(mouse, coll_x, coll_y, x_offset, y_offset)) {
                 return true;
             }
         }
@@ -523,10 +533,11 @@ bool Game::checkMiceCollisionBool(int coll_x, int coll_y, int x_offset, int y_of
     return false;
 }
 
-void Game::checkMiceCollisionRef(int coll_x, int coll_y, std::vector<Mouse *> *affectedMice, int x_offset, int y_offset) {
+void Game::checkMiceCollisionRef(int coll_x, int coll_y, std::vector<Mouse*>* affectedMice, int x_offset,
+                                 int y_offset) {
     for (auto player : player_vector) {
         for (auto mouse: player->mice_vector) {
-            if (std::find (affectedMice->begin(), affectedMice->end(), mouse) != affectedMice->end()) {
+            if (std::find(affectedMice->begin(), affectedMice->end(), mouse) != affectedMice->end()) {
                 continue;
             }
             if (doesCollideWithPoint(mouse, coll_x, coll_y, x_offset, y_offset)) {
@@ -558,7 +569,7 @@ void Game::applyGravity() {
             }
             if (RangedWeapon* ranged_weapon = dynamic_cast<RangedWeapon*>(mouse->weapon)) {
                 if (ranged_weapon->gravity and ranged_weapon->bullet != nullptr) {
-                    double a_decrement = pow(ranged_weapon->in_air_counter, 1/8.0)/ranged_weapon->weight;
+                    double a_decrement = pow(ranged_weapon->in_air_counter, 1 / 8.0) / ranged_weapon->weight;
                     if (ranged_weapon->flip) {
                         ranged_weapon->a_coefficient += a_decrement;
                     }
@@ -593,7 +604,10 @@ void Game::placeMice() {
             std::stringstream mouse_img;
             mouse_img << MOUSE_IMG << player_vector[player_id]->colour << MOUSE_IMG_EXTENSION;
             Mouse* mouse = new Mouse(getRandomIntBetween(0, Engine::Instance()->getWindowWidth() - MICE_WIDTH),
-                                     getRandomIntBetween(0, Engine::Instance()->getWindowHeight()/3), MICE_WIDTH, MICE_HEIGHT, mouse_img.str());
+                                     getRandomIntBetween(0, Engine::Instance()->getWindowHeight() / 3),
+                                     MICE_WIDTH,
+                                     MICE_HEIGHT,
+                                     mouse_img.str());
             mouse->changeWeapon(shotgun);
             mouse->notification_hp = createNotification("",
                                                         &mouse->hp,
@@ -672,8 +686,10 @@ void Game::applyMovement() {
 }
 
 bool Game::isInsideWindowBorders(Object* object, int x_offset, int y_offset) {
-    return ((object->pos_x + x_offset >= 0) and (object->pos_x + x_offset + object->obj_width <= Engine::Instance()->getWindowWidth()) and
-            (object->pos_y + y_offset >= 0) and (object->pos_y + y_offset + object->obj_height <= Engine::Instance()->getWindowHeight()));
+    return ((object->pos_x + x_offset >= 0) and
+            (object->pos_x + x_offset + object->obj_width <= Engine::Instance()->getWindowWidth()) and
+            (object->pos_y + y_offset >= 0) and
+            (object->pos_y + y_offset + object->obj_height <= Engine::Instance()->getWindowHeight()));
 }
 
 void Game::createNotification(std::string message, float timer, SDL_Color colour, int x, int y, int width, int height) {
@@ -690,7 +706,8 @@ void Game::createNotification(std::string message, float timer, SDL_Color colour
     notification_queue.push_back(message_box);
 }
 
-NotificationBox* Game::createNotification(std::string message, int* number_ptr, float timer, int x, int y, int width, int height, bool push_to_queue) {
+NotificationBox* Game::createNotification(std::string message, int* number_ptr, float timer, int x, int y, int width,
+                                          int height, bool push_to_queue) {
     int win_width = Engine::Instance()->getWindowWidth();
     int win_height = Engine::Instance()->getWindowHeight();
     int message_length = message.length() + 1;
@@ -721,7 +738,7 @@ void Game::removePersistentNotifications() {
 
 void Game::capFPS() {
     if (Timer::Instance()->getTimeFromLastDelta() + 0.010 < Timer::Instance()->getTargetFrametime()) {
-        SDL_Delay((Timer::Instance()->getTargetFrametime() - Timer::Instance()->getTimeFromLastDelta())*975);
+        SDL_Delay((Timer::Instance()->getTargetFrametime() - Timer::Instance()->getTimeFromLastDelta()) * 975);
     }
 }
 
@@ -757,11 +774,13 @@ void Game::checkWinLoseConditions() {
 }
 
 bool Game::doesObjectsOverlap(Object* object1, Object* object2) {
-    return (object1->pos_x < object2->pos_x + object2->obj_width && object1->pos_x + object1->obj_width > object2->pos_x &&
-            object1->pos_y < object2->pos_y + object2->obj_height && object1->pos_y + object1->obj_height > object2->pos_y);
+    return (object1->pos_x < object2->pos_x + object2->obj_width &&
+            object1->pos_x + object1->obj_width > object2->pos_x &&
+            object1->pos_y < object2->pos_y + object2->obj_height &&
+            object1->pos_y + object1->obj_height > object2->pos_y);
 }
 
-void Game::searchForButton(std::pair<int,int> pair) {
+void Game::searchForButton(std::pair<int, int> pair) {
     Engine::Instance()->readCursorPosition();
     Object* point_where_mouse = new Object(pair.first, pair.second, 1, 1);
     for (auto button: buttons_vector) {
@@ -805,10 +824,12 @@ void Game::controlMenu() {
                     searchForButton(Engine::Instance()->getCursorPosition());
                 }
             }
-            default:break;
+            default:
+                break;
         }
     }
 }
+
 void Game::createButtonsImagesVector() {
     buttons_images.push_back("img/b_ResumeGame.png");
     buttons_images.push_back("img/b_SaveGame.png");
@@ -858,7 +879,7 @@ void Game::createButtonsImagesVector() {
 }
 
 void Game::redrawMenu() {
-    SDL_SetRenderDrawColor(Engine::Instance()->renderer, 255, 255, 51, 255 );
+    SDL_SetRenderDrawColor(Engine::Instance()->renderer, 255, 255, 51, 255);
     Engine::Instance()->clearRenderer();
     // CREATING NOTIFICATIONS
     Object* n_menu = new Object(20, 25, 206, 100, "img/n_menu.png");
@@ -909,7 +930,7 @@ void Game::redrawMenu() {
         buttons_vector.push_back(p_ziomek);
 
     }
-        // AT THE BEGINNING OF GAME
+    // AT THE BEGINNING OF GAME
     if (world_map.empty() and !new_game) {
         buttons_vector[B_RESUME_GAME]->state = false;
         buttons_vector[B_SAVE_GAME]->state = false;
@@ -919,7 +940,7 @@ void Game::redrawMenu() {
         buttons_vector[P_LAZARZ]->state = false;
         buttons_vector[P_ZIOMEK]->state = false;
     }
-        // IN PAUSE STATE BUT NO NEW GAME
+    // IN PAUSE STATE BUT NO NEW GAME
     else if (!world_map.empty() and !new_game) {
         buttons_vector[B_RESUME_GAME]->state = true;
         buttons_vector[B_SAVE_GAME]->state = true;
@@ -929,7 +950,7 @@ void Game::redrawMenu() {
         buttons_vector[P_LAZARZ]->state = false;
         buttons_vector[P_ZIOMEK]->state = false;
     }
-        // NEW GAME
+    // NEW GAME
     if (new_game) {
         if (menu_active_players >= 2) {
             buttons_vector[B_START]->state = true;
@@ -940,7 +961,7 @@ void Game::redrawMenu() {
     }
     // CHANGING IMAGE BASING ON THE STATE OF BUTTON AND DISPLAYING
     // first players
-    for (int i = P_DAKTYL; i <= P_ZIOMEK; i++ ) {
+    for (int i = P_DAKTYL; i <= P_ZIOMEK; i++) {
         if (!buttons_vector[i]->state) {
             buttons_vector[i]->texture = Engine::Instance()->makeTexture(buttons_images[i + ALL_IN_B_VECTOR].c_str());
         }

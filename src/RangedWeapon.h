@@ -3,7 +3,7 @@
 
 #include "Weapon.h"
 
-class RangedWeapon: public Weapon {
+class RangedWeapon : public Weapon {
 public:
     bool gravity = false;
     int weight = 0;
@@ -14,22 +14,33 @@ public:
     Object* bullet = nullptr;
     Object* crosshair = nullptr;
     std::vector<std::pair<int, int>> semicircle_vector;
-    std::vector<std::pair<int,int>>::iterator it;
+    std::vector<std::pair<int, int>>::iterator it;
     float a_coefficient;
     float b_coefficient;
 
-    RangedWeapon(int x, int y, int width, int height, std::string img_path )
+    RangedWeapon(int x, int y, int width, int height, std::string img_path)
             : Weapon(x, y, width, height, img_path) { /* cout << "RangedWeapon created!" << endl; */ }
+
     ~RangedWeapon();
+
     virtual void prepare();
+
     virtual void shoot();
+
     void moveCrosshair();
+
     void createCrosshair();
+
     void markSemicircle();
+
     void sortVector();
+
     void display() override;
+
     void moveBullet();
+
     void save(std::ofstream& file) override;
+
     void load(std::ifstream& file) override;
 };
 

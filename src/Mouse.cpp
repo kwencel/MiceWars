@@ -68,7 +68,7 @@ void Mouse::changeWeapon(short index) {
     switch (index) {
         case shotgun: {
             RangedWeapon* shotgun = new RangedWeapon(pos_x + WEAPON_X_OFFSET, pos_y + WEAPON_Y_OFFSET, WEAPON_WIDTH,
-                                                    WEAPON_HEIGHT, SHOTGUN_IMG);
+                                                     WEAPON_HEIGHT, SHOTGUN_IMG);
             shotgun->damage = SHOTGUN_DAMAGE;
             shotgun->dmg_range = SHOTGUN_RANGE;
             shotgun->bullet_img = SHOTGUN_BULLET_IMG;
@@ -82,7 +82,7 @@ void Mouse::changeWeapon(short index) {
         }
         case bazooka: {
             RangedWeapon* bazooka = new RangedWeapon(pos_x + WEAPON_X_OFFSET, pos_y + WEAPON_Y_OFFSET, WEAPON_WIDTH,
-                                                        WEAPON_HEIGHT, BAZOOKA_IMG);
+                                                     WEAPON_HEIGHT, BAZOOKA_IMG);
             bazooka->damage = BAZOOKA_DAMAGE;
             bazooka->dmg_range = BAZOOKA_RANGE;
             bazooka->bullet_img = BAZOOKA_BULLET_IMG;
@@ -97,7 +97,7 @@ void Mouse::changeWeapon(short index) {
         }
         case grenade: {
             ThrownWeapon* grenade = new ThrownWeapon(pos_x + WEAPON_X_OFFSET, pos_y + WEAPON_Y_OFFSET, GRENADE_WIDTH,
-                                                        GRENADE_HEIGHT, GRENADE_IMG);
+                                                     GRENADE_HEIGHT, GRENADE_IMG);
             grenade->damage = GRENADE_DAMAGE;
             grenade->dmg_range = GRENADE_RANGE;
             grenade->bullet_img = GRENADE_IMG;
@@ -137,7 +137,8 @@ void Mouse::changeWeapon(short index) {
 //            weapon = mousetrap;
 //            break;
 //        }
-        default:break;
+        default:
+            break;
     }
 }
 
@@ -161,7 +162,8 @@ Mouse::~Mouse() {
         for (int mouse_id = 0; mouse_id < Game::Instance()->player_vector[player_id]->mice_vector.size(); ++mouse_id) {
             if (Game::Instance()->player_vector[player_id]->mice_vector[mouse_id] == this) {
                 Game::Instance()->player_vector[player_id]->mice_vector[mouse_id] = nullptr;
-                Game::Instance()->player_vector[player_id]->mice_vector.erase(Game::Instance()->player_vector[player_id]->mice_vector.begin() + mouse_id);
+                Game::Instance()->player_vector[player_id]->mice_vector.erase(
+                        Game::Instance()->player_vector[player_id]->mice_vector.begin() + mouse_id);
                 Game::Instance()->player_vector[player_id]->mice_vector.shrink_to_fit();
                 Game::Instance()->player_vector[player_id]->mice_amount--;
                 break;
@@ -175,20 +177,20 @@ Mouse::~Mouse() {
     //cout << "Mouse destroyed!" << endl;
 }
 
-void Mouse::save(std::ofstream &file) {
+void Mouse::save(std::ofstream& file) {
     Object::save(file);
-    file.write((char*)&hp, sizeof(int));
-    file.write((char*)&wants_to_move_direction, sizeof(short));
-    file.write((char*)&movepoints, sizeof(int));
-    file.write((char*)&can_move, sizeof(bool));
-    file.write((char*)&weapon_index, sizeof(int));
+    file.write((char*) &hp, sizeof(int));
+    file.write((char*) &wants_to_move_direction, sizeof(short));
+    file.write((char*) &movepoints, sizeof(int));
+    file.write((char*) &can_move, sizeof(bool));
+    file.write((char*) &weapon_index, sizeof(int));
 }
 
-void Mouse::load(std::ifstream &file) {
+void Mouse::load(std::ifstream& file) {
     Object::load(file);
-    file.read((char*)&hp, sizeof(int));
-    file.read((char*)&wants_to_move_direction, sizeof(short));
-    file.read((char*)&movepoints, sizeof(int));
-    file.read((char*)&can_move, sizeof(bool));
-    file.read((char*)&weapon_index, sizeof(int));
+    file.read((char*) &hp, sizeof(int));
+    file.read((char*) &wants_to_move_direction, sizeof(short));
+    file.read((char*) &movepoints, sizeof(int));
+    file.read((char*) &can_move, sizeof(bool));
+    file.read((char*) &weapon_index, sizeof(int));
 }

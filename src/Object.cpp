@@ -2,8 +2,10 @@
 #include "Engine.h"
 
 void Object::display() {
-    rectangle.x = pos_x; rectangle.y = pos_y;
-    rectangle.w = obj_width; rectangle.h = obj_height;
+    rectangle.x = pos_x;
+    rectangle.y = pos_y;
+    rectangle.w = obj_width;
+    rectangle.h = obj_height;
     if (flip) {
         SDL_RenderCopyEx(Engine::Instance()->renderer, texture, NULL, &rectangle, angle, NULL, SDL_FLIP_HORIZONTAL);
     }
@@ -38,24 +40,24 @@ SDL_Point Object::getCenter() {
 }
 
 
-void Object::save(std::ofstream &file) {
-    file.write((char*)&pos_x, sizeof(int));
-    file.write((char*)&pos_y, sizeof(int));
-    file.write((char*)&obj_width, sizeof(int));
-    file.write((char*)&obj_height, sizeof(int));
+void Object::save(std::ofstream& file) {
+    file.write((char*) &pos_x, sizeof(int));
+    file.write((char*) &pos_y, sizeof(int));
+    file.write((char*) &obj_width, sizeof(int));
+    file.write((char*) &obj_height, sizeof(int));
 //    file.write((char*)&texture, sizeof(SDL_Texture*));
-    file.write((char*)&rectangle, sizeof(SDL_Rect));
-    file.write((char*)&flip, sizeof(bool));
-    file.write((char*)&angle, sizeof(double));
+    file.write((char*) &rectangle, sizeof(SDL_Rect));
+    file.write((char*) &flip, sizeof(bool));
+    file.write((char*) &angle, sizeof(double));
 }
 
-void Object::load(std::ifstream &file) {
-    file.read((char*)&pos_x, sizeof(int));
-    file.read((char*)&pos_y, sizeof(int));
-    file.read((char*)&obj_width, sizeof(int));
-    file.read((char*)&obj_height, sizeof(int));
+void Object::load(std::ifstream& file) {
+    file.read((char*) &pos_x, sizeof(int));
+    file.read((char*) &pos_y, sizeof(int));
+    file.read((char*) &obj_width, sizeof(int));
+    file.read((char*) &obj_height, sizeof(int));
 //    file.read((char*)&texture, sizeof(SDL_Texture*));
-    file.read((char*)&rectangle, sizeof(SDL_Rect));
-    file.read((char*)&flip, sizeof(bool));
-    file.read((char*)&angle, sizeof(double));
+    file.read((char*) &rectangle, sizeof(SDL_Rect));
+    file.read((char*) &flip, sizeof(bool));
+    file.read((char*) &angle, sizeof(double));
 }

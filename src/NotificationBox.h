@@ -8,7 +8,7 @@
 #include "Object.h"
 #include "Engine.h"
 
-class NotificationBox: public Object {
+class NotificationBox : public Object {
 private:
     int number;
     std::string text = "";
@@ -22,12 +22,17 @@ public:
     std::chrono::time_point<std::chrono::high_resolution_clock> time_created;
 
     NotificationBox(int& msg, float timer, int x, int y, int width, int height);
+
     NotificationBox(std::string msg, float timer, int x, int y, int width, int height);
+
     ~NotificationBox();
 
     void display() override;
+
     void refresh();
+
     void save(std::ofstream& file) override;
+
     void load(std::ifstream& file) override;
 };
 
