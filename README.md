@@ -11,8 +11,8 @@ A 2D game written in C++ and SDL2 based on Worms concept.
 ```
 git clone https://github.com/daktyl/MiceWars.git
 cd MiceWars/
-$ cmake .
-$ make
+cmake .
+make
 ```
 
 # Configuration
