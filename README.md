@@ -16,14 +16,14 @@ make
 ```
 
 # Configuration
-**Use config.ini file to adjust game settings to your needs.**
+**Use the config.ini file to adjust the game settings to your needs.**
 ```
 FPS           Sets the Frames Per Second the game will be running at.
               Doesn't affect the speed of the gameplay itself.
 
-Width         Sets game resolution (X axis)
+Width         Sets the game resolution (X axis)
 
-Height        Sets game resolution (Y axis)
+Height        Sets the game resolution (Y axis)
 ```
 
 # How to play?
