@@ -568,17 +568,17 @@ void Game::applyGravity() {
                     break;
                 }
             }
-            if (auto* ranged_weapon = dynamic_cast<RangedWeapon*>(mouse->weapon)) {
-                if (ranged_weapon->gravity and ranged_weapon->bullet != nullptr) {
-                    double a_decrement = pow(ranged_weapon->in_air_counter, 1 / 8.0) / ranged_weapon->weight;
-                    if (ranged_weapon->flip) {
-                        ranged_weapon->a_coefficient += a_decrement;
-                    }
-                    else {
-                        ranged_weapon->a_coefficient -= a_decrement;
-                    }
-                }
-            }
+//            if (auto* ranged_weapon = dynamic_cast<RangedWeapon*>(mouse->weapon)) {
+//                if (ranged_weapon->gravity and ranged_weapon->bullet != nullptr) {
+//                    double a_decrement = pow(ranged_weapon->in_air_counter, 1 / 8.0) / ranged_weapon->weight;
+//                    if (ranged_weapon->flip) {
+//                        ranged_weapon->a_coefficient += a_decrement;
+//                    }
+//                    else {
+//                        ranged_weapon->a_coefficient -= a_decrement;
+//                    }
+//                }
+//            }
         }
     }
     // Delete mice that got killed by the water
@@ -767,6 +767,7 @@ void Game::checkWinLoseConditions() {
     }
     else if (player_vector.empty()) {
         returnToMenu();
+        changePlayer();
     }
     else {
         changePlayer();
@@ -882,7 +883,7 @@ void Game::redrawMenu() {
     SDL_SetRenderDrawColor(Engine::Instance()->renderer, 255, 255, 51, 255);
     Engine::Instance()->clearRenderer();
     // CREATING NOTIFICATIONS
-    Object* n_menu = new Object(20, 25, 206, 100, "img/n_menu.png");
+    auto* n_menu = new Object(20, 25, 206, 100, "img/n_menu.png");
     n_menu->display();
     Object* n_option = new Object(397, 25, 206, 100, "img/n_option.png");
     n_option->display();

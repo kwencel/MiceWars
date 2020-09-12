@@ -6,7 +6,9 @@
 
 class Trajectory {
 public:
-    virtual std::vector<Point> getTrajectory(Point pos_1, Point pos_2) = 0;
+//    virtual std::vector<Point> getTrajectory(Point p1, Point p2) = 0;
+
+    virtual Point moveByTime(float deltaTime) = 0;
 };
 
 #endif //MICEWARS_TRAJECTORY_H

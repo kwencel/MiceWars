@@ -176,19 +176,20 @@ void RangedWeapon::shoot() {
     wants_to_move_crosshair = stay;
     // CREATING BULLET
     if (bullet == nullptr) {
-        bullet = new Object(this->getCenter().x, this->getCenter().y, bullet_width, bullet_height, bullet_img);
+        bullet = new Projectile(this->getCenter().x, this->getCenter().y, bullet_width, bullet_height,
+                                std::make_unique<ParabolicTrajectory>(getCenter(), crosshair->getCenter()), bullet_img);
         bullet->flip = this->flip;
         bullet->angle = this->angle;
     }
-    // CALCULATING TRAJECTORY
-    float x1, y1, x2, y2;
-    x1 = (this->bullet->pos_x);
-    y1 = (this->bullet->pos_y);
-    x2 = (crosshair->getCenter().x);
-    y2 = (crosshair->getCenter().y);
-
-    a_coefficient = (y2 - y1) / (x2 - x1);
-    b_coefficient = y1 - (a_coefficient * x1);
+//    // CALCULATING TRAJECTORY
+//    float x1, y1, x2, y2;
+//    x1 = (this->bullet->pos_x);
+//    y1 = (this->bullet->pos_y);
+//    x2 = (crosshair->getCenter().x);
+//    y2 = (crosshair->getCenter().y);
+//
+//    a_coefficient = (y2 - y1) / (x2 - x1);
+//    b_coefficient = y1 - (a_coefficient * x1);
     Game::Instance()->current_player->end_turn = true;
 }
 
@@ -220,21 +221,20 @@ void RangedWeapon::display() {
 }
 
 void RangedWeapon::moveBullet() {
-    int steps = static_cast<int>(BULLET_SPEED_MUL * Timer::Instance()->getDelta());
-    if (steps == 0) {
-        steps = 1;
-    }
-    for (int pixel = 0; pixel < steps; ++pixel) {
-        int offset_x = -1, offset_y = -1;
-        if (flip) {
-            offset_x = 1;
-        }
-        if (a_coefficient) {
-            offset_y = 1;
-        }
-        if (Game::Instance()->isInsideWindowBorders(bullet, offset_x, offset_y)) {
-            if (Game::Instance()->doesCollide(bullet, offset_x, offset_y) or
+//    int steps = static_cast<int>(BULLET_SPEED_MUL * Timer::Instance()->getDelta());
+//    if (steps == 0) {
+//        steps = 1;
+//    }
+
+    auto new_position = bullet->move(Timer::Instance()->getDelta());
+    auto points_to_check = Point::pointsBetween(getCenter(), new_position);
+    for (const auto& pixel : points_to_check) {
+        int x_offset = pixel.x - bullet->getCenter().x;
+        int y_offset = pixel.y - bullet->getCenter().y; // TODO sprawdzic czy dziala
+        if (Game::Instance()->isInsideWindowBorders(bullet, x_offset, y_offset)) {
+            if (Game::Instance()->doesCollide(bullet, x_offset, y_offset) or
                 Game::Instance()->checkMiceCollisionBool(bullet->getCenter().x, bullet->getCenter().y)) { // checking collision
+
                 std::vector<Mouse*> affectedMice;
                 Game::Instance()->createHoles(bullet->getCenter().x, bullet->getCenter().y, dmg_range, &affectedMice);
                 // APPLY DAMAGE
@@ -259,16 +259,19 @@ void RangedWeapon::moveBullet() {
                 break;
             }
             else {
-                if (gravity) {
-                    ++in_air_counter;
-                }
-                if (not bullet->flip) {
-                    bullet->pos_x -= 1;
-                }
-                else {
-                    bullet->pos_x += 1;
-                }
-                bullet->pos_y = int(ceil((a_coefficient * bullet->pos_x) + b_coefficient));
+//                if (gravity) {
+//                    ++in_air_counter;
+//                }
+
+//                if (not bullet->flip) {
+//                    bullet->pos_x -= 1;
+//                }
+//                else {
+//                    bullet->pos_x += 1;
+//                }
+//                bullet->pos_y = int(ceil((a_coefficient * bullet->pos_x) + b_coefficient));
+                bullet->pos_x = pixel.x;
+                bullet->pos_y = pixel.y;
             }
         }
         else {   // outside the windowBorders
@@ -293,14 +296,14 @@ void RangedWeapon::save(std::ofstream& file) {
     Weapon::save(file);
     file.write((char*) &gravity, sizeof(gravity));
     file.write((char*) &weight, sizeof(weight));
-    file.write((char*) &a_coefficient, sizeof(a_coefficient));
-    file.write((char*) &b_coefficient, sizeof(b_coefficient));
+//    file.write((char*) &a_coefficient, sizeof(a_coefficient));
+//    file.write((char*) &b_coefficient, sizeof(b_coefficient));
 }
 
 void RangedWeapon::load(std::ifstream& file) {
     Weapon::load(file);
     file.read((char*) &gravity, sizeof(gravity));
     file.read((char*) &weight, sizeof(weight));
-    file.read((char*) &a_coefficient, sizeof(a_coefficient));
-    file.read((char*) &b_coefficient, sizeof(b_coefficient));
+//    file.read((char*) &a_coefficient, sizeof(a_coefficient));
+//    file.read((char*) &b_coefficient, sizeof(b_coefficient));
 }
