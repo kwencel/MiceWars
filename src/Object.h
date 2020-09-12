@@ -6,6 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include "global_vars.h"
+#include "Point.h"
 
 using std::cout;
 using std::endl;
@@ -27,6 +28,8 @@ public:
     Object() { /* cout << "Created temp object!" << endl; */ };
 
     Object(int x, int y, int width, int height, std::string img_path = "");
+
+    Object(Point center, int width, int height, std::string img_path = "");
 
     virtual ~Object();
 
