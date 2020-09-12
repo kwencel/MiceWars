@@ -9,9 +9,8 @@ find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(SDL2_ttf REQUIRED)
 
-set(SOURCE_FILES GLOB src/**.cpp src/**.h)
-
-file (GLOB SOURCES src/**.cpp src/**.h)
+file (GLOB_RECURSE SOURCES src/*.cpp src/*.h)
+set(SOURCE_FILES SOURCES)
 add_executable(MiceWars ${SOURCES})
 
 include_directories(${SDL2_INCLUDE_DIR}

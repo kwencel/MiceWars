@@ -17,6 +17,8 @@ enum {
 };
 
 #define CONFIG_FILE_PATH        "config.ini"
+
+#define PI                      3.14f
 #define DEFAULT_WIN_WIDTH       800
 #define DEFAULT_WIN_HEIGHT      600
 
