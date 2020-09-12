@@ -1,0 +1,9 @@
+.vscode
+bin/*.*
+MiceWars
+build
+CMakeFiles
+*.cmake
+CMakeCache.txt
+*.ini
+Makefile
