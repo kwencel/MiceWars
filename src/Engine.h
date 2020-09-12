@@ -46,9 +46,9 @@ public:
 
     void colorPixel(SDL_Surface* surface, int x, int y, Uint32 colour);
 
-    SDL_Texture* makeTexture(const char* img_path);
+    SDL_Texture* makeTexture(const char* img_path) const;
 
-    void clearRenderer();
+    void clearRenderer() const;
 
     void destroy();
 
@@ -56,11 +56,11 @@ public:
 
     std::pair<int, int> getCursorPosition() { return cursor_pos; };
 
-    void setWindowTitle();
+    void setWindowTitle() const;
 
-    int getWindowWidth() { return win_width; }
+    [[nodiscard]] int getWindowWidth() const { return win_width; }
 
-    int getWindowHeight() { return win_height; }
+    [[nodiscard]] int getWindowHeight() const { return win_height; }
 
     int setWindowWidth(int width);
 

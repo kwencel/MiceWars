@@ -1,6 +1,8 @@
 #ifndef MICEWARS_MOUSE_H
 #define MICEWARS_MOUSE_H
 
+#include <utility>
+
 #include "Weapon.h"
 #include "NotificationBox.h"
 
@@ -15,10 +17,11 @@ public:
     NotificationBox* notification_hp = nullptr;
 
     Mouse(int x, int y, int width, int height, std::string img_path)
-            : Object(x, y, width, height, img_path) { /* cout << "Mouse created!" << endl; */ }
+            : Object(x, y, width, height, std::move(img_path)) { /* cout << "Mouse created!" << endl; */ }
 
-    Mouse() { }; // Needed to reload game
-    ~Mouse();
+    Mouse() = default; // Needed to reload game
+
+    ~Mouse() override;
 
     void move();
 

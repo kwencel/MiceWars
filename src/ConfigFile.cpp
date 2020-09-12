@@ -1,5 +1,5 @@
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 #include "ConfigFile.h"
 #include "global_vars.h"
 #include "Engine.h"
@@ -14,7 +14,7 @@ ConfigFile* ConfigFile::Instance() {
     return m_pInstance;
 }
 
-struct StackNode* root = 0;
+struct StackNode* root = nullptr;
 
 void ConfigFile::push(char* name, char* value) {
     StackNode* node;
@@ -57,7 +57,7 @@ void ConfigFile::loadConfig(const char* filepath) {
     char buffer[50];
     char curr_char;
     size_t pos = 0;
-    bool is_found_eq_sign = 0;
+    bool is_found_eq_sign = false;
     FILE* fp;
 
     if ((fp = fopen(filepath, "r"))) {
@@ -97,7 +97,7 @@ void ConfigFile::loadConfig(const char* filepath) {
 void ConfigFile::processConfig() {
     struct StackNode* sett;
     printf("[INFO] Loading configuration...\n");
-    for (sett = pop(); sett != NULL; sett = pop()) {
+    for (sett = pop(); sett != nullptr; sett = pop()) {
         printf("[CONFIG] %s = %s\n", sett->name, sett->value);
         if ((strcmp(sett->name, "FPS") == 0)) {
             Timer::Instance()->setFPS(atoi(sett->value));

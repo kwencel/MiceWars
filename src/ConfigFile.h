@@ -1,7 +1,7 @@
 #ifndef MICEWARS_CONFIGFILE_H
 #define MICEWARS_CONFIGFILE_H
 
-#include <stdio.h>
+#include <cstdio>
 
 struct StackNode {
     StackNode* next;

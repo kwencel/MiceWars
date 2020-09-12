@@ -40,7 +40,7 @@ int Engine::createBackground() {
 
 
 void Engine::colorPixel(SDL_Surface* surface, int x, int y, Uint32 colour) {
-    Uint8* pixel = (Uint8*) surface->pixels;
+    auto pixel = static_cast<Uint8*>(surface->pixels);
     pixel += (y * surface->pitch) + (x * sizeof(Uint32));
     *((Uint32*) pixel) = colour;
 }
@@ -87,7 +87,7 @@ int Engine::getReady() {
     return 0;
 }
 
-SDL_Texture* Engine::makeTexture(const char* img_path) {
+SDL_Texture* Engine::makeTexture(const char* img_path) const {
     SDL_Texture* texture = IMG_LoadTexture(renderer, img_path);
     return texture;
 }
@@ -97,7 +97,7 @@ void Engine::destroy() {
     SDL_DestroyWindow(Engine::Instance()->window);
 }
 
-void Engine::clearRenderer() {
+void Engine::clearRenderer() const {
     SDL_RenderClear(renderer);
 }
 
@@ -105,7 +105,7 @@ void Engine::readCursorPosition() {
     SDL_GetMouseState(&cursor_pos.first, &cursor_pos.second);
 }
 
-void Engine::setWindowTitle() {
+void Engine::setWindowTitle() const {
     std::stringstream window_title;
     window_title << "Frametime: " << Timer::Instance()->getTimeFromLastDelta() << " Cursor " << cursor_pos.first <<
     " " << cursor_pos.second;

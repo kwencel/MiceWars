@@ -162,8 +162,8 @@ void Player::load(std::ifstream& file) {
     }
     if (mice_amount != 0) {
         for (int i = 0; i < mice_amount; i++) {
-            Mouse* mouse = new Mouse();
-            (*mouse).load(file);
+            auto mouse = new Mouse();
+            mouse->load(file);
             mice_vector.push_back(mouse);
         }
     }

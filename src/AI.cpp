@@ -27,15 +27,15 @@ void AI::makeTurn() {
 }
 
 bool AI::simulateBulletMovement(Object* target) {
-    Object* test_bullet = new Object(current_mouse->weapon->getCenter().x, current_mouse->weapon->getCenter().y,
-                                     SHOTGUN_BULLET_WIDTH, SHOTGUN_BULLET_HEIGHT);
+    auto test_bullet = new Object(current_mouse->weapon->getCenter().x, current_mouse->weapon->getCenter().y,
+                                  SHOTGUN_BULLET_WIDTH, SHOTGUN_BULLET_HEIGHT);
     aim(target, true);  // Set crosshair at approximately correct position
     int offset_x = -1;
     int offset_y = -1;
     if (current_mouse->weapon->flip) {
         offset_x = 1;
     }
-    if (a_coefficient) {
+    if (a_coefficient) { // TODO check and fix
         offset_y = 1;
     }
 
@@ -199,7 +199,7 @@ void AI::aim(Object* target, bool simulate) {
     else {
         current_mouse->flip = false;
     }
-    RangedWeapon* ranged_weapon_ptr = dynamic_cast<RangedWeapon*>(current_mouse->weapon);
+    auto ranged_weapon_ptr = dynamic_cast<RangedWeapon*>(current_mouse->weapon);
     RangedWeapon TestWeapon(current_mouse->pos_x + WEAPON_X_OFFSET, current_mouse->pos_y + WEAPON_Y_OFFSET,
                             WEAPON_WIDTH,
                             WEAPON_HEIGHT, SHOTGUN_IMG);
@@ -269,7 +269,7 @@ void AI::fire() {
 }
 
 AI::~AI() {
-    cout << "AI destroyed!" << endl;
+    std::cout << "AI destroyed!" << std::endl;
 }
 
 void AI::handleKeys(SDL_Keycode keycode) {

@@ -54,7 +54,7 @@ public:
     bool quit = false;
     Player* current_player = nullptr;
 
-    void createPlayer(std::string name, bool is_human, int mouse_amount, int colour);
+    void createPlayer(const std::string& name, bool is_human, int mouse_amount, int colour);
 
     void changePlayer();
 
@@ -64,9 +64,9 @@ public:
 
     void placeMice();
 
-    void saveGame(std::string file_name);
+    void saveGame(const std::string& file_name);
 
-    void loadGame(std::string file_name);
+    void loadGame(const std::string& file_name);
 
     void returnToMenu(std::string winning_string = "");
 

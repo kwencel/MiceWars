@@ -2,6 +2,7 @@
 #define MICEWARS_AI_H
 
 #include <string>
+#include <utility>
 #include "Player.h"
 
 struct EnemyTarget {
@@ -45,13 +46,13 @@ private:
 
     void handleKeys(SDL_Keycode keycode) override;
 
-    int calculateDistanceBetweenObjects(Object* base_obj, Object* distant_obj);
+    static int calculateDistanceBetweenObjects(Object* base_obj, Object* distant_obj);
 
 public:
     AI(std::string name, bool is_human, int mouse_amount, int colour)
-            : Player(name, is_human, mouse_amount, colour) { /* cout << "AI created!" << endl; */ }
+            : Player(std::move(name), is_human, mouse_amount, colour) { /* cout << "AI created!" << endl; */ }
 
-    ~AI();
+    ~AI() override;
 
     void makeTurn() override;
 };

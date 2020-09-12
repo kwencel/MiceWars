@@ -1,6 +1,8 @@
 #ifndef MICEWARS_BUTTON_H
 #define MICEWARS_BUTTON_H
 
+#include <utility>
+
 #include "Object.h"
 
 class Button : public Object {
@@ -9,11 +11,11 @@ public:
     int amount = 1;
 
     Button(int x, int y, int width, int height, std::string img_path, bool state = true)
-            : Object(x, y, width, height, img_path), state(state) { /* cout << "Button created!" << endl; */ }
+            : Object(x, y, width, height, std::move(img_path)), state(state) { /* cout << "Button created!" << endl; */ }
 
-    ~Button();
+    ~Button() override;
 
-    Button(bool state = false) : state(state) { }
+    explicit Button(bool state = false) : state(state) { }
 
     void click();
 

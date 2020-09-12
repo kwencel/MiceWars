@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <iostream>
 #include <fstream>
+#include <utility>
 #include "Game.h"
 #include "Timer.h"
 #include "RangedWeapon.h"
@@ -56,7 +57,7 @@ void Game::readKeyboardState() {
     }
 }
 
-void Game::saveGame(std::string fileName) {
+void Game::saveGame(const std::string& fileName) {
     int win_width = Engine::Instance()->getWindowWidth();
     int win_height = Engine::Instance()->getWindowHeight();
     std::ofstream save_game_file;
@@ -67,7 +68,7 @@ void Game::saveGame(std::string fileName) {
         save_game_file.write((char*) &win_width, sizeof(int));
         save_game_file.write((char*) &win_height, sizeof(int));
         save_game_file.write((char*) &background_needs_redraw, sizeof(bool));
-        for (auto column: world_map) {
+        for (const auto& column: world_map) {
             for (auto pixel: column) {
                 save_game_file.write(&pixel, sizeof(char));
             }
@@ -88,7 +89,7 @@ void Game::saveGame(std::string fileName) {
     else cout << "Unable to open file\n";
 }
 
-void Game::loadGame(std::string fileName) {
+void Game::loadGame(const std::string& fileName) {
     while (not player_vector.empty()) {
         delete player_vector[0];
     }
@@ -123,7 +124,7 @@ void Game::loadGame(std::string fileName) {
         read_game_file.read((char*) &players_count, sizeof(int));
         if (players_count != 0) {
             for (int i = 0; i < players_count; i++) {
-                Player* player = new Player();
+                auto* player = new Player();
                 (*player).load(read_game_file);
                 player_vector.push_back(player);
             }
@@ -167,7 +168,7 @@ void Game::returnToMenu(std::string winning_string) {
     background_needs_redraw = true;
     menu_needs_redraw = true;
     state = menu;
-    createNotification(winning_string, 5, {0, 0, 0}, 300, 0);
+    createNotification(std::move(winning_string), 5, {0, 0, 0}, 300, 0);
 }
 
 void Game::exit() {
@@ -202,7 +203,7 @@ void Game::drawBackground() {
 
 
 void Game::displayBackground() {
-    SDL_RenderCopy(Engine::Instance()->renderer, Engine::Instance()->background_texture, NULL, NULL);
+    SDL_RenderCopy(Engine::Instance()->renderer, Engine::Instance()->background_texture, nullptr, nullptr);
 }
 
 void Game::redraw() {
@@ -280,7 +281,7 @@ void Game::connectPoints(std::vector<std::pair<int, int>> points_vector, int riv
     int win_height = Engine::Instance()->getWindowHeight();
     // CONNECTING POINTS
     std::vector<std::pair<int, int>>::iterator current;
-    int x1, y1, x2, y2, a, b;
+    int x1 = 0, y1 = 0, x2 = 0, y2 = 0, a = 0, b = 0;
     current = points_vector.begin();            // iterator at the beginning
 
     while (*current != points_vector.back()) {
@@ -567,7 +568,7 @@ void Game::applyGravity() {
                     break;
                 }
             }
-            if (RangedWeapon* ranged_weapon = dynamic_cast<RangedWeapon*>(mouse->weapon)) {
+            if (auto* ranged_weapon = dynamic_cast<RangedWeapon*>(mouse->weapon)) {
                 if (ranged_weapon->gravity and ranged_weapon->bullet != nullptr) {
                     double a_decrement = pow(ranged_weapon->in_air_counter, 1 / 8.0) / ranged_weapon->weight;
                     if (ranged_weapon->flip) {
@@ -622,9 +623,9 @@ void Game::placeMice() {
     }
 }
 
-void Game::createPlayer(std::string name, bool is_human, int mice_amount, int colour) {
+void Game::createPlayer(const std::string& name, bool is_human, int mice_amount, int colour) {
     if (is_human) {
-        Player* player = new Player(name, is_human, mice_amount, colour);
+        auto player = new Player(name, is_human, mice_amount, colour);
         player->player_vecpos = player_vector.size();
         player_vector.push_back(player);
     }
@@ -831,51 +832,51 @@ void Game::controlMenu() {
 }
 
 void Game::createButtonsImagesVector() {
-    buttons_images.push_back("img/b_ResumeGame.png");
-    buttons_images.push_back("img/b_SaveGame.png");
-    buttons_images.push_back("img/b_LoadGame.png");
-    buttons_images.push_back("img/b_Quit.png");
-    buttons_images.push_back("img/b_NewGame.png");
-    buttons_images.push_back("img/b_Start.png");
-    buttons_images.push_back("img/b_Human1.png");
-    buttons_images.push_back("img/b_Human1.png");
-    buttons_images.push_back("img/b_Human1.png");
-    buttons_images.push_back("img/b_Human1.png");
-    buttons_images.push_back("img/1.png");
-    buttons_images.push_back("img/1.png");
-    buttons_images.push_back("img/1.png");
-    buttons_images.push_back("img/1.png");
-    buttons_images.push_back("img/p_daktyl.png");
-    buttons_images.push_back("img/p_miki.png");
-    buttons_images.push_back("img/p_lazarz.png");
-    buttons_images.push_back("img/p_ziomek.png");
+    buttons_images.emplace_back("img/b_ResumeGame.png");
+    buttons_images.emplace_back("img/b_SaveGame.png");
+    buttons_images.emplace_back("img/b_LoadGame.png");
+    buttons_images.emplace_back("img/b_Quit.png");
+    buttons_images.emplace_back("img/b_NewGame.png");
+    buttons_images.emplace_back("img/b_Start.png");
+    buttons_images.emplace_back("img/b_Human1.png");
+    buttons_images.emplace_back("img/b_Human1.png");
+    buttons_images.emplace_back("img/b_Human1.png");
+    buttons_images.emplace_back("img/b_Human1.png");
+    buttons_images.emplace_back("img/1.png");
+    buttons_images.emplace_back("img/1.png");
+    buttons_images.emplace_back("img/1.png");
+    buttons_images.emplace_back("img/1.png");
+    buttons_images.emplace_back("img/p_daktyl.png");
+    buttons_images.emplace_back("img/p_miki.png");
+    buttons_images.emplace_back("img/p_lazarz.png");
+    buttons_images.emplace_back("img/p_ziomek.png");
 
     // alternative
-    buttons_images.push_back("img/b_ResumeGame2.png");
-    buttons_images.push_back("img/b_SaveGame2.png");
-    buttons_images.push_back("img/b_LoadGame2.png");
-    buttons_images.push_back("img/b_Quit2.png");
-    buttons_images.push_back("img/b_NewGame2.png");
-    buttons_images.push_back("img/b_Start2.png");
-    buttons_images.push_back("img/b_AI1.png");
-    buttons_images.push_back("img/b_AI1.png");
-    buttons_images.push_back("img/b_AI1.png");
-    buttons_images.push_back("img/b_AI1.png");
-    buttons_images.push_back("");
-    buttons_images.push_back("");
-    buttons_images.push_back("");
-    buttons_images.push_back("");
-    buttons_images.push_back("img/p_daktyl2.png");
-    buttons_images.push_back("img/p_miki2.png");
-    buttons_images.push_back("img/p_lazarz2.png");
-    buttons_images.push_back("img/p_ziomek2.png");
-    buttons_images.push_back("img/1.png"); // nr.36
-    buttons_images.push_back("img/2.png");
-    buttons_images.push_back("img/3.png");
-    buttons_images.push_back("img/4.png");
-    buttons_images.push_back("img/5.png");
-    buttons_images.push_back("img/6.png");
-    buttons_images.push_back("img/7.png");
+    buttons_images.emplace_back("img/b_ResumeGame2.png");
+    buttons_images.emplace_back("img/b_SaveGame2.png");
+    buttons_images.emplace_back("img/b_LoadGame2.png");
+    buttons_images.emplace_back("img/b_Quit2.png");
+    buttons_images.emplace_back("img/b_NewGame2.png");
+    buttons_images.emplace_back("img/b_Start2.png");
+    buttons_images.emplace_back("img/b_AI1.png");
+    buttons_images.emplace_back("img/b_AI1.png");
+    buttons_images.emplace_back("img/b_AI1.png");
+    buttons_images.emplace_back("img/b_AI1.png");
+    buttons_images.emplace_back("");
+    buttons_images.emplace_back("");
+    buttons_images.emplace_back("");
+    buttons_images.emplace_back("");
+    buttons_images.emplace_back("img/p_daktyl2.png");
+    buttons_images.emplace_back("img/p_miki2.png");
+    buttons_images.emplace_back("img/p_lazarz2.png");
+    buttons_images.emplace_back("img/p_ziomek2.png");
+    buttons_images.emplace_back("img/1.png"); // nr.36
+    buttons_images.emplace_back("img/2.png");
+    buttons_images.emplace_back("img/3.png");
+    buttons_images.emplace_back("img/4.png");
+    buttons_images.emplace_back("img/5.png");
+    buttons_images.emplace_back("img/6.png");
+    buttons_images.emplace_back("img/7.png");
 }
 
 void Game::redrawMenu() {
