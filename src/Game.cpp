@@ -767,7 +767,6 @@ void Game::checkWinLoseConditions() {
     }
     else if (player_vector.empty()) {
         returnToMenu();
-        changePlayer();
     }
     else {
         changePlayer();
