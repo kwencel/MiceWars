@@ -223,7 +223,7 @@ void RangedWeapon::moveBullet() {
 //    }
 
     auto new_position = bullet->move(Timer::Instance()->getDelta());
-    auto points_to_check = Point::pointsBetween(getCenter(), new_position);
+    auto points_to_check = Math2D::pointsBetween(getCenter(), new_position);
     for (const auto& pixel : points_to_check) {
         int x_offset = pixel.x - bullet->getCenter().x;
         int y_offset = pixel.y - bullet->getCenter().y; // TODO sprawdzic czy dziala
