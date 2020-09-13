@@ -27,14 +27,14 @@ private:
         int y_offset = INITIAL_SPEED * std::sin(angle) * elapsedTime - 0.5 * GRAVITY * std::pow(elapsedTime, 2);
         position.x += x_offset;
         position.y += y_offset;
-        std::cout << "x_offset = " << x_offset << ", y_offset = " << y_offset << "\n";
+//        std::cout << "x_offset = " << x_offset << ", y_offset = " << y_offset << "\n";
         return position;
     }
 
     static float computeAngle(Point p1, Point p2) {
-        Point vector_distance = Point( p2.x - p1.x, p2.y - p1.y);
-        Point vector_floor = Point( p2.x - p1.x, 0);
-        float angle = std::atan2(vector_floor.y - vector_distance.y, vector_floor.x - vector_distance.x);
+        Vector vector_distance = Vector(p1, p2);
+        Vector vector_floor = Vector( p2.x - p1.x, 0);
+        float angle = std::atan2(vector_floor.v_y - vector_distance.v_y, vector_floor.v_x - vector_distance.v_x);
         float degrees = angle * 180 / PI;
         std::cout << "angle = " << angle << ", degrees = " << degrees << "\n";
         return angle;

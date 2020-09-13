@@ -174,10 +174,12 @@ void RangedWeapon::shoot() {
         return;
     }
     wants_to_move_crosshair = stay;
+    auto current_player = Game::Instance()->current_player;
     // CREATING BULLET
     if (bullet == nullptr) {
-        bullet = new Projectile(this->getCenter().x, this->getCenter().y, bullet_width, bullet_height,
-                                std::make_unique<ParabolicTrajectory>(getCenter(), crosshair->getCenter()), bullet_img);
+        auto mouse_center = current_player->current_mouse->getCenter();
+        bullet = new Projectile(mouse_center, bullet_width, bullet_height,
+                                std::make_unique<ParabolicTrajectory>(mouse_center, crosshair->getCenter()), bullet_img);
         bullet->flip = this->flip;
         bullet->angle = this->angle;
     }
@@ -190,21 +192,15 @@ void RangedWeapon::shoot() {
 //
 //    a_coefficient = (y2 - y1) / (x2 - x1);
 //    b_coefficient = y1 - (a_coefficient * x1);
-    Game::Instance()->current_player->end_turn = true;
+    current_player->end_turn = true;
 }
 
 void RangedWeapon::createCrosshair() {
     if (crosshair == nullptr) {
-        int mouse_x = Game::Instance()->current_player->current_mouse->pos_x;
-        int mouse_y = Game::Instance()->current_player->current_mouse->pos_y;
-        if (Game::Instance()->current_player->current_mouse->flip) {
-            crosshair = new Object(
-                    mouse_x + RADIUS_CROSSHAIR, mouse_y, CROSSHAIR_WIDTH, CROSSHAIR_WIDTH, CROSSHAIR_IMG);
-        }
-        else {
-            crosshair = new Object(
-                    mouse_x - RADIUS_CROSSHAIR, mouse_y, CROSSHAIR_WIDTH, CROSSHAIR_WIDTH, CROSSHAIR_IMG);
-        }
+        auto mouse = Game::Instance()->current_player->current_mouse;
+        auto [ x, y ] = mouse->getCenter();
+        auto crosshair_center = Point(x + (mouse->flip ? 1 : -1) * RADIUS_CROSSHAIR, y);
+        crosshair = new Object(crosshair_center, CROSSHAIR_WIDTH, CROSSHAIR_WIDTH, CROSSHAIR_IMG);
         markSemicircle();
         it = (semicircle_vector.begin() + semicircle_vector.size() / 2);
     }
