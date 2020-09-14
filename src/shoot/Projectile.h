@@ -11,10 +11,13 @@
 
 class Projectile : public Object {
 public:
-    Projectile(int x, int y, int width, int height, std::unique_ptr<Trajectory> trajectory, std::string img_path = "")
-    : Object(x, y, width, height, img_path), trajectory(std::move(trajectory)) { }
+    Projectile(int x, int y, int width, int height, Point crosshair_center, std::string img_path = "")
+    : Object(x, y, width, height, img_path), trajectory(std::make_unique<ParabolicTrajectory>(getCenter(), crosshair_center)) { }
 
     Point move(float deltaTime) {
+        if (deltaTime == 0.0f) {
+            this->trajectory = std::unique_ptr<Trajectory>();
+        }
         return trajectory->moveByTime(deltaTime);
     }
 private:

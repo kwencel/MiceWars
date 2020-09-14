@@ -6,8 +6,6 @@
 
 class Trajectory {
 public:
-//    virtual std::vector<Point> getTrajectory(Point p1, Point p2) = 0;
-
     virtual Point moveByTime(float deltaTime) = 0;
 };
 

@@ -176,8 +176,7 @@ void RangedWeapon::shoot() {
     wants_to_move_crosshair = stay;
     // CREATING BULLET
     if (bullet == nullptr) {
-        bullet = new Projectile(this->getCenter().x, this->getCenter().y, bullet_width, bullet_height,
-                                std::make_unique<ParabolicTrajectory>(getCenter(), crosshair->getCenter()), bullet_img);
+        bullet = new Projectile(this->getCenter().x, this->getCenter().y, bullet_width, bullet_height,crosshair->getCenter(), bullet_img);
         bullet->flip = this->flip;
         bullet->angle = this->angle;
     }
@@ -227,7 +226,7 @@ void RangedWeapon::moveBullet() {
 //    }
 
     auto new_position = bullet->move(Timer::Instance()->getDelta());
-    auto points_to_check = Point::pointsBetween(getCenter(), new_position);
+    auto points_to_check = Point::pointsBetween(bullet->getCenter(), new_position);
     for (const auto& pixel : points_to_check) {
         int x_offset = pixel.x - bullet->getCenter().x;
         int y_offset = pixel.y - bullet->getCenter().y; // TODO sprawdzic czy dziala

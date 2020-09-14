@@ -9,10 +9,10 @@ void ThrownWeapon::shoot() {
     // CREATING BULLET
     if (bullet == nullptr) {
         if (flip) {
-            bullet = new Projectile(pos_x + 2 * obj_width, getCenter().y, bullet_width, bullet_height, std::make_unique<ParabolicTrajectory>(getCenter(), crosshair->getCenter()), bullet_img);
+            bullet = new Projectile(pos_x + 2 * obj_width, getCenter().y, bullet_width, bullet_height, crosshair->getCenter(), bullet_img);
         }
         else {
-            bullet = new Projectile(pos_x - obj_width, getCenter().y, bullet_width, bullet_height, std::make_unique<ParabolicTrajectory>(getCenter(), crosshair->getCenter()), bullet_img);
+            bullet = new Projectile(pos_x - obj_width, getCenter().y, bullet_width, bullet_height, crosshair->getCenter(), bullet_img);
         }
         bullet->flip = this->flip;
         bullet->angle = this->angle;
