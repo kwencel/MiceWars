@@ -10,42 +10,45 @@
 
 class ParabolicTrajectory : public Trajectory {
 public:
-    ParabolicTrajectory(Point p1, Point p2) : angle(Math2D::compute_acute_angle(p1, p2)), elapsedTime(0.0f), initial_position(p1) {
+    ParabolicTrajectory(Point p1, Point p2) : ParabolicTrajectory(p1, p2, 9.81f, 15.f, 10) { }
+    ParabolicTrajectory(Point p1, Point p2, float gravity, float initial_speed, float pixel_to_meter_proportion) :
+        angle(Math2D::compute_acute_angle(p1, p2)), elapsedTime(0.0f), initial_position(p1),
+        gravity(gravity), initial_speed(initial_speed), pixel_to_meter_proportion(pixel_to_meter_proportion) {
         x_direction = setupXDirection(p1, p2);
         angle = -angle;
-        vx0 = INITIAL_SPEED * cos(angle);
-        vy0 = INITIAL_SPEED * sin(angle);
+        vx0 = initial_speed * cos(angle);
+        vy0 = initial_speed * sin(angle);
         std::cout << "------------------------------------------------\n";
         std::cout << "START(x, y) -> " << initial_position.x << "\t" << initial_position.y << "\n";
         std::cout << "START(radians, degrees) -> " << angle << "\t (" << angle * 180 / PI << ")\n";
         std::cout << "START(vx0, vy0) -> " << vx0 << "\t" << vy0 << "\n";
-        std::cout << "START(INITIAL_SPEED) -> " << INITIAL_SPEED << "\n";
-        std::cout << "START(GRAVITY) -> " << GRAVITY << "\n";
+        std::cout << "START(INITIAL_SPEED) -> " << initial_speed << "\n";
+        std::cout << "START(GRAVITY) -> " << gravity << "\n";
         std::cout << "------------------------------------------------\n";
 
     }
 
 private:
     /*
-     * GRAVITY (m/s^2)
+     * gravity (m/s^2)
      * Greater gravity, go down faster
      * For now let's not change that so the gravity can behave like in real world
      */
-    constexpr static const float GRAVITY = 9.81f;
+    float gravity;
     /*
-     * INITIAL SPEED (m/s)
+     * initial_speed (m/s)
      * Greater speed, further flies
      */
-    constexpr static const float INITIAL_SPEED = 15.f;
+    float initial_speed;
     /*
-     * PIXEL_TO_METER_PROPORTION (pixels / m)
+     * pixel_to_meter_proportion (pixels / m)
      * it tells us how many pixels is one meter
      * greater proportion, faster bullet
-     * so you can manipulate with INITIAL_SPEED and PIXEL_TO_METER_PROPORTION to control power and speed.
-     * Remember that when you increase PIXEL_TO_METER_PROPORTION it will fly faster but as a result also further.
-     * If you want to change only speed than increase PIXEL_TO_METER_PROPORTION and decrease INITIAL_SPEED
+     * so you can manipulate with initial_speed and pixel_to_meter_proportion to control power and speed.
+     * Remember that when you increase pixel_to_meter_proportion it will fly faster but as a result also further.
+     * If you want to change only speed than increase pixel_to_meter_proportion and decrease initial_speed
      */
-    constexpr static const int PIXEL_TO_METER_PROPORTION = 10;
+    int pixel_to_meter_proportion;
 
     short x_direction;
     double vx0;
@@ -58,12 +61,12 @@ private:
         elapsedTime += deltaTime;
 //        cout << "elapsedTime: " << elapsedTime << "\n";
 
-        double mov_x = PIXEL_TO_METER_PROPORTION * vx0 * elapsedTime * x_direction;
+        double mov_x = pixel_to_meter_proportion * vx0 * elapsedTime * x_direction;
         double x_after_move = initial_position.x + mov_x;
 
-        double vy = vy0 - GRAVITY * elapsedTime;
+        double vy = vy0 - gravity * elapsedTime;
 //        cout << "vx = vx0 : " << vx0 << ", vy : " << vy << endl;
-        double mov_y = PIXEL_TO_METER_PROPORTION * (vy0 * elapsedTime - GRAVITY * elapsedTime * elapsedTime / 2);
+        double mov_y = pixel_to_meter_proportion * (vy0 * elapsedTime - gravity * elapsedTime * elapsedTime / 2);
 //        cout << "x move (distance) : " << mov_x << ", y move (height) : " << mov_y << endl;
         double y_after_move = initial_position.y - mov_y;
 

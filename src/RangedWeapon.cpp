@@ -2,6 +2,7 @@
 #include "RangedWeapon.h"
 #include "Game.h"
 #include "Timer.h"
+#include "shoot/LinearTrajectory.h"
 
 bool compareXIncreasing(const std::pair<int, int>& a, const std::pair<int, int>& b) {
     return a.first < b.first;
@@ -179,7 +180,7 @@ void RangedWeapon::shoot() {
     if (bullet == nullptr) {
         auto mouse_center = current_player->current_mouse->getCenter();
         bullet = new Projectile(mouse_center, bullet_width, bullet_height,
-                                std::make_unique<ParabolicTrajectory>(mouse_center, crosshair->getCenter()), bullet_img);
+                                std::make_unique<LinearTrajectory>(mouse_center, crosshair->getCenter()), bullet_img);
         bullet->flip = this->flip;
         bullet->angle = this->angle;
     }
