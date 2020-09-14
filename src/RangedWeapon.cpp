@@ -217,67 +217,48 @@ void RangedWeapon::display() {
 }
 
 void RangedWeapon::moveBullet() {
-//    int steps = static_cast<int>(BULLET_SPEED_MUL * Timer::Instance()->getDelta());
-//    if (steps == 0) {
-//        steps = 1;
-//    }
 
     auto new_position = bullet->move(Timer::Instance()->getDelta());
-    auto points_to_check = Math2D::pointsBetween(getCenter(), new_position);
-    for (const auto& pixel : points_to_check) {
-        int x_offset = pixel.x - bullet->getCenter().x;
-        int y_offset = pixel.y - bullet->getCenter().y; // TODO sprawdzic czy dziala
-        if (Game::Instance()->isInsideWindowBorders(bullet, x_offset, y_offset)) {
-            if (Game::Instance()->doesCollide(bullet, x_offset, y_offset) or
-                Game::Instance()->checkMiceCollisionBool(bullet->getCenter().x, bullet->getCenter().y)) { // checking collision
 
-                std::vector<Mouse*> affectedMice;
-                Game::Instance()->createHoles(bullet->getCenter().x, bullet->getCenter().y, dmg_range, &affectedMice);
-                // APPLY DAMAGE
-                bool self_killed = false;
-                for (auto mouse : affectedMice) {
-                    mouse->hp -= damage;
-                    if (mouse->hp <= 0) {
-                        if (mouse->weapon == this) {
-                            self_killed = true;
-                        }
-                        delete mouse;
+    int x_offset = new_position.x - bullet->getCenter().x;
+    int y_offset = new_position.y - bullet->getCenter().y;
+    if (Game::Instance()->isInsideWindowBorders(bullet, x_offset, y_offset)) {
+        if (Game::Instance()->doesCollide(bullet, x_offset, y_offset) or
+            Game::Instance()->checkMiceCollisionBool(bullet->getCenter().x, bullet->getCenter().y)) { // checking collision
+
+            std::vector<Mouse*> affectedMice;
+            Game::Instance()->createHoles(bullet->getCenter().x, bullet->getCenter().y, dmg_range, &affectedMice);
+            // APPLY DAMAGE
+            bool self_killed = false;
+            for (auto mouse : affectedMice) {
+                mouse->hp -= damage;
+                if (mouse->hp <= 0) {
+                    if (mouse->weapon == this) {
+                        self_killed = true;
                     }
+                    delete mouse;
                 }
-                if (not self_killed) {
-                    delete bullet;
-                    bullet = nullptr;
-                    delete crosshair;
-                    crosshair = nullptr;
-                }
-                Game::Instance()->background_needs_redraw = true;
-                Game::Instance()->checkWinLoseConditions();
-                break;
             }
-            else {
-//                if (gravity) {
-//                    ++in_air_counter;
-//                }
-
-//                if (not bullet->flip) {
-//                    bullet->pos_x -= 1;
-//                }
-//                else {
-//                    bullet->pos_x += 1;
-//                }
-//                bullet->pos_y = int(ceil((a_coefficient * bullet->pos_x) + b_coefficient));
-                bullet->pos_x = pixel.x;
-                bullet->pos_y = pixel.y;
+            if (not self_killed) {
+                delete bullet;
+                bullet = nullptr;
+                delete crosshair;
+                crosshair = nullptr;
             }
-        }
-        else {   // outside the windowBorders
-            delete bullet;
-            bullet = nullptr;
-            delete crosshair;
-            crosshair = nullptr;
+            Game::Instance()->background_needs_redraw = true;
             Game::Instance()->checkWinLoseConditions();
-            break;
         }
+        else {
+            bullet->pos_x = new_position.x;
+            bullet->pos_y = new_position.y;
+        }
+    }
+    else {   // outside the windowBorders
+        delete bullet;
+        bullet = nullptr;
+        delete crosshair;
+        crosshair = nullptr;
+        Game::Instance()->checkWinLoseConditions();
     }
     wants_to_move_crosshair = stay;
 }
@@ -285,21 +266,18 @@ void RangedWeapon::moveBullet() {
 RangedWeapon::~RangedWeapon() {
     delete crosshair;
     delete bullet;
-    //cout << "RangedWeapon destroyed!" << endl;
 }
 
 void RangedWeapon::save(std::ofstream& file) {
     Weapon::save(file);
     file.write((char*) &gravity, sizeof(gravity));
     file.write((char*) &weight, sizeof(weight));
-//    file.write((char*) &a_coefficient, sizeof(a_coefficient));
-//    file.write((char*) &b_coefficient, sizeof(b_coefficient));
+
 }
 
 void RangedWeapon::load(std::ifstream& file) {
     Weapon::load(file);
     file.read((char*) &gravity, sizeof(gravity));
     file.read((char*) &weight, sizeof(weight));
-//    file.read((char*) &a_coefficient, sizeof(a_coefficient));
-//    file.read((char*) &b_coefficient, sizeof(b_coefficient));
+
 }

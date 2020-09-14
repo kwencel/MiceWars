@@ -10,81 +10,71 @@
 
 class ParabolicTrajectory : public Trajectory {
 public:
-    ParabolicTrajectory(Point p1, Point p2) : angle(Math2D::compute_acute_angle(p1, p2)), elapsedTime(0.0f), position(p1) { }
-        vx0 = INITIAL_SPEED * cos(TEST_ANGLE);
-        vy0 = INITIAL_SPEED * sin(TEST_ANGLE);
-        cout << "------------------------------------------------\n";
-        cout << position.x << "\t" << position.y << endl;
-        // calculate range of trajectory
-//        double range = (pow(INITIAL_SPEED,2)*sin((2*TEST_ANGLE_IN_RADIANS*M_PI)/180.00))/GRAVITY;
-//        cout << "x range: " << range << endl;
+    ParabolicTrajectory(Point p1, Point p2) : angle(Math2D::compute_acute_angle(p1, p2)), elapsedTime(0.0f), initial_position(p1) {
+        x_direction = setupXDirection(p1, p2);
+        angle = -angle;
+        vx0 = INITIAL_SPEED * cos(angle);
+        vy0 = INITIAL_SPEED * sin(angle);
+        std::cout << "------------------------------------------------\n";
+        std::cout << "START(x, y) -> " << initial_position.x << "\t" << initial_position.y << "\n";
+        std::cout << "START(radians, degrees) -> " << angle << "\t (" << angle * 180 / PI << ")\n";
+        std::cout << "START(vx0, vy0) -> " << vx0 << "\t" << vy0 << "\n";
+        std::cout << "START(INITIAL_SPEED) -> " << INITIAL_SPEED << "\n";
+        std::cout << "START(GRAVITY) -> " << GRAVITY << "\n";
+        std::cout << "------------------------------------------------\n";
+
     }
 
 private:
-    constexpr static const float GRAVITY = 9.81f;      // (m/s^2)
-    constexpr static const float INITIAL_SPEED = 50.f; // (m/s)
-    constexpr static const float TEST_ANGLE = 60 * M_PI / 180.0;
+    /*
+     * GRAVITY (m/s^2)
+     * Greater gravity, go down faster
+     * For now let's not change that so the gravity can behave like in real world
+     */
+    constexpr static const float GRAVITY = 9.81f;
+    /*
+     * INITIAL SPEED (m/s)
+     * Greater speed, further flies
+     */
+    constexpr static const float INITIAL_SPEED = 15.f;
+    /*
+     * PIXEL_TO_METER_PROPORTION (pixels / m)
+     * it tells us how many pixels is one meter
+     * greater proportion, faster bullet
+     * so you can manipulate with INITIAL_SPEED and PIXEL_TO_METER_PROPORTION to control power and speed.
+     * Remember that when you increase PIXEL_TO_METER_PROPORTION it will fly faster but as a result also further.
+     * If you want to change only speed than increase PIXEL_TO_METER_PROPORTION and decrease INITIAL_SPEED
+     */
+    constexpr static const int PIXEL_TO_METER_PROPORTION = 10;
 
-
-//    Vector v0;
-//    double dt = 0.1;
+    short x_direction;
     double vx0;
     double vy0;
     float angle;
     float elapsedTime;
-    Point position;
+    Point initial_position;
 
     Point moveByTime(float deltaTime) override {
-        double deltaTime2 = 0.1f;
-        elapsedTime += deltaTime2;
-        cout << "elapsedTime: " << elapsedTime << "\n";
-        cout << "******** vx0 " << vx0 << " vy0 " << vy0 - GRAVITY * elapsedTime << endl;
-        angle = TEST_ANGLE;
+        elapsedTime += deltaTime;
+//        cout << "elapsedTime: " << elapsedTime << "\n";
 
-//        int x_offset = INITIAL_SPEED * std::cos(angle) * elapsedTime;
-//        int y_offset = INITIAL_SPEED * std::sin(angle) * elapsedTime - 0.5 * GRAVITY * std::pow(elapsedTime, 2);
-//        std::cout << "x_offset = " << x_offset << ", y_offset = " << y_offset << "\n";
-//        return Point(position.x + x_offset, position.y - y_offset);
+        double mov_x = PIXEL_TO_METER_PROPORTION * vx0 * elapsedTime * x_direction;
+        double x_after_move = initial_position.x + mov_x;
 
-//        double vx1 = vx0 - (pow(vx0, 2) * (deltaTime2 / 2) );
-//        double vx2 = vx0 - (pow(vx1, 2) * deltaTime2 );
-//        double x = vx1 * deltaTime2 + position.x;
-        double mov_x = vx0 * elapsedTime;
-        double x_after_move = position.x + mov_x;
-
-//        double vy1 = vy0 - (GRAVITY + vy0 * fabs(vy0) ) * (deltaTime2 / 2) ;
-//        double vy2 = vy0 - (GRAVITY + vy1 * fabs(vy1) ) * deltaTime2;
-//        double y = position.y - vy1*deltaTime2;
         double vy = vy0 - GRAVITY * elapsedTime;
-        cout << "******** vx = vx0 : " << vx0 << ", vy : " << vy << endl;
-        double mov_y = vy0 * elapsedTime - GRAVITY * elapsedTime * elapsedTime / 2;
-        cout << "******************** x = distance : " << mov_x << ", height : " << mov_y << endl;
-        double y_after_move = mov_y + position.y - 2 * mov_y;
+//        cout << "vx = vx0 : " << vx0 << ", vy : " << vy << endl;
+        double mov_y = PIXEL_TO_METER_PROPORTION * (vy0 * elapsedTime - GRAVITY * elapsedTime * elapsedTime / 2);
+//        cout << "x move (distance) : " << mov_x << ", y move (height) : " << mov_y << endl;
+        double y_after_move = initial_position.y - mov_y;
 
-//        position.x = x;
-//        position.y = y;
-//        vx0 = vx2;
-//        vy0 = vy2;
-
-        cout << x_after_move << "\t" << y_after_move << endl;
-//        cout << "(delta_x) " << vx1*deltaTime2 << "\t" << "(delta_y) "<< -vy1*deltaTime2 << endl;
+//        std::cout << "new position: " << x_after_move << "\t" << y_after_move << endl;
         return Point(x_after_move, y_after_move);
     }
 
-//    std::vector<Point> getTrajectory(Point pos_1, Point pos_2) override {
-//
-//    }
-//
-
-//
-//    Vector compute_movement_x() {
-//        float cos_alfa = cos(angle);
-//        new Vector(v0.v_x * cos_alfa, v0.v_y * cos_alfa);
-//    }
-//
-//    Vector compute_vy_t() {
-//
-//    }
+    short setupXDirection(Point p1, Point p2) {
+        if (p1.x < p2.x) return 1;
+        else return -1;
+    }
 };
 
 #endif //MICEWARS_PARABOLICTRAJECTORY_H

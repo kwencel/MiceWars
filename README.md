@@ -28,8 +28,8 @@ Height        Sets the game resolution (Y axis)
 
 # How to play?
 
-Use left and right arrow keys to move your mouse to desired position.
-Press space to switch to aiming mode and use up and down arrow keys to place crosshair at desired position.
+Use left and right arrow keys to move your mouse to desired initial_position.
+Press space to switch to aiming mode and use up and down arrow keys to place crosshair at desired initial_position.
 You can also use 1, 2, 3, 4 keys to change weapon. Finally, press space to fire a chosen weapon.
 There is no need to hold space as it doesn't affect the bullet trajectory like in original Worms.
 You win when your mice are the last ones standing on the battlefield.
