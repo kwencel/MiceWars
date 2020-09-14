@@ -4,12 +4,13 @@
 #include "Trajectory.h"
 #include "../global_vars.h"
 #include "../Vector.h"
+#include "../math/Math2D.h"
 
 #include <cmath>
 
 class ParabolicTrajectory : public Trajectory {
 public:
-    ParabolicTrajectory(Point p1, Point p2) : angle(computeAngle(p1, p2)), elapsedTime(0.0f), position(p1) {
+    ParabolicTrajectory(Point p1, Point p2) : angle(Math2D::compute_acute_angle(p1, p2)), elapsedTime(0.0f), position(p1) { }
         vx0 = INITIAL_SPEED * cos(TEST_ANGLE);
         vy0 = INITIAL_SPEED * sin(TEST_ANGLE);
         cout << "------------------------------------------------\n";
@@ -68,16 +69,6 @@ private:
         cout << x_after_move << "\t" << y_after_move << endl;
 //        cout << "(delta_x) " << vx1*deltaTime2 << "\t" << "(delta_y) "<< -vy1*deltaTime2 << endl;
         return Point(x_after_move, y_after_move);
-    }
-
-    static float computeAngle(Point p1, Point p2) {
-        Point vector_distance = Point( p2.x - p1.x, p2.y - p1.y);
-        Point vector_floor = Point( p2.x - p1.x, 0);
-//        float angle = std::atan2(vector_floor.y - vector_distance.y, vector_floor.x - vector_distance.x);
-        float angle = std::atan2(p2.y - p1.y, p2.x - p1.x);
-        float degrees = angle * 180 / PI;
-        std::cout << "angle = " << angle << ", degrees = " << degrees << "\n";
-        return angle;
     }
 
 //    std::vector<Point> getTrajectory(Point pos_1, Point pos_2) override {
